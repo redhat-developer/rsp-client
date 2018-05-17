@@ -11,9 +11,12 @@
     "url": "git+https://github.com/sudhirverma/ssp-client.git"
   },
   "author": "Sudhir Verma",
-  "license": "ISC",
+  "license": "N/A",
   "bugs": {
     "url": "https://github.com/sudhirverma/ssp-client/issues"
   },
-  "homepage": "https://github.com/sudhirverma/ssp-client#readme"
+  "homepage": "https://github.com/sudhirverma/ssp-client#readme",
+  "devDependencies": {
+    "typescript": "^2.8.3"
+  }
 }
