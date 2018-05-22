@@ -2,8 +2,9 @@
   "name": "ssp-client",
   "version": "1.0.0",
   "description": "simple server protocol",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,10 @@
   },
   "homepage": "https://github.com/sudhirverma/ssp-client#readme",
   "devDependencies": {
+    "@types/pluralize": "0.0.28",
     "typescript": "^2.8.3"
+  },
+  "dependencies": {
+    "pluralize": "^7.0.0"
   }
 }
