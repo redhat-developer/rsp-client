@@ -12,7 +12,7 @@ npm i ssp-client
 
 Unit tests are located in `test`. To run all unit tests:
 
-```sh
+```
 npm run test
 ```
 
