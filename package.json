@@ -14,16 +14,16 @@
     "url": "git+https://github.com/sudhirverma/ssp-client.git"
   },
   "author": "Sudhir Verma",
-  "license": "N/A",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/sudhirverma/ssp-client/issues"
   },
   "homepage": "https://github.com/sudhirverma/ssp-client#readme",
   "devDependencies": {
+    "@types/node": "^10.3.1",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
-    "typescript": "^2.8.3"
-  },
-  "dependencies": {
+    "typescript": "^2.8.3",
+    "vscode-jsonrpc": "^3.6.2"
   }
 }
