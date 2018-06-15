@@ -7,43 +7,17 @@ async function clientSetup() {
     const client = new Client('localhost', 27511);
 
     await client.connect();
-    
-    const handle = await client.createServer("/home/jrichter/Downloads/wildfly-12.0.0.Final", 'wfly');
+    const a = await client.addDiscoveryPathSync('/home/jrichter/Downloads/wildfly-12.0.0.Final')
+    const b = await client.getDiscoveryPaths()
+    const aa = await client.removeDiscoveryPathSync(a);
+    const foo = await client.createServerSync('/home/jrichter/Downloads/wildfly-12.0.0.Final', 'wfly');
+    const oof = await client.getServerHandles();
+    const ooof = await client.getServerTypeRequiredAttributes(foo.type);
+    const oooff = await client.getServerTypeOptionalAttributes(foo.type);
 
-    client.onServerStateChange(async (state) => {
-        if (state.server.id === handle.id) {
-            if (state.state === State.STARTING) {
-                // console.log('it is starting')
-            } else if (state.state === State.STARTED) {
-                const baaz = await client.stopServerAsync({id: handle.id, force: false});
-            } else if (state.state === State.STOPPING) {
-                // console.log('it is stopping')
-            } else if (state.state === State.STOPPED) {
-                const f00 = await client.deleteServer(handle);
-                const bar2 = await client.getServerHandles();
-                client.disconnect();
-            }
-        }
-    });
-    client.onServerOutputAppended((output) => {
-        console.log(output.text);
-    });
-    client.onServerProcessCreated((process) => {
-        console.log('Created process: ' + process.processId);
-    });
-    client.onServerProcessTerminated((process) => {
-        console.log('Terminated process: ' + process.processId);
-    });
+    const fooo = await client.deleteServerSync(foo);
 
-    
-    const baz = await client.startServerAsync(
-        {mode: 'run',
-         params: {
-            serverType: handle.type.id,
-            id: handle.id,
-            attributes: await client.getServerRequiredLaunchAttributes({id: handle.id, mode: 'run'})
-            }
-         });
+    client.disconnect();
 }
 
 clientSetup();

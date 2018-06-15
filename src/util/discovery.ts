@@ -1,70 +1,64 @@
 import Protocol from '../protocol/protocol';
 import Messages from '../protocol/messages';
-import {MessageConnection} from 'vscode-jsonrpc';
+import { Common, ErrorMessages } from './common';
+import { MessageConnection } from 'vscode-jsonrpc';
+import { EventEmitter } from 'events';
 
 class Discovery {
 
     private connection: MessageConnection;
+    private emitter: EventEmitter;
 
-    constructor(connection: MessageConnection) {
+    constructor(connection: MessageConnection, emitter: EventEmitter) {
         this.connection = connection;
+        this.emitter = emitter;
+        this.listenToDiscoveryChanges();
+    }
+
+    private listenToDiscoveryChanges() {
+        this.connection.onNotification(Messages.Client.DiscoveryPathAddedNotification.type, discoveryPath => {
+           this.emitter.emit('discoveryPathAdded', discoveryPath); 
+        });
+
+        this.connection.onNotification(Messages.Client.DiscoveryPathRemovedNotification.type, discoveryPath => {
+            this.emitter.emit('discoveryPathRemoved', discoveryPath); 
+        });
     }
     
-    async findServerBeans(path: string, timeout: number = 2000): Promise<Protocol.ServerBean[]> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to retrieve server beans in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.FindServerBeansRequest.type, {filepath: path}).then((beans) => {
-            clearTimeout(timer);
-            return Promise.resolve(beans);
-        });
+    findServerBeans(path: string, timeout: number = 2000): Promise<Protocol.ServerBean[]> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
+             {filepath: path}, timeout, ErrorMessages.FINDBEANS_TIMEOUT);
     }
 
-    async addDiscoveryPath(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to add discovery path in time`);
-        }, timeout);
-
-        return new Promise<Protocol.DiscoveryPath>((resolve) => {
-            this.connection.onNotification(Messages.Client.DiscoveryPathAddedNotification.type, discoveryPath => {
-                if (discoveryPath.filepath === path) {
-                    clearTimeout(timer);
-                    resolve(discoveryPath);
-                }
-            });
-            this.connection.sendNotification(Messages.Server.AddDiscoveryPathNotification.type, { filepath: path });
-        });
+    addDiscoveryPathAsync(path: string, timeout: number = 2000): void {
+        this.connection.sendNotification(Messages.Server.AddDiscoveryPathNotification.type, { filepath: path});
     }
 
-    async removeDiscoveryPath(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to remove discovery path in time`);
-        }, timeout);
-        if (typeof(path) !== 'string') {
-            path = path.filepath;
+    addDiscoveryPathSync(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
+        let discoveryPath = { filepath: path };
+        return Common.sendNotificationSync(this.connection, Messages.Server.AddDiscoveryPathNotification.type,
+             discoveryPath, this.emitter, 'discoveryPathAdded', timeout, ErrorMessages.ADDPATH_TIMEOUT);
+    }
+
+    removeDiscoveryPathSync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
+        if (typeof(path) === 'string') {
+            path = { filepath: path };
         }
 
-        return new Promise<Protocol.DiscoveryPath>((resolve) => {
-            this.connection.onNotification(Messages.Client.DiscoveryPathRemovedNotification.type, discoveryPath => {
-                if (discoveryPath.filepath === path) {
-                    clearTimeout(timer);
-                    resolve(discoveryPath);
-                }
-            });
-            this.connection.sendNotification(Messages.Server.RemoveDiscoveryPathNotification.type, { filepath: path });
-        });
+        return Common.sendNotificationSync(this.connection, Messages.Server.RemoveDiscoveryPathNotification.type,
+            path, this.emitter, 'discoveryPathRemoved', timeout, ErrorMessages.REMOVEPATH_TIMEOUT);
     }
 
-    async getDiscoveryPaths(timeout: number = 2000): Promise<Protocol.DiscoveryPath[]> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to retrieve discovery paths in time`);
-        }, timeout);
+    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): void {
+        if (typeof(path) === 'string') {
+            path = { filepath: path };
+        }
+        this.connection.sendNotification(Messages.Server.RemoveDiscoveryPathNotification.type, path);
+    }
 
-        return this.connection.sendRequest(Messages.Server.GetDiscoveryPathsRequest.type).then((paths) => {
-            clearTimeout(timer);
-            return Promise.resolve(paths);
-        });
+    getDiscoveryPaths(timeout: number = 2000): Promise<Protocol.DiscoveryPath[]> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetDiscoveryPathsRequest.type,
+             null, timeout, ErrorMessages.GETPATHS_TIMEOUT);
     }    
 }
 

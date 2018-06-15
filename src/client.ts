@@ -8,12 +8,6 @@ import ServerModel from './util/serverModel';
 import ServerLauncher from './util/serverLauncher';
 import { EventEmitter } from 'events';
 
-/*
- * TODO: 
- *       common code for making requests/notifications
- *       look into non-unique ids 
- */
-
 /**
  * Simple Simple Server Protocol client implementation using json rpc
  */
@@ -51,8 +45,8 @@ class SSPClient {
                     new rpc.StreamMessageWriter(this.socket));
                 this.connection.listen();
 
-                this.discoveryUtil = new Discovery(this.connection);
-                this.serverUtil = new ServerModel(this.connection);
+                this.discoveryUtil = new Discovery(this.connection, this.emitter);
+                this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
                 clearTimeout(timer);
                 resolve();
@@ -97,8 +91,18 @@ class SSPClient {
      * @param path location to add
      * @param timeout operation timeout in milliseconds, default 2000
      */
-    addDiscoveryPath(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
-        return this.discoveryUtil.addDiscoveryPath(path, timeout);
+    addDiscoveryPathSync(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
+        return this.discoveryUtil.addDiscoveryPathSync(path, timeout);
+    }
+
+    /**
+     * Adds a selected location to server discovery paths
+     * 
+     * @param path location to add
+     * @param timeout operation timeout in milliseconds, default 2000
+     */
+    addDiscoveryPathAsync(path: string, timeout: number = 2000): void {
+        this.discoveryUtil.addDiscoveryPathAsync(path, timeout);
     }
 
     /**
@@ -106,8 +110,17 @@ class SSPClient {
      * 
      * @param timeout operation timeout in milliseconds, default 2000
      */
-    removeDiscoveryPath(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
-        return this.discoveryUtil.removeDiscoveryPath(path, timeout);
+    removeDiscoveryPathSync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
+        return this.discoveryUtil.removeDiscoveryPathSync(path, timeout);
+    }
+
+    /**
+     * Removes a discovery path from the server
+     * 
+     * @param timeout operation timeout in milliseconds, default 2000
+     */
+    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): void {
+        this.discoveryUtil.removeDiscoveryPathAsync(path, timeout);
     }
 
     /**
@@ -126,7 +139,7 @@ class SSPClient {
      * @param id a unique identifier to be assigned to the server being created
      * @param timeout operation timeout in milliseconds, default 2000
      */
-    createServer(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    createServerSync(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         if (typeof(pathOrBean) === 'string') {
             if (!id) {
                 return Promise.reject('ID is required when creating server from a path');
@@ -138,13 +151,41 @@ class SSPClient {
     }
 
     /**
+     * Creates a server located at the given path
+     * 
+     * @param path path to the root folder of the server
+     * @param id a unique identifier to be assigned to the server being created
+     * @param timeout operation timeout in milliseconds, default 2000
+     */
+    createServerAsync(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.Status> {
+        if (typeof(pathOrBean) === 'string') {
+            if (!id) {
+                return Promise.reject('ID is required when creating server from a path');
+            }
+            return this.serverUtil.createServerFromPathAsync(pathOrBean, id, timeout);
+        } else {
+            return this.serverUtil.createServerFromBeanAsync(pathOrBean, id, timeout);
+        }
+    }
+
+    /**
      * Deletes a server using Simple Server Protocol
      * 
      * @param serverHandle {@link Protocol.ServerHandle} object identifying the server to be deleted
      * @param timeout operation timeout in milliseconds, default 2000
      */
-    deleteServer(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerHandle> {
-        return this.serverUtil.deleteServer(serverHandle, timeout);
+    deleteServerSync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+        return this.serverUtil.deleteServerSync(serverHandle, timeout);
+    }
+
+    /**
+     * Deletes a server using Simple Server Protocol
+     * 
+     * @param serverHandle {@link Protocol.ServerHandle} object identifying the server to be deleted
+     * @param timeout operation timeout in milliseconds, default 2000
+     */
+    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): void {
+        this.serverUtil.deleteServerAsync(serverHandle, timeout);
     }
 
     /**
@@ -279,6 +320,42 @@ class SSPClient {
      */
     stopServerSync(stopAttributes: Protocol.StopServerAttributes, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
         return this.launcherUtil.stopServerSync(stopAttributes, timeout);
+    }
+
+    /**
+     * Attaches a listener to discovery path added event
+     * 
+     * @param listener callback to handle the event
+     */
+    onDiscoveryPathAdded(listener: (arg: Protocol.DiscoveryPath) => void) {
+        this.emitter.on('discoveryPathAdded', listener);
+    }
+
+    /**
+     * Attaches a listener to discovery path removed event
+     * 
+     * @param listener callback to handle the event
+     */
+    onDiscoveryPathRemoved(listener: (arg: Protocol.DiscoveryPath) => void) {
+        this.emitter.on('discoveryPathRemoved', listener);
+    }
+
+    /**
+     * Attaches a listener to server creation event
+     * 
+     * @param listener callback to handle the event
+     */
+    onServerAdded(listener: (arg: Protocol.ServerHandle) => void) {
+        this.emitter.on('serverAdded', listener);
+    }
+
+    /**
+     * Attaches a listener to server deleteion event
+     * 
+     * @param listener callback to handle the event
+     */
+    onServerRemoved(listener: (arg: Protocol.ServerHandle) => void) {
+        this.emitter.on('serverRemoved', listener);
     }
 
     /**

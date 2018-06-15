@@ -4,6 +4,7 @@ import Messages from '../protocol/messages';
 import ServerStatus from '../protocol/serverState';
 import { clearTimeout } from "timers";
 import { EventEmitter } from 'events';
+import { Common, ErrorMessages } from "./common";
 
 export class Launcher {
 
@@ -38,81 +39,39 @@ export class Launcher {
         });
     }
 
-    async getLaunchModes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.ServerLaunchMode[]> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to get launch modes for ${serverType} in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.GetLaunchModesRequest.type, serverType).then((modes) => {
-            clearTimeout(timer);
-            return Promise.resolve(modes);
-        });
+    getLaunchModes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.ServerLaunchMode[]> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetLaunchModesRequest.type, serverType,
+             timeout, ErrorMessages.GETLAUNCHMODES_TIMEOUT);
     }
 
-    async getRequiredLaunchAttributes(launchAttrRequest: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to get required launch attributes for ${launchAttrRequest.id} in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.GetRequiredLaunchAttributesRequest.type, launchAttrRequest).then((attr) => {
-            clearTimeout(timer);
-            return Promise.resolve(attr);
-        });
+    getRequiredLaunchAttributes(launchAttrRequest: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetRequiredLaunchAttributesRequest.type, launchAttrRequest, 
+            timeout, ErrorMessages.GETREQUIREDLAUNCHATTRS_TIMEOUT);
     }
 
-    async getOptionalLaunchAttributes(launchAttrRequest: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to get optional launch attributes ${launchAttrRequest.id} in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.GetOptionalLaunchAttributesRequest.type, launchAttrRequest).then((attr) => {
-            clearTimeout(timer);
-            return Promise.resolve(attr);
-        });
+    getOptionalLaunchAttributes(launchAttrRequest: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalLaunchAttributesRequest.type, launchAttrRequest, 
+            timeout, ErrorMessages.GETOPTIONALLAUNCHATTRS_TIMEOUT);
     }
 
-    async getLaunchCommand(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.CommandLineDetails> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to get launch command for ${launchParameters.params.id} in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.GetLaunchCommandRequest.type, launchParameters).then((command) => {
-            clearTimeout(timer);
-            return Promise.resolve(command);
-        });
+    getLaunchCommand(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.CommandLineDetails> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetLaunchCommandRequest.type, launchParameters, 
+            timeout, ErrorMessages.GETLAUNCHCOMMAND_TIMEOUT);
     }
 
-    async serverStartingByClient(startingAttributes: Protocol.ServerStartingAttributes, timeout: number = 2000): Promise<Protocol.Status> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to notify of server ${startingAttributes.request.params.id} being started in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.ServerStartingByClientRequest.type, startingAttributes).then((status) => {
-            clearTimeout(timer);
-            return Promise.resolve(status);
-        });
+    serverStartingByClient(startingAttributes: Protocol.ServerStartingAttributes, timeout: number = 2000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.ServerStartingByClientRequest.type, startingAttributes, 
+            timeout, ErrorMessages.SERVERSTARTINGBYCLIENT_TIMEOUT);
     }
 
-    async serverStartedByClient(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to notify of server ${launchParameters.params.id} started in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.ServerStartedByClientRequest.type, launchParameters).then((status) => {
-            clearTimeout(timer);
-            return Promise.resolve(status);
-        });
+    serverStartedByClient(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.ServerStartedByClientRequest.type, launchParameters, 
+            timeout, ErrorMessages.SERVERSTARTEDBYCLIENT_TIMEOUT);
     }
 
-    async startServerAsync(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to start server ${launchParameters.params.id} in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.StartServerAsyncRequest.type, launchParameters).then((status) => {
-            clearTimeout(timer);
-            return Promise.resolve(status);
-        });
+    startServerAsync(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.StartServerAsyncRequest.type, launchParameters, 
+            timeout, ErrorMessages.STARTSERVER_TIMEOUT);
     }
 
     startServerSync(launchParameters: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
@@ -135,14 +94,8 @@ export class Launcher {
     }
 
     async stopServerAsync(stopParameters: Protocol.StopServerAttributes, timeout: number = 2000): Promise<Protocol.Status> {
-        let timer = setTimeout(() => {
-            return Promise.reject(`Failed to send server stop request from ${stopParameters.id} in time`);
-        }, timeout);
-
-        return this.connection.sendRequest(Messages.Server.StopServerAsyncRequest.type, stopParameters).then((status) => {
-            clearTimeout(timer);
-            return Promise.resolve(status);
-        });
+        return Common.sendSimpleRequest(this.connection, Messages.Server.StopServerAsyncRequest.type, stopParameters, 
+            timeout, ErrorMessages.STOPSERVER_TIMEOUT);
     }
 
     stopServerSync(stopParameters: Protocol.StopServerAttributes, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
