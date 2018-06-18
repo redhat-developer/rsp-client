@@ -1,7 +1,7 @@
 import { SSPClient } from './src/client';
 import { EventEmitter } from 'events';
 import Protocol from './src/protocol/protocol';
-import State from './src/protocol/serverState';
+import { ServerStatus } from './src/protocol/serverState';
 
 async function clientSetup() {
     const client = new SSPClient('localhost', 27511);

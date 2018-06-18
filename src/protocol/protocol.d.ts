@@ -1,3 +1,6 @@
+/**
+ * Json objects sent between the server and the client
+ */
 export namespace ServerProtocol {
     export interface Attribute {
         type: string;
@@ -15,7 +18,7 @@ export namespace ServerProtocol {
         envp: string[];
         properties: { [index: string]: string };
     }
-    
+
     export interface DiscoveryPath {
         filepath: string;
     }

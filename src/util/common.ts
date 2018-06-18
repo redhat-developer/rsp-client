@@ -2,8 +2,19 @@ import { MessageConnection } from 'vscode-jsonrpc';
 import { EventEmitter } from 'events';
 import * as assert from 'assert';
 
+/**
+ * Helper class for sending requests and notifications
+ */
 export class Common {
 
+    /**
+     * Template method for sending requests and receiving the response
+     * @param connection the message connection to SSP server
+     * @param messageType type of the message being sent
+     * @param payload parameters of the message being sent
+     * @param timeout timeout of the operation in milliseconds
+     * @param timeoutMessage error message in case of timeout
+     */
     static async sendSimpleRequest(connection: MessageConnection, messageType: any, payload: any, timeout: number, timeoutMessage: string): Promise<any> {
         const timer = setTimeout(() => {
             return Promise.reject(timeoutMessage);
@@ -15,6 +26,16 @@ export class Common {
         });
     }
 
+    /**
+     * Template method for sending notifications and synchronously waiting for a response by subscribing to an event
+     * @param connection the message connection to SSP server
+     * @param messageType type of the message being sent
+     * @param payload parameters of the message being sent
+     * @param emitter event emitter used to subscribe for the response event
+     * @param eventId id/name of the response event to wait for
+     * @param timeout timeout of the operation in milliseconds
+     * @param timeoutMessage error message in case of timeout
+     */
     static async sendNotificationSync(connection: MessageConnection, messageType: any, payload: any,
         emitter: EventEmitter, eventId: string, timeout: number, timeoutMessage: string): Promise<any> {
         const timer = setTimeout(() => {
@@ -48,6 +69,9 @@ export class Common {
     }
 }
 
+/**
+ * Error messages
+ */
 export namespace ErrorMessages {
     export const FINDBEANS_TIMEOUT = 'Failed to retrieve server beans in time';
     export const ADDPATH_TIMEOUT = 'Failed to add discovery path in time';

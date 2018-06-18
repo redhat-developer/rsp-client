@@ -8,7 +8,7 @@ import { ServerLauncher } from './util/serverLauncher';
 import { EventEmitter } from 'events';
 
 /**
- * Simple Simple Server Protocol client implementation using json rpc
+ * Simple 'Simple Server Protocol' client implementation using json rpc
  */
 export class SSPClient {
 
@@ -21,6 +21,11 @@ export class SSPClient {
     private launcherUtil: ServerLauncher;
     private emitter: EventEmitter;
 
+    /**
+     * Constructs a new SSP client
+     * @param host hostname/address to connect to
+     * @param port port of the running SSP service
+     */
     constructor(host: string, port: number) {
         this.host = host;
         this.port = port;
@@ -75,48 +80,54 @@ export class SSPClient {
     }
 
     /**
-     * Retrieves {@link Protocol.ServerBean} object for servers located at a specific path
+     * Finds suitable servers in a directory
      *
-     * @param path location of the servers
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param path path to the desired directory
+     * @param timeout timeout in milliseconds
      */
     findServerBeans(path: string, timeout: number = 2000): Promise<Protocol.ServerBean[]> {
         return this.discoveryUtil.findServerBeans(path, timeout);
     }
 
     /**
-     * Adds a selected location to server discovery paths
+     * Synchronously adds discovery path to SSP by sending a notification and then waiting for
+     * 'discoveryPathAdded' event to be fired
      *
-     * @param path location to add
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param path path to the desired directory
+     * @param timeout timeout in milliseconds
      */
     addDiscoveryPathSync(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
         return this.discoveryUtil.addDiscoveryPathSync(path, timeout);
     }
 
     /**
-     * Adds a selected location to server discovery paths
+     * Sends notification to the SSP to add a directory to its discovery paths.
+     * 'discoveryPathAdded' event will be fired when a response notification is received
      *
-     * @param path location to add
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param path path to the desired directory
+     * @param timeout timeout in milliseconds
      */
     addDiscoveryPathAsync(path: string, timeout: number = 2000): void {
         this.discoveryUtil.addDiscoveryPathAsync(path, timeout);
     }
 
     /**
-     * Removes a discovery path from the server
+     * Synchronously removes discovery path from SSP by sending a notification and then waiting for
+     * 'discoveryPathRemoved' event to be fired
      *
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
+     * @param timeout timeout in milliseconds
      */
     removeDiscoveryPathSync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
         return this.discoveryUtil.removeDiscoveryPathSync(path, timeout);
     }
 
     /**
-     * Removes a discovery path from the server
+     * Sends notification to the SSP to remove a directory from its discovery paths.
+     * 'discoveryPathRemoved' event will be fired when a response notification is received
      *
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
+     * @param timeout timeout in milliseconds
      */
     removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): void {
         this.discoveryUtil.removeDiscoveryPathAsync(path, timeout);
@@ -125,18 +136,19 @@ export class SSPClient {
     /**
      * Retrieves all discovery paths from the server
      *
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param timeout timeout in milliseconds
      */
     getDiscoveryPaths(timeout: number = 2000): Promise<Protocol.DiscoveryPath[]> {
         return this.discoveryUtil.getDiscoveryPaths(timeout);
     }
 
     /**
-     * Creates a server located at the given path
+     * Sends a request to create a server from a given directory, then waits for the 'serverAdded'
+     * event with the given id
      *
-     * @param path path to the root folder of the server
-     * @param id a unique identifier to be assigned to the server being created
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param path path to the server's root directory, or a ServerBean object representing the server
+     * @param id unique identifier for the newly created server
+     * @param timeout timeout in milliseconds
      */
     createServerSync(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         if (typeof(pathOrBean) === 'string') {
@@ -150,11 +162,12 @@ export class SSPClient {
     }
 
     /**
-     * Creates a server located at the given path
+     * Sends a request to create a server from a given directory, subscribe to the 'serverAdded'
+     * event to see when the server creation is finished
      *
-     * @param path path to the root folder of the server
-     * @param id a unique identifier to be assigned to the server being created
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param path path to the server's root directory, or a ServerBean object representing the server
+     * @param id unique identifier for the newly created server
+     * @param timeout timeout in milliseconds
      */
     createServerAsync(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.Status> {
         if (typeof(pathOrBean) === 'string') {
@@ -168,20 +181,21 @@ export class SSPClient {
     }
 
     /**
-     * Deletes a server using Simple Server Protocol
+     * Sends notification to remove a server from SSP, then waits for the appropriate 'serverRemoved' event
      *
-     * @param serverHandle {@link Protocol.ServerHandle} object identifying the server to be deleted
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
      */
     deleteServerSync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         return this.serverUtil.deleteServerSync(serverHandle, timeout);
     }
 
     /**
-     * Deletes a server using Simple Server Protocol
+     * Sends notification to remove a server from SSP. Subscribe to the 'serverRemoved' event to see
+     * when the removal finishes
      *
-     * @param serverHandle {@link Protocol.ServerHandle} object identifying the server to be deleted
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
      */
     deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): void {
         this.serverUtil.deleteServerAsync(serverHandle, timeout);
@@ -190,7 +204,7 @@ export class SSPClient {
     /**
      * Retrieves handles for all servers created within the SSP instance
      *
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param timeout timeout in milliseconds
      */
     getServerHandles(timeout: number = 2000): Promise<Protocol.ServerHandle[]> {
         return this.serverUtil.getServerHandles();
@@ -200,7 +214,7 @@ export class SSPClient {
      * Retrieves attributes required for a specific server type
      *
      * @param serverType {@link Protocol.ServerType} object representing the chosen type of server
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param timeout timeout in milliseconds
      */
     getServerTypeRequiredAttributes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.Attributes> {
         return this.serverUtil.getServerTypeRequiredAttributes(serverType, timeout);
@@ -210,7 +224,7 @@ export class SSPClient {
      * Retrieves optional attributes for a specific server type
      *
      * @param serverType {@link Protocol.ServerType} object representing the chosen type of server
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param timeout timeout in milliseconds
      */
     getServerTypeOptionalAttributes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.Attributes> {
         return this.serverUtil.getServerTypeOptionalAttributes(serverType);
@@ -220,7 +234,7 @@ export class SSPClient {
      * Retrieves launch modes available for a given server type
      *
      * @param serverType {@link Protocol.ServerType} object representing the chosen type of server
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param timeout timeout in milliseconds
      */
     getServerLaunchModes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.ServerLaunchMode[]> {
         return this.launcherUtil.getLaunchModes(serverType, timeout);
@@ -229,8 +243,8 @@ export class SSPClient {
     /**
      * Retrieves required launch attributes for a given server using a given mode
      *
-     * @param launchAttrRequest object specifying the server id and launch mode
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param launchAttrRequest object specifying the server id and launch mode, see {@link Protocol.LaunchAttributesRequest}
+     * @param timeout timeout in milliseconds
      */
     getServerRequiredLaunchAttributes(launchAttrRequest: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
         return this.launcherUtil.getRequiredLaunchAttributes(launchAttrRequest, timeout);
@@ -239,8 +253,8 @@ export class SSPClient {
     /**
      * Retrieves optional launch attributes for a given server using a given mode
      *
-     * @param launchAttrRequest object specifying the server id and launch mode
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param launchAttrRequest object specifying the server id and launch mode, see {@link Protocol.LaunchAttributesRequest}
+     * @param timeout timeout in milliseconds
      */
     getServerOptionalLaunchAttributes(launchAttrRequest: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
         return this.launcherUtil.getOptionalLaunchAttributes(launchAttrRequest, timeout);
@@ -249,8 +263,8 @@ export class SSPClient {
     /**
      * Retrieves launch command for a given server, usable to manually launch the server from CLI
      *
-     * @param launchParameters object representing the given attributes required to launch a given server
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param launchParameters object representing the given attributes required to launch a given server, see {@link Protocol.LaunchParameters}
+     * @param timeout timeout in milliseconds
      */
     getServerLaunchCommand(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.CommandLineDetails> {
         return this.launcherUtil.getLaunchCommand(launchParameters, timeout);
@@ -260,8 +274,8 @@ export class SSPClient {
      * Notifies the SSP that the client is launching one of the servers manually to update its state
      *
      * @param startingAttributes object representing the server being launched, set the 'initiatePolling' attribute to true to let SSP
-     *  track the server's launch state to notify when it finished launching
-     * @param timeout operation timeout in milliseconds, default 2000
+     *  track the server's launch state to notify when it finished launching, see {@link Protocol.ServerStartingAttributes}
+     * @param timeout timeout in milliseconds
      */
     serverStartingByClient(startingAttributes: Protocol.ServerStartingAttributes, timeout: number = 2000): Promise<Protocol.Status> {
         return this.launcherUtil.serverStartingByClient(startingAttributes, timeout);
@@ -270,8 +284,8 @@ export class SSPClient {
     /**
      * Notifies the SSP that the client has launched one of the servers manually to update its state
      *
-     * @param startingAttributes object representing the server launched
-     * @param timeout operation timeout in milliseconds, default 2000
+     * @param startingAttributes object representing the server launched, see {@link Protocol.ServerStartingAttributes}
+     * @param timeout timeout in milliseconds
      */
     serverStartedByClient(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
         return this.launcherUtil.serverStartedByClient(launchParameters, timeout);
@@ -281,8 +295,8 @@ export class SSPClient {
      * Requests the SSP to start a server. In order to then get the server state changes, subscribe to the
      * 'serverStateChanged' event
      *
-     * @param startAttributes
-     * @param timeout
+     * @param startAttributes parameters to start the server with, see {@link Protocol.LaunchParameters}
+     * @param timeout timeout in milliseconds
      */
     startServerAsync(startAttributes: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
         return this.launcherUtil.startServerAsync(startAttributes, timeout);
@@ -292,8 +306,8 @@ export class SSPClient {
      * Requests the SSP to stop a server. In order to then get the server state changes, subscribe to the
      * 'serverStateChanged' event
      *
-     * @param startAttributes
-     * @param timeout
+     * @param stopAttributes server stopping parameters, set force to 'true' to force shutdown, see {@link Protocol.StopServerAttributes}
+     * @param timeout timeout in milliseconds
      */
     stopServerAsync(stopAttributes: Protocol.StopServerAttributes, timeout: number = 2000): Promise<Protocol.Status> {
         return this.launcherUtil.stopServerAsync(stopAttributes, timeout);
@@ -303,8 +317,8 @@ export class SSPClient {
      * Requests the SSP to start a server and waits until it receives a notification that the server changed
      * its state to STARTED
      *
-     * @param startAttributes
-     * @param timeout
+     * @param startAttributes parameters to start the server with, see {@link Protocol.LaunchParameters}
+     * @param timeout timeout in milliseconds
      */
     startServerSync(startAttributes: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
         return this.launcherUtil.startServerSync(startAttributes, timeout);
@@ -314,8 +328,8 @@ export class SSPClient {
      * Requests the SSP to stop a server and waits until it receives a notification that the server changed
      * its state to STOPPED
      *
-     * @param startAttributes
-     * @param timeout
+     * @param stopAttributes server stopping parameters, set force to 'true' to force shutdown, see {@link Protocol.StopServerAttributes}
+     * @param timeout timeout in milliseconds
      */
     stopServerSync(stopAttributes: Protocol.StopServerAttributes, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
         return this.launcherUtil.stopServerSync(stopAttributes, timeout);
