@@ -1,10 +1,10 @@
-import Client from './src/client';
-import {EventEmitter} from 'events';
+import { SSPClient } from './src/client';
+import { EventEmitter } from 'events';
 import Protocol from './src/protocol/protocol';
 import State from './src/protocol/serverState';
 
 async function clientSetup() {
-    const client = new Client('localhost', 27511);
+    const client = new SSPClient('localhost', 27511);
 
     await client.connect();
     const a = await client.addDiscoveryPathSync('/home/jrichter/Downloads/wildfly-12.0.0.Final')

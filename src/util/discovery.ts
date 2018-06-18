@@ -1,10 +1,10 @@
 import Protocol from '../protocol/protocol';
-import Messages from '../protocol/messages';
+import { Messages } from '../protocol/messages';
 import { Common, ErrorMessages } from './common';
 import { MessageConnection } from 'vscode-jsonrpc';
 import { EventEmitter } from 'events';
 
-class Discovery {
+export class Discovery {
 
     private connection: MessageConnection;
     private emitter: EventEmitter;
@@ -17,14 +17,14 @@ class Discovery {
 
     private listenToDiscoveryChanges() {
         this.connection.onNotification(Messages.Client.DiscoveryPathAddedNotification.type, discoveryPath => {
-           this.emitter.emit('discoveryPathAdded', discoveryPath); 
+           this.emitter.emit('discoveryPathAdded', discoveryPath);
         });
 
         this.connection.onNotification(Messages.Client.DiscoveryPathRemovedNotification.type, discoveryPath => {
-            this.emitter.emit('discoveryPathRemoved', discoveryPath); 
+            this.emitter.emit('discoveryPathRemoved', discoveryPath);
         });
     }
-    
+
     findServerBeans(path: string, timeout: number = 2000): Promise<Protocol.ServerBean[]> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
              {filepath: path}, timeout, ErrorMessages.FINDBEANS_TIMEOUT);
@@ -35,7 +35,7 @@ class Discovery {
     }
 
     addDiscoveryPathSync(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
-        let discoveryPath = { filepath: path };
+        const discoveryPath = { filepath: path };
         return Common.sendNotificationSync(this.connection, Messages.Server.AddDiscoveryPathNotification.type,
              discoveryPath, this.emitter, 'discoveryPathAdded', timeout, ErrorMessages.ADDPATH_TIMEOUT);
     }
@@ -59,7 +59,5 @@ class Discovery {
     getDiscoveryPaths(timeout: number = 2000): Promise<Protocol.DiscoveryPath[]> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetDiscoveryPathsRequest.type,
              null, timeout, ErrorMessages.GETPATHS_TIMEOUT);
-    }    
+    }
 }
-
-export default Discovery;

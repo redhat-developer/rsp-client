@@ -1,10 +1,10 @@
-import { MessageConnection } from "vscode-jsonrpc";
+import { MessageConnection } from 'vscode-jsonrpc';
 import Protocol from '../protocol/protocol';
-import Messages from '../protocol/messages';
-import { EventEmitter } from "events";
-import { Common, ErrorMessages } from "./common";
+import { Messages } from '../protocol/messages';
+import { EventEmitter } from 'events';
+import { Common, ErrorMessages } from './common';
 
-class ServerModel {
+export class ServerModel {
 
     private connection: MessageConnection;
     private emitter: EventEmitter;
@@ -31,7 +31,7 @@ class ServerModel {
             id: id,
             serverType: serverBeans[0].serverAdapterTypeId,
             attributes: {
-                'server.home.dir': serverBeans[0].location,
+                'server.home.dir': serverBeans[0].location
             }
         };
         return this.connection.sendRequest(Messages.Server.CreateServerRequest.type, serverAttributes);
@@ -43,28 +43,28 @@ class ServerModel {
             id: serverId,
             serverType: serverBean.serverAdapterTypeId,
             attributes: {
-                'server.home.dir': serverBean.location,
+                'server.home.dir': serverBean.location
             }
         };
         return this.connection.sendRequest(Messages.Server.CreateServerRequest.type, serverAttributes);
     }
-    
+
     createServerFromPath(path: string, id: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
-            let timer = setTimeout(() => {
+            const timer = setTimeout(() => {
                 reject(`Failed to create server ${id} in time`);
             }, timeout);
 
             let result: Thenable<Protocol.Status>;
-            let listener = (handle: Protocol.ServerHandle) => {
+            const listener = (handle: Protocol.ServerHandle) => {
                 if (handle.id === id) {
-                    result.then((status) => {
+                    result.then(status => {
                         clearTimeout(timer);
                         this.emitter.removeListener('serverAdded', listener);
                         resolve(handle);
                     });
                 }
-            }
+            };
             this.emitter.on('serverAdded', listener);
 
             const serverBeans = await this.connection.sendRequest(Messages.Server.FindServerBeansRequest.type, {filepath: path});
@@ -72,7 +72,7 @@ class ServerModel {
                 id: id,
                 serverType: serverBeans[0].serverAdapterTypeId,
                 attributes: {
-                    'server.home.dir': serverBeans[0].location,
+                    'server.home.dir': serverBeans[0].location
                 }
             };
 
@@ -83,27 +83,27 @@ class ServerModel {
     createServerFromBean(serverBean: Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
             const serverId = id ? id : serverBean.name;
-            let timer = setTimeout(() => {
+            const timer = setTimeout(() => {
                 reject(`Failed to create server ${serverId} in time`);
             }, timeout);
 
             let result: Thenable<Protocol.Status>;
-            let listener = (handle: Protocol.ServerHandle) => {
+            const listener = (handle: Protocol.ServerHandle) => {
                 if (handle.id === serverId) {
-                    result.then((status) => {
+                    result.then(status => {
                         clearTimeout(timer);
                         this.emitter.removeListener('serverAdded', listener);
                         resolve(handle);
                     });
                 }
-            }
+            };
             this.emitter.on('serverAdded', listener);
 
             const serverAttributes = {
                 id: serverId,
                 serverType: serverBean.serverAdapterTypeId,
                 attributes: {
-                    'server.home.dir': serverBean.location,
+                    'server.home.dir': serverBean.location
                 }
             };
             result = this.connection.sendRequest(Messages.Server.CreateServerRequest.type, serverAttributes);
@@ -134,5 +134,3 @@ class ServerModel {
             timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     }
 }
-
-export default ServerModel;

@@ -1,7 +1,7 @@
 /**
  * Constants representing the state of the server itself or the state of publishing to the server
  */
-namespace ServerStatus {
+export namespace ServerStatus {
 
     /**
 	 * Server state constant (value 0) indicating that the
@@ -15,13 +15,13 @@ namespace ServerStatus {
 	 */
     export const STARTING = 1;
 
-	/**
+    /**
 	 * Server state constant (value 2) indicating that the
 	 * server is ready to serve content.
 	 */
     export const STARTED = 2;
 
-	/**
+    /**
 	 * Server state constant (value 3) indicating that the
 	 * server is shutting down.
 	 */
@@ -32,7 +32,6 @@ namespace ServerStatus {
 	 * server is stopped.
 	 */
     export const STOPPED = 4;
-
 
     /**
 	 * Publish state constant (value 0) indicating that it's
@@ -78,5 +77,3 @@ namespace ServerStatus {
 	 */
     export const PUBLISH_CLEAN = 4;
 }
-
-export default ServerStatus;

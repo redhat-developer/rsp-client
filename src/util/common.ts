@@ -1,17 +1,15 @@
-import Protocol from '../protocol/protocol';
-import Messages from '../protocol/messages';
 import { MessageConnection } from 'vscode-jsonrpc';
 import { EventEmitter } from 'events';
 import * as assert from 'assert';
 
 export class Common {
-    
+
     static async sendSimpleRequest(connection: MessageConnection, messageType: any, payload: any, timeout: number, timeoutMessage: string): Promise<any> {
-        let timer = setTimeout(() => {
+        const timer = setTimeout(() => {
             return Promise.reject(timeoutMessage);
         }, timeout);
 
-        return connection.sendRequest(messageType, payload).then((result) => {
+        return connection.sendRequest(messageType, payload).then(result => {
             clearTimeout(timer);
             return Promise.resolve(result);
         });
@@ -19,14 +17,14 @@ export class Common {
 
     static async sendNotificationSync(connection: MessageConnection, messageType: any, payload: any,
         emitter: EventEmitter, eventId: string, timeout: number, timeoutMessage: string): Promise<any> {
-        let timer = setTimeout(() => {
+        const timer = setTimeout(() => {
             return Promise.reject(timeoutMessage);
         }, timeout);
 
-        return new Promise<any>((resolve) => {
-            let listener = ((params: any) => {
+        return new Promise<any>(resolve => {
+            const listener = ((params: any) => {
                 let equal = true;
-                for (let key in params) {
+                for (const key in params) {
                     if (payload[key] && params[key]) {
                         try {
                             assert.deepEqual(payload[key], params[key]);
@@ -46,7 +44,7 @@ export class Common {
 
             emitter.on(eventId, listener);
             connection.sendNotification(messageType, payload);
-        });    
+        });
     }
 }
 

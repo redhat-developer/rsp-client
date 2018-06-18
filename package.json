@@ -23,6 +23,7 @@
     "@types/node": "^10.3.1",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
+    "tslint": "^5.10.0",
     "typescript": "^2.8.3",
     "vscode-jsonrpc": "^3.6.2"
   }

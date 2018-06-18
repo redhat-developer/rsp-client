@@ -1,4 +1,4 @@
-import {NotificationType, NotificationType0, RequestType0, RequestType} from 'vscode-jsonrpc';
+import { NotificationType, NotificationType0, RequestType0, RequestType } from 'vscode-jsonrpc';
 import Protocol from './protocol';
 
 export namespace Messages {
@@ -34,7 +34,7 @@ export namespace Messages {
         export namespace GetRequiredAttributesRequest {
             export const type = new RequestType<Protocol.ServerType, Protocol.Attributes, void, void>('server/getRequiredAttributes');
         }
-        
+
         export namespace GetOptionalAttributesRequest {
             export const type = new RequestType<Protocol.ServerType, Protocol.Attributes, void, void>('server/getOptionalAttributes');
         }
@@ -92,7 +92,7 @@ export namespace Messages {
         export namespace ServerAddedNotification {
             export const type = new NotificationType<Protocol.ServerHandle, void>('client/serverAdded');
         }
-        
+
         export namespace ServerRemovedNotification {
             export const type = new NotificationType<Protocol.ServerHandle, void>('client/serverRemoved');
         }
@@ -100,11 +100,11 @@ export namespace Messages {
         export namespace ServerAttributesChangedNotification {
             export const type = new NotificationType<Protocol.ServerHandle, void>('client/serverAttributesChanged');
         }
-    
+
         export namespace ServerStateChangedNotification {
             export const type = new NotificationType<Protocol.ServerStateChange, void>('client/serverStateChanged');
         }
-        
+
         export namespace ServerProcessCreatedNotification {
             export const type = new NotificationType<Protocol.ServerProcess, void>('client/serverProcessCreated');
         }
@@ -112,12 +112,9 @@ export namespace Messages {
         export namespace ServerProcessTerminatedNotification {
             export const type = new NotificationType<Protocol.ServerProcess, void>('client/serverProcessTerminated');
         }
-    
+
         export namespace ServerProcessOutputAppendedNotification {
             export const type = new NotificationType<Protocol.ServerProcessOutput, void>('client/serverProcessOutputAppended');
         }
     }
 }
-
-export default Messages;
-
