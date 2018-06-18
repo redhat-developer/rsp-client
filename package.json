@@ -1,9 +1,9 @@
 {
-  "name": "ssp-clients",
+  "name": "ssp-client",
   "version": "0.0.1",
-  "description": "simple server protocol",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "description": "Simple Server Protocol Client",
+  "main": "lib/client.js",
+  "types": "lib/client.d.ts",
   "scripts": {
     "prepublish": "npm run build",
     "build": "tsc",
@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/sudhirverma/ssp-client.git"
   },
-  "author": "Sudhir Verma",
+  "author": "Red Hat, Inc.",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sudhirverma/ssp-client/issues"
