@@ -1,4 +1,4 @@
-import Protocol from '../protocol/protocol';
+import { Protocol } from '../protocol/protocol';
 import { Messages } from '../protocol/messages';
 import { Common, ErrorMessages } from './common';
 import { MessageConnection } from 'vscode-jsonrpc';

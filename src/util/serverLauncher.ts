@@ -1,5 +1,5 @@
 import { MessageConnection } from 'vscode-jsonrpc';
-import Protocol from '../protocol/protocol';
+import { Protocol } from '../protocol/protocol';
 import { Messages } from '../protocol/messages';
 import { ServerStatus } from '../protocol/serverState';
 import { EventEmitter } from 'events';
@@ -134,14 +134,16 @@ export class ServerLauncher {
 
         return new Promise<Protocol.ServerStateChange>(resolve => {
             let result: Thenable<Protocol.Status>;
-            this.connection.onNotification(Messages.Client.ServerStateChangedNotification.type, state => {
+            const listener = (state: Protocol.ServerStateChange) => {
                 if (state.server.id === launchParameters.params.id && state.state === ServerStatus.STARTED) {
                     result.then(() => {
                         clearTimeout(timer);
+                        this.emitter.removeListener('serverStateChanged', listener);
                         resolve(state);
                     });
                 }
-            });
+            };
+            this.emitter.prependListener('serverStateChanged', listener);
             result = this.connection.sendRequest(Messages.Server.StartServerAsyncRequest.type, launchParameters);
         });
     }
@@ -170,14 +172,16 @@ export class ServerLauncher {
 
         return new Promise<Protocol.ServerStateChange>(resolve => {
             let result: Thenable<Protocol.Status>;
-            this.connection.onNotification(Messages.Client.ServerStateChangedNotification.type, state => {
+            const listener = (state: Protocol.ServerStateChange) => {
                 if (state.server.id === stopParameters.id && state.state === ServerStatus.STOPPED) {
                     result.then(() => {
                         clearTimeout(timer);
+                        this.emitter.removeListener('serverStateChanged', listener);
                         resolve(state);
                     });
                 }
-            });
+            };
+            this.emitter.prependListener('serverStateChanged', listener);
             result = this.connection.sendRequest(Messages.Server.StopServerAsyncRequest.type, stopParameters);
         });
     }

@@ -1,6 +1,6 @@
 import * as net from 'net';
 import * as rpc from 'vscode-jsonrpc';
-import Protocol from './protocol/protocol';
+import { Protocol } from './protocol/protocol';
 import { Messages } from './protocol/messages';
 import { Discovery } from './util/discovery';
 import { ServerModel } from './util/serverModel';
@@ -67,7 +67,9 @@ export class SSPClient {
         if (!this.connection) {
             throw new rpc.ConnectionError(rpc.ConnectionErrors.Closed, 'Connection not initialized');
         }
+        this.emitter.removeAllListeners();
         this.connection.dispose();
+        this.socket.end();
         this.socket.destroy();
     }
 

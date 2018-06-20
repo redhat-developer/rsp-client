@@ -1,17 +1,17 @@
 /**
  * Json objects sent between the server and the client
  */
-export namespace ServerProtocol {
+export namespace Protocol {
     export interface Attribute {
         type: string;
         description: string;
         defaultVal: any;
     }
-    
+
     export interface Attributes {
         attributes: { [index: string]: Attribute };
     }
-    
+
     export interface CommandLineDetails {
         cmdLine: string[];
         workingDir: string;
@@ -22,23 +22,23 @@ export namespace ServerProtocol {
     export interface DiscoveryPath {
         filepath: string;
     }
-    
+
     export interface LaunchAttributesRequest {
         id: string;
         mode: string;
     }
-    
+
     export interface LaunchParameters {
         mode: string;
         params: ServerAttributes;
     }
-    
+
     export interface ServerAttributes {
         serverType: string;
         id: string;
         attributes: { [index: string]: any };
     }
-    
+
     export interface ServerBean {
         location: string;
         typeCategory: string;
@@ -48,50 +48,50 @@ export namespace ServerProtocol {
         fullVersion: string;
         serverAdapterTypeId: string;
     }
-    
+
     export interface ServerHandle {
         id: string;
         type: ServerType;
     }
-    
+
     export interface ServerLaunchMode {
         mode: string;
         desc: string;
     }
-    
+
     export interface ServerProcess {
         server: ServerHandle;
         processId: string;
     }
-    
+
     export interface ServerProcessOutput {
         server: ServerHandle;
         processId: string;
         streamType: number;
         text: string;
     }
-    
+
     export interface ServerStartingAttributes {
         initiatePolling: boolean;
         request: LaunchParameters;
     }
-    
+
     export interface ServerStateChange {
         server: ServerHandle;
         state: number;
     }
-    
+
     export interface ServerType {
         id: string;
         visibleName: string;
         description: string;
     }
-    
+
     export interface StartServerResponse {
         status: Status;
         details: CommandLineDetails;
     }
-    
+
     export interface Status {
         severity: number;
         code: number;
@@ -100,21 +100,19 @@ export namespace ServerProtocol {
         ok: boolean;
         plugin: string;
     }
-    
+
     export interface StopServerAttributes {
         id: string;
         force: boolean;
     }
-    
+
     export interface VMDescription {
         id: string;
         installLocation: string;
         version: string;
     }
-    
+
     export interface VMHandle {
         id: string;
     }
 }
-
-export default ServerProtocol;

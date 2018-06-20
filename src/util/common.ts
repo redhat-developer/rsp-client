@@ -63,7 +63,7 @@ export class Common {
                 }
             });
 
-            emitter.on(eventId, listener);
+            emitter.prependListener(eventId, listener);
             connection.sendNotification(messageType, payload);
         });
     }

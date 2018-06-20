@@ -1,5 +1,5 @@
 import { MessageConnection } from 'vscode-jsonrpc';
-import Protocol from '../protocol/protocol';
+import { Protocol } from '../protocol/protocol';
 import { Messages } from '../protocol/messages';
 import { EventEmitter } from 'events';
 import { Common, ErrorMessages } from './common';
@@ -97,7 +97,7 @@ export class ServerModel {
                     });
                 }
             };
-            this.emitter.on('serverAdded', listener);
+            this.emitter.prependListener('serverAdded', listener);
 
             const serverBeans = await this.connection.sendRequest(Messages.Server.FindServerBeansRequest.type, {filepath: path});
             const serverAttributes = {
@@ -136,7 +136,7 @@ export class ServerModel {
                     });
                 }
             };
-            this.emitter.on('serverAdded', listener);
+            this.emitter.prependListener('serverAdded', listener);
 
             const serverAttributes = {
                 id: serverId,

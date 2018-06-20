@@ -1,5 +1,5 @@
 import { NotificationType, NotificationType0, RequestType0, RequestType } from 'vscode-jsonrpc';
-import Protocol from './protocol';
+import { Protocol } from './protocol';
 
 /**
  * Message types sent between the SSP server and the client
