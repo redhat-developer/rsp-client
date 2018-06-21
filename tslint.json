@@ -1,4 +1,9 @@
 {
+    "linterOptions": {
+        "exclude": [
+            "test/**/*-test.ts"
+        ]
+    },
     "rules": {
         "adjacent-overload-signatures": true,
         "arrow-parens": [

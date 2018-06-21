@@ -13,7 +13,7 @@
     "type": "git",
     "url": "git+https://github.com/sudhirverma/ssp-client.git"
   },
-  "author": "Red Hat, Inc.",
+  "author": "Red Hat Developers",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/sudhirverma/ssp-client/issues"

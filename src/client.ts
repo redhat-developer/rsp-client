@@ -43,7 +43,8 @@ export class SSPClient {
                 reject(`Failed to establish connection to ${this.host}:${this.port} within time`);
             }, timeout);
 
-            this.socket = net.connect(this.port, this.host, () => {
+            this.socket = net.connect(this.port, this.host);
+            this.socket.on('connect', () => {
                 this.connection = rpc.createMessageConnection(
                     new rpc.StreamMessageReader(this.socket),
                     new rpc.StreamMessageWriter(this.socket));
@@ -209,7 +210,7 @@ export class SSPClient {
      * @param timeout timeout in milliseconds
      */
     getServerHandles(timeout: number = 2000): Promise<Protocol.ServerHandle[]> {
-        return this.serverUtil.getServerHandles();
+        return this.serverUtil.getServerHandles(timeout);
     }
 
     /**
@@ -229,7 +230,7 @@ export class SSPClient {
      * @param timeout timeout in milliseconds
      */
     getServerTypeOptionalAttributes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.Attributes> {
-        return this.serverUtil.getServerTypeOptionalAttributes(serverType);
+        return this.serverUtil.getServerTypeOptionalAttributes(serverType, timeout);
     }
 
     /**
@@ -342,7 +343,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onDiscoveryPathAdded(listener: (arg: Protocol.DiscoveryPath) => void) {
+    onDiscoveryPathAdded(listener: (arg: Protocol.DiscoveryPath) => void): void {
         this.emitter.on('discoveryPathAdded', listener);
     }
 
@@ -351,7 +352,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onDiscoveryPathRemoved(listener: (arg: Protocol.DiscoveryPath) => void) {
+    onDiscoveryPathRemoved(listener: (arg: Protocol.DiscoveryPath) => void): void {
         this.emitter.on('discoveryPathRemoved', listener);
     }
 
@@ -360,7 +361,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerAdded(listener: (arg: Protocol.ServerHandle) => void) {
+    onServerAdded(listener: (arg: Protocol.ServerHandle) => void): void {
         this.emitter.on('serverAdded', listener);
     }
 
@@ -369,7 +370,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerRemoved(listener: (arg: Protocol.ServerHandle) => void) {
+    onServerRemoved(listener: (arg: Protocol.ServerHandle) => void): void {
         this.emitter.on('serverRemoved', listener);
     }
 
@@ -378,7 +379,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerStateChange(listener: (arg: Protocol.ServerStateChange) => void) {
+    onServerStateChange(listener: (arg: Protocol.ServerStateChange) => void): void {
         this.emitter.on('serverStateChanged', listener);
     }
 
@@ -387,7 +388,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerOutputAppended(listener: (arg: Protocol.ServerProcessOutput) => void) {
+    onServerOutputAppended(listener: (arg: Protocol.ServerProcessOutput) => void): void {
         this.emitter.on('serverOutputAppended', listener);
     }
 
@@ -396,7 +397,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerAttributeChange(listener: (arg: Protocol.ServerHandle) => void) {
+    onServerAttributeChange(listener: (arg: Protocol.ServerHandle) => void): void {
         this.emitter.on('serverAttributesChanged', listener);
     }
 
@@ -405,7 +406,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerProcessCreated(listener: (arg: Protocol.ServerProcess) => void) {
+    onServerProcessCreated(listener: (arg: Protocol.ServerProcess) => void): void {
         this.emitter.on('serverProcessCreated', listener);
     }
 
@@ -414,7 +415,7 @@ export class SSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerProcessTerminated(listener: (arg: Protocol.ServerProcess) => void) {
+    onServerProcessTerminated(listener: (arg: Protocol.ServerProcess) => void): void {
         this.emitter.on('serverProcessTerminated', listener);
     }
 }
