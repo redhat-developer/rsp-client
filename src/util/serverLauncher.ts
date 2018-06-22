@@ -128,11 +128,11 @@ export class ServerLauncher {
      * @param timeout timeout in milliseconds
      */
     startServerSync(launchParameters: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
-        const timer = setTimeout(() => {
-            return Promise.reject(`Failed to send server start request from ${launchParameters.params.id} in time`);
-        }, timeout);
+        return new Promise<Protocol.ServerStateChange>((resolve, reject) => {
+            const timer = setTimeout(() => {
+                return reject(new Error(ErrorMessages.STARTSERVER_TIMEOUT));
+            }, timeout);
 
-        return new Promise<Protocol.ServerStateChange>(resolve => {
             let result: Thenable<Protocol.Status>;
             const listener = (state: Protocol.ServerStateChange) => {
                 if (state.server.id === launchParameters.params.id && state.state === ServerStatus.STARTED) {
@@ -154,7 +154,7 @@ export class ServerLauncher {
      * @param stopParameters server stopping parameters, set force to 'true' to force shutdown, see {@link Protocol.StopServerAttributes}
      * @param timeout timeout in milliseconds
      */
-    async stopServerAsync(stopParameters: Protocol.StopServerAttributes, timeout: number = 2000): Promise<Protocol.Status> {
+    stopServerAsync(stopParameters: Protocol.StopServerAttributes, timeout: number = 2000): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.StopServerAsyncRequest.type, stopParameters,
             timeout, ErrorMessages.STOPSERVER_TIMEOUT);
     }
@@ -166,11 +166,11 @@ export class ServerLauncher {
      * @param timeout timeout in milliseconds
      */
     stopServerSync(stopParameters: Protocol.StopServerAttributes, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
-        const timer = setTimeout(() => {
-            return Promise.reject(`Failed to stop server ${stopParameters.id} in time`);
-        }, timeout);
+        return new Promise<Protocol.ServerStateChange>((resolve, reject) => {
+            const timer = setTimeout(() => {
+                return reject(new Error(ErrorMessages.STOPSERVER_TIMEOUT));
+            }, timeout);
 
-        return new Promise<Protocol.ServerStateChange>(resolve => {
             let result: Thenable<Protocol.Status>;
             const listener = (state: Protocol.ServerStateChange) => {
                 if (state.server.id === stopParameters.id && state.state === ServerStatus.STOPPED) {

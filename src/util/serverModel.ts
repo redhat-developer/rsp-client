@@ -44,15 +44,17 @@ export class ServerModel {
      * @param timeout timeout in milliseconds
      */
     async createServerFromPathAsync(path: string, id: string, timeout: number = 2000): Promise<Protocol.Status> {
-        const serverBeans = await this.connection.sendRequest(Messages.Server.FindServerBeansRequest.type, {filepath: path});
-        const serverAttributes = {
+        const serverBeans = await Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
+            {filepath: path}, timeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
+        const serverAttributes: Protocol.ServerAttributes = {
             id: id,
             serverType: serverBeans[0].serverAdapterTypeId,
             attributes: {
                 'server.home.dir': serverBeans[0].location
             }
         };
-        return this.connection.sendRequest(Messages.Server.CreateServerRequest.type, serverAttributes);
+        return Common.sendSimpleRequest(this.connection, Messages.Server.CreateServerRequest.type, serverAttributes,
+            timeout, ErrorMessages.CREATESERVER_TIMEOUT);
     }
 
     /**
@@ -64,14 +66,15 @@ export class ServerModel {
      */
     async createServerFromBeanAsync(serverBean: Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.Status> {
         const serverId = id ? id : serverBean.name;
-        const serverAttributes = {
+        const serverAttributes: Protocol.ServerAttributes = {
             id: serverId,
             serverType: serverBean.serverAdapterTypeId,
             attributes: {
                 'server.home.dir': serverBean.location
             }
         };
-        return this.connection.sendRequest(Messages.Server.CreateServerRequest.type, serverAttributes);
+        return Common.sendSimpleRequest(this.connection, Messages.Server.CreateServerRequest.type, serverAttributes,
+            timeout, ErrorMessages.CREATESERVER_TIMEOUT);
     }
 
     /**
@@ -84,7 +87,7 @@ export class ServerModel {
     createServerFromPath(path: string, id: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
             const timer = setTimeout(() => {
-                reject(`Failed to create server ${id} in time`);
+                return reject(new Error(ErrorMessages.CREATESERVER_TIMEOUT));
             }, timeout);
 
             let result: Thenable<Protocol.Status>;
@@ -100,7 +103,7 @@ export class ServerModel {
             this.emitter.prependListener('serverAdded', listener);
 
             const serverBeans = await this.connection.sendRequest(Messages.Server.FindServerBeansRequest.type, {filepath: path});
-            const serverAttributes = {
+            const serverAttributes: Protocol.ServerAttributes = {
                 id: id,
                 serverType: serverBeans[0].serverAdapterTypeId,
                 attributes: {
@@ -123,7 +126,7 @@ export class ServerModel {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
             const serverId = id ? id : serverBean.name;
             const timer = setTimeout(() => {
-                reject(`Failed to create server ${serverId} in time`);
+                return reject(new Error(ErrorMessages.CREATESERVER_TIMEOUT));
             }, timeout);
 
             let result: Thenable<Protocol.Status>;
@@ -138,7 +141,7 @@ export class ServerModel {
             };
             this.emitter.prependListener('serverAdded', listener);
 
-            const serverAttributes = {
+            const serverAttributes: Protocol.ServerAttributes = {
                 id: serverId,
                 serverType: serverBean.serverAdapterTypeId,
                 attributes: {
@@ -163,10 +166,9 @@ export class ServerModel {
      * Sends notification to remove a server from SSP. Subscribe to the 'serverRemoved' event to see
      * when the removal finishes
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
-     * @param timeout timeout in milliseconds
      */
-    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): void {
-        this.connection.sendNotification(Messages.Server.DeleteServerNotification.type, serverHandle);
+    deleteServerAsync(serverHandle: Protocol.ServerHandle): void {
+        Common.sendSimpleNotification(this.connection, Messages.Server.DeleteServerNotification.type, serverHandle);
     }
 
     /**

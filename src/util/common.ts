@@ -12,17 +12,19 @@ export class Common {
      * @param connection the message connection to SSP server
      * @param messageType type of the message being sent
      * @param payload parameters of the message being sent
-     * @param timeout timeout of the operation in milliseconds
+     * @param timeout timeout in milliseconds
      * @param timeoutMessage error message in case of timeout
      */
-    static async sendSimpleRequest(connection: MessageConnection, messageType: any, payload: any, timeout: number, timeoutMessage: string): Promise<any> {
-        const timer = setTimeout(() => {
-            return Promise.reject(timeoutMessage);
-        }, timeout);
+    static sendSimpleRequest(connection: MessageConnection, messageType: any, payload: any, timeout: number, timeoutMessage: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const timer = setTimeout(() => {
+                reject(new Error(timeoutMessage));
+            }, timeout);
 
-        return connection.sendRequest(messageType, payload).then(result => {
-            clearTimeout(timer);
-            return Promise.resolve(result);
+            return connection.sendRequest(messageType, payload).then(result => {
+                clearTimeout(timer);
+                resolve(result);
+            });
         });
     }
 
@@ -33,16 +35,16 @@ export class Common {
      * @param payload parameters of the message being sent
      * @param emitter event emitter used to subscribe for the response event
      * @param eventId id/name of the response event to wait for
-     * @param timeout timeout of the operation in milliseconds
+     * @param timeout timeout in milliseconds
      * @param timeoutMessage error message in case of timeout
      */
-    static async sendNotificationSync(connection: MessageConnection, messageType: any, payload: any,
+    static sendNotificationSync(connection: MessageConnection, messageType: any, payload: any,
         emitter: EventEmitter, eventId: string, timeout: number, timeoutMessage: string): Promise<any> {
-        const timer = setTimeout(() => {
-            return Promise.reject(timeoutMessage);
-        }, timeout);
+        return new Promise<any>((resolve, reject) => {
+            const timer = setTimeout(() => {
+                return reject(new Error(timeoutMessage));
+            }, timeout);
 
-        return new Promise<any>(resolve => {
             const listener = ((params: any) => {
                 let equal = true;
                 for (const key in params) {
@@ -67,6 +69,16 @@ export class Common {
             connection.sendNotification(messageType, payload);
         });
     }
+
+    /**
+     * Template method for sending simple notifications to the server
+     * @param connection message connection to the server
+     * @param messageType type of the notification being sent
+     * @param payload payload (parameters) of the message being sent
+     */
+    static sendSimpleNotification(connection: MessageConnection, messageType: any, payload: any): void {
+        connection.sendNotification(messageType, payload);
+    }
 }
 
 /**
@@ -89,4 +101,5 @@ export namespace ErrorMessages {
     export const SERVERSTARTEDBYCLIENT_TIMEOUT = 'Failed to notify of server started in time';
     export const STARTSERVER_TIMEOUT = 'Failed to start server in time';
     export const STOPSERVER_TIMEOUT = 'Failed to stop server in time';
+    export const CREATESERVER_TIMEOUT = 'Failed to create server in time';
 }

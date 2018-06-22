@@ -40,7 +40,7 @@ export class SSPClient {
     connect(timeout: number = 2000): Promise<void> {
         return new Promise((resolve, reject) => {
             const timer = setTimeout(() => {
-                reject(`Failed to establish connection to ${this.host}:${this.port} within time`);
+                return reject(new Error(`Failed to establish connection to ${this.host}:${this.port} within time`));
             }, timeout);
 
             this.socket = net.connect(this.port, this.host);
@@ -108,10 +108,9 @@ export class SSPClient {
      * 'discoveryPathAdded' event will be fired when a response notification is received
      *
      * @param path path to the desired directory
-     * @param timeout timeout in milliseconds
      */
-    addDiscoveryPathAsync(path: string, timeout: number = 2000): void {
-        this.discoveryUtil.addDiscoveryPathAsync(path, timeout);
+    addDiscoveryPathAsync(path: string): void {
+        this.discoveryUtil.addDiscoveryPathAsync(path);
     }
 
     /**
@@ -130,10 +129,9 @@ export class SSPClient {
      * 'discoveryPathRemoved' event will be fired when a response notification is received
      *
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
-     * @param timeout timeout in milliseconds
      */
-    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): void {
-        this.discoveryUtil.removeDiscoveryPathAsync(path, timeout);
+    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath): void {
+        this.discoveryUtil.removeDiscoveryPathAsync(path);
     }
 
     /**
@@ -156,7 +154,7 @@ export class SSPClient {
     createServerSync(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         if (typeof(pathOrBean) === 'string') {
             if (!id) {
-                return Promise.reject('ID is required when creating server from a path');
+                return Promise.reject(new Error('ID is required when creating server from a path'));
             }
             return this.serverUtil.createServerFromPath(pathOrBean, id, timeout);
         } else {
@@ -175,7 +173,7 @@ export class SSPClient {
     createServerAsync(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.Status> {
         if (typeof(pathOrBean) === 'string') {
             if (!id) {
-                return Promise.reject('ID is required when creating server from a path');
+                return Promise.reject(new Error('ID is required when creating server from a path'));
             }
             return this.serverUtil.createServerFromPathAsync(pathOrBean, id, timeout);
         } else {
@@ -198,10 +196,9 @@ export class SSPClient {
      * when the removal finishes
      *
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
-     * @param timeout timeout in milliseconds
      */
-    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): void {
-        this.serverUtil.deleteServerAsync(serverHandle, timeout);
+    deleteServerAsync(serverHandle: Protocol.ServerHandle): void {
+        this.serverUtil.deleteServerAsync(serverHandle);
     }
 
     /**

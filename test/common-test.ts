@@ -1,0 +1,142 @@
+import * as chai from 'chai';
+import * as sinon from 'sinon';
+import * as sinonChai from 'sinon-chai';
+import * as rpc from 'vscode-jsonrpc';
+import { Messages } from '../src/protocol/messages';
+import { Protocol } from '../src/protocol/protocol';
+import { EventEmitter } from 'events';
+import { Common, ErrorMessages } from '../src/util/common';
+import 'mocha';
+
+const expect = chai.expect;
+chai.use(sinonChai);
+
+describe('Common', () => {
+    let sandbox: sinon.SinonSandbox;
+    let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
+    const defaultTimeout = 2000;
+    const payload: Protocol.DiscoveryPath = { filepath: 'path' };
+
+    beforeEach(() => {
+        sandbox = sinon.createSandbox();
+        sandbox.stub(rpc, 'createMessageConnection');
+        const reader = sandbox.createStubInstance<rpc.StreamMessageReader>(rpc.StreamMessageReader);
+        const writer = sandbox.createStubInstance<rpc.StreamMessageWriter>(rpc.StreamMessageWriter);
+
+        connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
+    });
+
+    afterEach(() => {        
+        sandbox.restore();
+    });
+
+    describe('Sending Simple Requests', () => {
+        const messageType = Messages.Server.FindServerBeansRequest.type
+        const bean: Protocol.ServerBean = {
+            fullVersion: '1',
+            location: 'location',
+            name: 'server',
+            serverAdapterTypeId: 'adapter',
+            specificType: 'specificServer',
+            typeCategory: 'type',
+            version: '1'
+        };
+
+        beforeEach(() => {
+            connection.sendRequest = sandbox.stub().resolves(bean);
+        });
+        
+
+        it('should send the correct message with the correct payload', async () => {
+            const result = await Common.sendSimpleRequest(connection, messageType, payload, defaultTimeout, ErrorMessages.FINDBEANS_TIMEOUT);
+
+            expect(connection.sendRequest).calledOnce;
+            expect(connection.sendRequest).calledWith(messageType, payload);
+            expect(result).equals(bean);
+        });
+
+        it('should error on timeout', async () => {
+            const temp = connection.sendRequest;
+            connection.sendRequest = sandbox.stub().callsFake(() => {
+                return new Promise(() => {
+                    setTimeout(() => {
+                        return temp(messageType, payload);
+                    }, 20);
+                });
+            })
+
+            try {
+                await Common.sendSimpleRequest(connection, messageType, payload, 1, ErrorMessages.FINDBEANS_TIMEOUT);
+                expect.fail('No error thrown on timeout');
+            } catch (err) {
+                expect(err.message).equals(ErrorMessages.FINDBEANS_TIMEOUT);
+            }
+        });
+    });
+
+    describe('Synchronous Notifications', () => {
+        const messageType = Messages.Server.AddDiscoveryPathNotification.type;
+        const emitter = new EventEmitter();
+        const eventId = 'event';
+
+        beforeEach(() => {
+            connection.sendNotification = sandbox.stub().returns(null);
+        });
+
+        it('should send the correct message with the correct payload', async () => {
+            setTimeout(() => {
+                emitter.emit(eventId, payload);
+            }, 1);
+
+            const result = await Common.sendNotificationSync(connection, messageType, payload, emitter, eventId, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+
+            expect(connection.sendNotification).calledOnce;
+            expect(connection.sendNotification).calledWith(messageType, payload);
+            expect(result).equals(payload);
+        });
+
+        it('should subscribe to the correct event and remove the listener after success', async () => {
+            const subscribeSpy = sandbox.spy(emitter, 'prependListener');
+            const unsubscribeSpy = sandbox.spy(emitter, 'removeListener');
+            setTimeout(() => {
+                emitter.emit(eventId, payload);
+            }, 1);
+
+            await Common.sendNotificationSync(connection, messageType, payload, emitter, eventId, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+
+            expect(subscribeSpy).calledOnce;
+            expect(subscribeSpy).calledWith(eventId);
+            expect(connection.sendNotification).calledAfter(subscribeSpy);
+            expect(unsubscribeSpy).calledOnce;
+            expect(unsubscribeSpy).calledWith(eventId);
+            expect(connection.sendNotification).calledBefore(unsubscribeSpy);
+        });
+
+        it('should error on timeout', async () => {
+            setTimeout(() => {
+                emitter.emit('eventId', payload);
+            }, 2);
+            try {
+                await Common.sendNotificationSync(connection, messageType, payload, emitter, eventId, 1, ErrorMessages.ADDPATH_TIMEOUT);
+                expect.fail('No error thrown on timeout');
+            } catch(err) {
+                expect(err.message).equals(ErrorMessages.ADDPATH_TIMEOUT);
+            }
+        });
+    });
+
+    describe('Simple Notifications', () => {
+        const messageType = Messages.Server.AddDiscoveryPathNotification.type;
+
+        beforeEach(() => {
+            connection.sendNotification = sandbox.stub().returns(null);
+        });
+
+        it('should send the correct message with the correct payload', () => {
+            Common.sendSimpleNotification(connection, messageType, payload);
+
+            expect(connection.sendNotification).calledOnce;
+            expect(connection.sendNotification).calledWith(messageType, payload);
+        });
+    });
+});

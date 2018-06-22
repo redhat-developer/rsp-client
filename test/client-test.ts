@@ -10,6 +10,7 @@ import { ServerLauncher } from '../src/util/serverLauncher';
 import { Messages } from '../src/protocol/messages';
 import { Protocol } from '../src/protocol/protocol';
 import { EventEmitter } from 'events';
+import 'mocha';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -43,18 +44,15 @@ describe('SSP Client', () => {
     const discoveryPath: Protocol.DiscoveryPath = {
         filepath: 'path'
     };
-
     const serverType: Protocol.ServerType = {
         description: 'a type',
         id: 'type',
         visibleName: 'the type'
     };
-
     const serverHandle: Protocol.ServerHandle = {
         id: 'id',
         type: serverType
     };
-
     const serverBean: Protocol.ServerBean = {
         fullVersion: '1',
         location: 'location',
@@ -64,7 +62,6 @@ describe('SSP Client', () => {
         typeCategory: 'type',
         version: '1'
     };
-
     const status: Protocol.Status = {
         code: 0,
         message: 'ok',
@@ -73,35 +70,35 @@ describe('SSP Client', () => {
         severity: 0,
         trace: 'trace'
     };
-
     const attributes: Protocol.Attributes = {
         attributes: {}
     };
-
     const launchAttrRequest: Protocol.LaunchAttributesRequest = {
         id: 'id',
         mode: 'mode'
     };
-
     const serverAttributes: Protocol.ServerAttributes = {
         id: 'id',
         serverType: 'type',
         attributes: attributes
     };
-
     const launchParameters: Protocol.LaunchParameters = {
         mode: 'mode',
         params: serverAttributes 
     };
-
     const stopParameters: Protocol.StopServerAttributes = {
         force: false,
         id: 'id'
     };
-
     const stateChange: Protocol.ServerStateChange = {
         server: serverHandle,
         state: 0
+    };
+    const cliArgs: Protocol.CommandLineDetails = {
+        cmdLine: ['command'],
+        envp: ['env'],
+        properties: { foo: 'foo' },
+        workingDir: 'dir'
     };
 
     beforeEach(() => {
@@ -199,7 +196,7 @@ describe('SSP Client', () => {
 
             await client.addDiscoveryPathAsync('path');
 
-            expect(discoveryStub.addDiscoveryPathAsync).calledWith('path', defaultTimeout);
+            expect(discoveryStub.addDiscoveryPathAsync).calledWith('path');
         });
 
         it('removeDiscoveryPathSync should delegate to discovery utility', async () => {
@@ -254,7 +251,7 @@ describe('SSP Client', () => {
                 expect.fail('The method was called with no id');
             } catch (err) {
                 expect(modelStub.createServerFromPath).not.called;
-                expect(err).equals('ID is required when creating server from a path');
+                expect(err.message).equals('ID is required when creating server from a path');
             }
         });
 
@@ -286,7 +283,7 @@ describe('SSP Client', () => {
                 expect.fail('The method was called with no id');
             } catch (err) {
                 expect(modelStub.createServerFromPathAsync).not.called;
-                expect(err).equals('ID is required when creating server from a path');
+                expect(err.message).equals('ID is required when creating server from a path');
             }
         });
 
@@ -315,7 +312,7 @@ describe('SSP Client', () => {
 
             const result = await client.deleteServerAsync(serverHandle);
 
-            expect(modelStub.deleteServerAsync).calledWith(serverHandle, defaultTimeout);
+            expect(modelStub.deleteServerAsync).calledWith(serverHandle);
         });
 
         it('getServerHandles should delegate to server model utility', async () => {
@@ -384,6 +381,16 @@ describe('SSP Client', () => {
             const result = await client.getServerOptionalLaunchAttributes(launchAttrRequest);
 
             expect(launcherStub.getOptionalLaunchAttributes).calledWith(launchAttrRequest, defaultTimeout);
+            expect(result).equals(response);
+        });
+
+        it('getServerLaunchCommand should delegate to server launcher utility', async () => {
+            const response = cliArgs;
+            launcherStub.getLaunchCommand = sandbox.stub().resolves(response);
+
+            const result = await client.getServerLaunchCommand(launchParameters);
+
+            expect(launcherStub.getLaunchCommand).calledWith(launchParameters, defaultTimeout);
             expect(result).equals(response);
         });
 

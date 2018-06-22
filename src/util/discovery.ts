@@ -28,7 +28,7 @@ export class Discovery {
      */
     private listenToDiscoveryChanges() {
         this.connection.onNotification(Messages.Client.DiscoveryPathAddedNotification.type, discoveryPath => {
-           this.emitter.emit('discoveryPathAdded', discoveryPath);
+            this.emitter.emit('discoveryPathAdded', discoveryPath);
         });
 
         this.connection.onNotification(Messages.Client.DiscoveryPathRemovedNotification.type, discoveryPath => {
@@ -50,10 +50,9 @@ export class Discovery {
      * Sends notification to the SSP to add a directory to its discovery paths.
      * 'discoveryPathAdded' event will be fired when a response notification is received
      * @param path path to the desired directory
-     * @param timeout timeout in milliseconds
      */
-    addDiscoveryPathAsync(path: string, timeout: number = 2000): void {
-        this.connection.sendNotification(Messages.Server.AddDiscoveryPathNotification.type, { filepath: path});
+    addDiscoveryPathAsync(path: string): void {
+        Common.sendSimpleNotification(this.connection, Messages.Server.AddDiscoveryPathNotification.type, { filepath: path });
     }
 
     /**
@@ -72,13 +71,12 @@ export class Discovery {
      * Sends notification to the SSP to remove a directory from its discovery paths.
      * 'discoveryPathRemoved' event will be fired when a response notification is received
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
-     * @param timeout timeout in milliseconds
      */
-    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): void {
+    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath): void {
         if (typeof(path) === 'string') {
             path = { filepath: path };
         }
-        this.connection.sendNotification(Messages.Server.RemoveDiscoveryPathNotification.type, path);
+        Common.sendSimpleNotification(this.connection, Messages.Server.RemoveDiscoveryPathNotification.type, path);
     }
 
     /**
