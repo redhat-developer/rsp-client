@@ -26,12 +26,12 @@ describe('Common', () => {
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
     });
 
-    afterEach(() => {        
+    afterEach(() => {
         sandbox.restore();
     });
 
     describe('Sending Simple Requests', () => {
-        const messageType = Messages.Server.FindServerBeansRequest.type
+        const messageType = Messages.Server.FindServerBeansRequest.type;
         const bean: Protocol.ServerBean = {
             fullVersion: '1',
             location: 'location',
@@ -45,7 +45,6 @@ describe('Common', () => {
         beforeEach(() => {
             connection.sendRequest = sandbox.stub().resolves(bean);
         });
-        
 
         it('should send the correct message with the correct payload', async () => {
             const result = await Common.sendSimpleRequest(connection, messageType, payload, defaultTimeout, ErrorMessages.FINDBEANS_TIMEOUT);
@@ -63,7 +62,7 @@ describe('Common', () => {
                         return temp(messageType, payload);
                     }, 20);
                 });
-            })
+            });
 
             try {
                 await Common.sendSimpleRequest(connection, messageType, payload, 1, ErrorMessages.FINDBEANS_TIMEOUT);
@@ -119,7 +118,7 @@ describe('Common', () => {
             try {
                 await Common.sendNotificationSync(connection, messageType, payload, emitter, eventId, 1, ErrorMessages.ADDPATH_TIMEOUT);
                 expect.fail('No error thrown on timeout');
-            } catch(err) {
+            } catch (err) {
                 expect(err.message).equals(ErrorMessages.ADDPATH_TIMEOUT);
             }
         });

@@ -18,7 +18,7 @@ describe('Discovery Utility', () => {
     let discovery: Discovery;
     let emitter: EventEmitter;
     const defaultTimeout = 2000;
-    
+
     let requestStub: sinon.SinonStub;
     let notificationStub: sinon.SinonStub;
     let syncStub: sinon.SinonStub;

@@ -18,7 +18,7 @@ describe('Server Launcher Utility', () => {
     let launcher: ServerLauncher;
     let emitter: EventEmitter;
     const defaultTimeout = 2000;
-    
+
     let requestStub: sinon.SinonStub;
 
     const serverType: Protocol.ServerType = {
@@ -44,7 +44,7 @@ describe('Server Launcher Utility', () => {
     };
     const launchParameters: Protocol.LaunchParameters = {
         mode: 'mode',
-        params: serverAttributes 
+        params: serverAttributes
     };
     const cliArgs: Protocol.CommandLineDetails = {
         cmdLine: ['command'],
@@ -174,7 +174,7 @@ describe('Server Launcher Utility', () => {
     describe('Synchronous Requests', () => {
         beforeEach(() => {
             connection.sendRequest = sandbox.stub().resolves(status);
-        })
+        });
 
         it('startServerSync should send the correct message', async () => {
             const stateChange: Protocol.ServerStateChange = {
@@ -205,7 +205,7 @@ describe('Server Launcher Utility', () => {
                 emitter.emit('serverStateChanged', stateChange);
             }, 1);
 
-            const result = await launcher.startServerSync(launchParameters);
+            await launcher.startServerSync(launchParameters);
 
             expect(regSpy).calledOnce;
             expect(regSpy).calledWith('serverStateChanged');
@@ -225,7 +225,7 @@ describe('Server Launcher Utility', () => {
             }, 1);
 
             try {
-                const result = await launcher.startServerSync(launchParameters, 1);
+                await launcher.startServerSync(launchParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
                 expect(unregSpy).not.called;
@@ -234,7 +234,7 @@ describe('Server Launcher Utility', () => {
 
         it('startServerSync should error on timeout', async () => {
             try {
-                const result = await launcher.startServerSync(launchParameters, 1);
+                await launcher.startServerSync(launchParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
                 expect(err.message).equals(ErrorMessages.STARTSERVER_TIMEOUT);
@@ -270,7 +270,7 @@ describe('Server Launcher Utility', () => {
                 emitter.emit('serverStateChanged', stateChange);
             }, 1);
 
-            const result = await launcher.stopServerSync(stopParameters);
+            await launcher.stopServerSync(stopParameters);
 
             expect(regSpy).calledOnce;
             expect(regSpy).calledWith('serverStateChanged');
@@ -290,7 +290,7 @@ describe('Server Launcher Utility', () => {
             }, 1);
 
             try {
-                const result = await launcher.stopServerSync(stopParameters, 1);
+                await launcher.stopServerSync(stopParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
                 expect(unregSpy).not.called;
@@ -299,7 +299,7 @@ describe('Server Launcher Utility', () => {
 
         it('startServerSync should error on timeout', async () => {
             try {
-                const result = await launcher.stopServerSync(stopParameters, 1);
+                await launcher.stopServerSync(stopParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
                 expect(err.message).equals(ErrorMessages.STOPSERVER_TIMEOUT);

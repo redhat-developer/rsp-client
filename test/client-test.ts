@@ -84,7 +84,7 @@ describe('SSP Client', () => {
     };
     const launchParameters: Protocol.LaunchParameters = {
         mode: 'mode',
-        params: serverAttributes 
+        params: serverAttributes
     };
     const stopParameters: Protocol.StopServerAttributes = {
         force: false,
@@ -172,7 +172,7 @@ describe('SSP Client', () => {
         });
 
         it('findServerBeans should delegate to discovery utility', async () => {
-            const response = [serverBean]
+            const response = [serverBean];
             discoveryStub.findServerBeans = sandbox.stub().resolves(response);
 
             const result = await client.findServerBeans('path');
@@ -310,7 +310,7 @@ describe('SSP Client', () => {
         it('deleteServerAsync should delegate to server model utility', async () => {
             modelStub.deleteServerAsync = sandbox.stub().resolves();
 
-            const result = await client.deleteServerAsync(serverHandle);
+            client.deleteServerAsync(serverHandle);
 
             expect(modelStub.deleteServerAsync).calledWith(serverHandle);
         });

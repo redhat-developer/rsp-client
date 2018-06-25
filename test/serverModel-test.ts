@@ -130,7 +130,7 @@ describe('Sever Model Utility', () => {
         notificationStub.resolves(null);
 
         model.deleteServerAsync(serverHandle);
-        
+
         expect(notificationStub).calledOnce;
         expect(notificationStub).calledWith(connection, Messages.Server.DeleteServerNotification.type, serverHandle);
     });
@@ -167,7 +167,7 @@ describe('Sever Model Utility', () => {
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
             defaultTimeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     });
-    
+
     describe('Synchronous Server Creation', () => {
         let stub: sinon.SinonStub;
 
@@ -190,32 +190,32 @@ describe('Sever Model Utility', () => {
                 setTimeout(() => {
                     emitter.emit('serverAdded', serverHandle);
                 }, 1);
-    
+
                 const result = await model.createServerFromPath(discoveryPath.filepath, 'id');
-    
+
                 expect(result).equals(serverHandle);
                 expect(stub).calledTwice;
                 expect(stub).calledWithExactly(Messages.Server.FindServerBeansRequest.type, discoveryPath);
                 expect(stub).calledWithExactly(Messages.Server.CreateServerRequest.type, attrs);
             });
-    
+
             it('createServerFromPath should register for the correct event and unregister when done', async () => {
                 const regSpy = sandbox.spy(emitter, 'prependListener');
                 const unregSpy = sandbox.spy(emitter, 'removeListener');
-    
+
                 setTimeout(() => {
                     emitter.emit('serverAdded', serverHandle);
                 }, 1);
-    
+
                 await model.createServerFromPath(discoveryPath.filepath, 'id');
-    
+
                 expect(regSpy).calledOnceWith('serverAdded');
                 expect(unregSpy).calledOnceWith('serverAdded');
             });
 
             it('createServerFromPath should only react to server event with the correct id', async () => {
                 const unregSpy = sandbox.spy(emitter, 'removeListener');
-    
+
                 const handle: Protocol.ServerHandle = {
                     id: 'foo',
                     type: serverType
@@ -224,7 +224,7 @@ describe('Sever Model Utility', () => {
                 setTimeout(() => {
                     emitter.emit('serverAdded', handle);
                 }, 1);
-                
+
                 try {
                     await model.createServerFromPath(discoveryPath.filepath, 'id', 2);
                     expect.fail('Creation finished with the wrong server id');
@@ -266,24 +266,24 @@ describe('Sever Model Utility', () => {
                 setTimeout(() => {
                     emitter.emit('serverAdded', serverHandle1);
                 }, 1);
-    
+
                 const result = await model.createServerFromBean(serverBean);
-    
+
                 expect(result).equals(serverHandle1);
                 expect(stub).calledOnce;
                 expect(stub).calledWith(Messages.Server.CreateServerRequest.type, attrs);
             });
-    
+
             it('createServerFromBean should register for the correct event and unregister when done', async () => {
                 const regSpy = sandbox.spy(emitter, 'prependListener');
                 const unregSpy = sandbox.spy(emitter, 'removeListener');
-    
+
                 setTimeout(() => {
                     emitter.emit('serverAdded', serverHandle1);
                 }, 1);
-    
+
                 await model.createServerFromBean(serverBean);
-    
+
                 expect(regSpy).calledOnceWith('serverAdded');
                 expect(unregSpy).calledOnceWith('serverAdded');
             });
@@ -294,7 +294,7 @@ describe('Sever Model Utility', () => {
                 setTimeout(() => {
                     emitter.emit('serverAdded', serverHandle);
                 }, 1);
-                
+
                 try {
                     await model.createServerFromBean(serverBean, serverBean.name, 2);
                     expect.fail('Creation finished with the wrong server id');

@@ -1,9 +1,4 @@
 {
-    "linterOptions": {
-        "exclude": [
-            "test/**/*-test.ts"
-        ]
-    },
     "rules": {
         "adjacent-overload-signatures": true,
         "arrow-parens": [
@@ -47,7 +42,7 @@
         "no-trailing-whitespace": true,
         "no-unnecessary-callback-wrapper": true,
         "no-unsafe-finally": true,
-        "no-unused-expression": true,
+        "no-unused-expression-chai": true,
         "no-var-keyword": true,
         "no-var-requires": false,
         "object-literal-key-quotes": [
@@ -126,5 +121,6 @@
             "check-type"
         ]
     },
+    "rulesDirectory": "tslint-no-unused-expression-chai",
     "defaultSeverity": "warning"
 }
