@@ -295,11 +295,11 @@ export class SSPClient {
      * Requests the SSP to start a server. In order to then get the server state changes, subscribe to the
      * 'serverStateChanged' event
      *
-     * @param startAttributes parameters to start the server with, see {@link Protocol.LaunchParameters}
+     * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
      * @param timeout timeout in milliseconds
      */
-    startServerAsync(startAttributes: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
-        return this.launcherUtil.startServerAsync(startAttributes, timeout);
+    startServerAsync(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
+        return this.launcherUtil.startServerAsync(launchParameters, timeout);
     }
 
     /**
@@ -317,11 +317,11 @@ export class SSPClient {
      * Requests the SSP to start a server and waits until it receives a notification that the server changed
      * its state to STARTED
      *
-     * @param startAttributes parameters to start the server with, see {@link Protocol.LaunchParameters}
+     * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
      * @param timeout timeout in milliseconds
      */
-    startServerSync(startAttributes: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
-        return this.launcherUtil.startServerSync(startAttributes, timeout);
+    startServerSync(launchParameters: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
+        return this.launcherUtil.startServerSync(launchParameters, timeout);
     }
 
     /**

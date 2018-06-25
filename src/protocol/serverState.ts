@@ -1,7 +1,7 @@
 /**
  * Constants representing the state of the server itself or the state of publishing to the server
  */
-export namespace ServerStatus {
+export namespace ServerState {
 
     /**
 	 * Server state constant (value 0) indicating that the

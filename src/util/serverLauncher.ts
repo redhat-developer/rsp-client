@@ -1,7 +1,7 @@
 import { MessageConnection } from 'vscode-jsonrpc';
 import { Protocol } from '../protocol/protocol';
 import { Messages } from '../protocol/messages';
-import { ServerStatus } from '../protocol/serverState';
+import { ServerState } from '../protocol/serverState';
 import { EventEmitter } from 'events';
 import { Common, ErrorMessages } from './common';
 
@@ -135,7 +135,7 @@ export class ServerLauncher {
 
             let result: Thenable<Protocol.Status>;
             const listener = (state: Protocol.ServerStateChange) => {
-                if (state.server.id === launchParameters.params.id && state.state === ServerStatus.STARTED) {
+                if (state.server.id === launchParameters.params.id && state.state === ServerState.STARTED) {
                     result.then(() => {
                         clearTimeout(timer);
                         this.emitter.removeListener('serverStateChanged', listener);
@@ -173,7 +173,7 @@ export class ServerLauncher {
 
             let result: Thenable<Protocol.Status>;
             const listener = (state: Protocol.ServerStateChange) => {
-                if (state.server.id === stopParameters.id && state.state === ServerStatus.STOPPED) {
+                if (state.server.id === stopParameters.id && state.state === ServerState.STOPPED) {
                     result.then(() => {
                         clearTimeout(timer);
                         this.emitter.removeListener('serverStateChanged', listener);
