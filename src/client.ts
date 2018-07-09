@@ -298,7 +298,7 @@ export class SSPClient {
      * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
      * @param timeout timeout in milliseconds
      */
-    startServerAsync(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
+    startServerAsync(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.StartServerResponse> {
         return this.launcherUtil.startServerAsync(launchParameters, timeout);
     }
 

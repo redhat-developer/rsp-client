@@ -72,6 +72,10 @@ describe('Server Launcher Utility', () => {
         id: 'id',
         type: serverType
     };
+    const serverStart: Protocol.StartServerResponse = {
+        details: cliArgs,
+        status: status
+    };
 
     beforeEach(() => {
         sandbox = sinon.createSandbox();
@@ -152,10 +156,10 @@ describe('Server Launcher Utility', () => {
     });
 
     it('startServerAsync should delegate to the Common utility', async () => {
-        requestStub.resolves(status);
+        requestStub.resolves(serverStart);
         const result = await launcher.startServerAsync(launchParameters);
 
-        expect(result).equals(status);
+        expect(result).equals(serverStart);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.StartServerAsyncRequest.type, launchParameters,
             defaultTimeout, ErrorMessages.STARTSERVER_TIMEOUT);
