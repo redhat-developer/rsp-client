@@ -116,7 +116,7 @@ export class ServerLauncher {
      * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
      * @param timeout timeout in milliseconds
      */
-    startServerAsync(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
+    startServerAsync(launchParameters: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.StartServerResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.StartServerAsyncRequest.type, launchParameters,
             timeout, ErrorMessages.STARTSERVER_TIMEOUT);
     }
@@ -133,7 +133,7 @@ export class ServerLauncher {
                 return reject(new Error(ErrorMessages.STARTSERVER_TIMEOUT));
             }, timeout);
 
-            let result: Thenable<Protocol.Status>;
+            let result: Thenable<Protocol.StartServerResponse>;
             const listener = (state: Protocol.ServerStateChange) => {
                 if (state.server.id === launchParameters.params.id && state.state === ServerState.STARTED) {
                     result.then(() => {

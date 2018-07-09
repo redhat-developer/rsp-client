@@ -201,7 +201,7 @@ export namespace Messages {
          * and any events that must be propagated to the client.
          */
         export namespace StartServerAsyncRequest {
-            export const type = new RequestType<Protocol.LaunchParameters, Protocol.Status, void, void>('server/startServerAsync');
+            export const type = new RequestType<Protocol.LaunchParameters, Protocol.StartServerResponse, void, void>('server/startServerAsync');
         }
 
         /**
