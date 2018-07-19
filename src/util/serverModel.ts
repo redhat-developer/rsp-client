@@ -181,6 +181,15 @@ export class ServerModel {
     }
 
     /**
+     * Retreives all supported server types
+     * @param timeout timeout in milliseconds
+     */
+    getServerTypes(timeout: number = 2000): Promise<Protocol.ServerType[]> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerTypesRequest.type, null,
+             timeout, ErrorMessages.GETSERVERTYPES_TIMEOUT);
+    }
+
+    /**
      * Retreives required attributes for a given server type
      * @param serverType object representing the server type, see {@link Protocol.ServerType}
      * @param timeout timeout in milliseconds

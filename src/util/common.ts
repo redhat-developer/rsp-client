@@ -90,6 +90,7 @@ export namespace ErrorMessages {
     export const REMOVEPATH_TIMEOUT = 'Failed to remove discovery path in time';
     export const GETPATHS_TIMEOUT = 'Failed to retrieve discovery paths in time';
     export const GETSERVERS_TIMEOUT = 'Failed to retrieve servers in time';
+    export const GETSERVERTYPES_TIMEOUT = 'Failed to retrieve supported servers in time';
     export const GETREQUIREDATTRS_TIMEOUT = 'Failed to retrieve required server attributes in time';
     export const GETOPTIONALATTRS_TIMEOUT = 'Failed to retrieve optional server attributes in time';
     export const DELETESERVERSYNC_TIMEOUT = 'Failed to delete server in time';

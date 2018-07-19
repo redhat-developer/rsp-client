@@ -325,6 +325,16 @@ describe('SSP Client', () => {
             expect(result).equals(response);
         });
 
+        it('getServerTypes should delegate to server model utility', async () => {
+            const response = [serverType];
+            modelStub.getServerTypes = sandbox.stub().resolves(response);
+
+            const result = await client.getServerTypes();
+
+            expect(modelStub.getServerTypes).calledWith(defaultTimeout);
+            expect(result).equals(response);
+        });
+
         it('getServerTypeRequiredAttributes should delegate to server model utility', async () => {
             const response = attributes;
             modelStub.getServerTypeRequiredAttributes = sandbox.stub().resolves(response);

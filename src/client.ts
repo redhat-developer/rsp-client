@@ -211,6 +211,15 @@ export class SSPClient {
     }
 
     /**
+     * Retreives all supported server types
+     *
+     * @param timeout timeout in milliseconds
+     */
+    getServerTypes(timeout: number = 2000): Promise<Protocol.ServerType[]> {
+        return this.serverUtil.getServerTypes(timeout);
+    }
+
+    /**
      * Retrieves attributes required for a specific server type
      *
      * @param serverType {@link Protocol.ServerType} object representing the chosen type of server

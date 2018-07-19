@@ -91,6 +91,11 @@ Get handles for all servers, resolves to an array of ServerHandle objects:
 client.getServerHandles();
 ```
 
+Get all supported server types, resolves to an array of ServerType objects:
+```typescript
+client.getServerTypes();
+```
+
 Get required or optional attributes of a particular server type, resolves to an Attributes object:
 ```typescript
 client.getServerTypeRequiredAttributes(type: ServerType);
@@ -120,7 +125,7 @@ client.serverStartingByClient(startingAttributes: ServerStartingAttributes);
 client.serverStartingByClient(launchParameters: LaunchParameters);
 ```
 
-Start a server asynchronously, resolves to a Status object. See [events](#events) for async handling:
+Start a server asynchronously, resolves to a StartServerResponse object. See [events](#events) for async handling:
 ```typescript
 client.startServerAsync(launchParameters: LaunchParameters);
 ```

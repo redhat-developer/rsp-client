@@ -146,6 +146,17 @@ describe('Sever Model Utility', () => {
             defaultTimeout, ErrorMessages.GETSERVERS_TIMEOUT);
     });
 
+    it('getServerTypes should delegate to the Common utility', async () => {
+        requestStub.resolves([serverType]);
+
+        const result = await model.getServerTypes();
+
+        expect(result).deep.equals([serverType]);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerTypesRequest.type, null,
+            defaultTimeout, ErrorMessages.GETSERVERTYPES_TIMEOUT);
+    });
+
     it('getServerTypeRequiredAttributes should delegate to the Common utility', async () => {
         requestStub.resolves(attributes);
 
