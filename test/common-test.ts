@@ -73,13 +73,17 @@ describe('Common', () => {
         });
     });
 
-    describe('Synchronous Notifications', () => {
-        const messageType = Messages.Server.AddDiscoveryPathNotification.type;
-        const emitter = new EventEmitter();
+    describe('Synchronous Requests', () => {
+        const messageType = Messages.Server.AddDiscoveryPathRequest.type;
+        let emitter: EventEmitter;
         const eventId = 'event';
+        const listener = () => {
+            return true;
+        };
 
         beforeEach(() => {
-            connection.sendNotification = sandbox.stub().returns(null);
+            emitter = new EventEmitter();
+            connection.sendRequest = sandbox.stub().resolves('response');
         });
 
         it('should send the correct message with the correct payload', async () => {
@@ -87,10 +91,11 @@ describe('Common', () => {
                 emitter.emit(eventId, payload);
             }, 1);
 
-            const result = await Common.sendNotificationSync(connection, messageType, payload, emitter, eventId, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+            const result = await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
+                listener, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
 
-            expect(connection.sendNotification).calledOnce;
-            expect(connection.sendNotification).calledWith(messageType, payload);
+            expect(connection.sendRequest).calledOnce;
+            expect(connection.sendRequest).calledWith(messageType, payload);
             expect(result).equals(payload);
         });
 
@@ -101,14 +106,34 @@ describe('Common', () => {
                 emitter.emit(eventId, payload);
             }, 1);
 
-            await Common.sendNotificationSync(connection, messageType, payload, emitter, eventId, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+            await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
+                listener, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
 
             expect(subscribeSpy).calledOnce;
             expect(subscribeSpy).calledWith(eventId);
-            expect(connection.sendNotification).calledAfter(subscribeSpy);
+            expect(connection.sendRequest).calledAfter(subscribeSpy);
             expect(unsubscribeSpy).calledOnce;
             expect(unsubscribeSpy).calledWith(eventId);
-            expect(connection.sendNotification).calledBefore(unsubscribeSpy);
+            expect(connection.sendRequest).calledBefore(unsubscribeSpy);
+        });
+
+        it('should ignore events that dont match the listener criteria', async () => {
+            const badPayload = { filepath: 'foo' };
+            const handler = (param: Protocol.DiscoveryPath) => {
+                return param.filepath === payload.filepath;
+            };
+
+            setTimeout(() => {
+                emitter.emit(eventId, badPayload);
+            }, 1);
+            setTimeout(() => {
+                emitter.emit(eventId, payload);
+            }, 3);
+
+            const result = await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
+                handler, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+
+            expect(result).equals(payload);
         });
 
         it('should error on timeout', async () => {
@@ -116,7 +141,8 @@ describe('Common', () => {
                 emitter.emit('eventId', payload);
             }, 2);
             try {
-                await Common.sendNotificationSync(connection, messageType, payload, emitter, eventId, 1, ErrorMessages.ADDPATH_TIMEOUT);
+                await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
+                    listener, 1, ErrorMessages.ADDPATH_TIMEOUT);
                 expect.fail('No error thrown on timeout');
             } catch (err) {
                 expect(err.message).equals(ErrorMessages.ADDPATH_TIMEOUT);
@@ -125,7 +151,7 @@ describe('Common', () => {
     });
 
     describe('Simple Notifications', () => {
-        const messageType = Messages.Server.AddDiscoveryPathNotification.type;
+        const messageType = Messages.Server.ShutdownNotification.type;
 
         beforeEach(() => {
             connection.sendNotification = sandbox.stub().returns(null);

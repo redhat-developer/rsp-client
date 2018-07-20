@@ -104,13 +104,14 @@ export class SSPClient {
     }
 
     /**
-     * Sends notification to the SSP to add a directory to its discovery paths.
+     * Sends request to the SSP to add a directory to its discovery paths.
      * 'discoveryPathAdded' event will be fired when a response notification is received
      *
      * @param path path to the desired directory
+     * @param timeout timeout in milliseconds
      */
-    addDiscoveryPathAsync(path: string): void {
-        this.discoveryUtil.addDiscoveryPathAsync(path);
+    addDiscoveryPathAsync(path: string, timeout: number = 2000): Promise<Protocol.Status> {
+       return this.discoveryUtil.addDiscoveryPathAsync(path, timeout);
     }
 
     /**
@@ -125,13 +126,14 @@ export class SSPClient {
     }
 
     /**
-     * Sends notification to the SSP to remove a directory from its discovery paths.
+     * Sends request to the SSP to remove a directory from its discovery paths.
      * 'discoveryPathRemoved' event will be fired when a response notification is received
      *
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
+     * @param timeout timeout in milliseconds
      */
-    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath): void {
-        this.discoveryUtil.removeDiscoveryPathAsync(path);
+    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.Status> {
+        return this.discoveryUtil.removeDiscoveryPathAsync(path, timeout);
     }
 
     /**
@@ -192,13 +194,14 @@ export class SSPClient {
     }
 
     /**
-     * Sends notification to remove a server from SSP. Subscribe to the 'serverRemoved' event to see
+     * Sends request to remove a server from SSP. Subscribe to the 'serverRemoved' event to see
      * when the removal finishes
      *
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
      */
-    deleteServerAsync(serverHandle: Protocol.ServerHandle): void {
-        this.serverUtil.deleteServerAsync(serverHandle);
+    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.Status> {
+        return this.serverUtil.deleteServerAsync(serverHandle, timeout);
     }
 
     /**

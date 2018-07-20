@@ -1,6 +1,5 @@
 import { MessageConnection } from 'vscode-jsonrpc';
 import { EventEmitter } from 'events';
-import * as assert from 'assert';
 
 /**
  * Helper class for sending requests and notifications
@@ -29,44 +28,36 @@ export class Common {
     }
 
     /**
-     * Template method for sending notifications and synchronously waiting for a response by subscribing to an event
+     * Template method for sending requests and synchronously waiting for a response by subscribing to an event
      * @param connection the message connection to SSP server
      * @param messageType type of the message being sent
      * @param payload parameters of the message being sent
      * @param emitter event emitter used to subscribe for the response event
      * @param eventId id/name of the response event to wait for
+     * @param listener callback to handle the response event parameters
      * @param timeout timeout in milliseconds
      * @param timeoutMessage error message in case of timeout
      */
-    static sendNotificationSync(connection: MessageConnection, messageType: any, payload: any,
-        emitter: EventEmitter, eventId: string, timeout: number, timeoutMessage: string): Promise<any> {
+    static sendRequestSync(connection: MessageConnection, messageType: any , payload: any, emitter: EventEmitter,
+         eventId: string, listener: (params: any) => boolean, timeout: number, timeoutMessage: string): Promise<any> {
         return new Promise<any>((resolve, reject) => {
             const timer = setTimeout(() => {
                 return reject(new Error(timeoutMessage));
             }, timeout);
 
-            const listener = ((params: any) => {
-                let equal = true;
-                for (const key in params) {
-                    if (payload[key] && params[key]) {
-                        try {
-                            assert.deepEqual(payload[key], params[key]);
-                        } catch (err) {
-                            equal = false;
-                            break;
-                        }
-                    }
+            let response: Thenable<any>;
+            const handler = (params: any) => {
+                if (listener(params)) {
+                    response.then(() => {
+                        clearTimeout(timer);
+                        emitter.removeListener(eventId, listener);
+                        resolve(params);
+                    });
                 }
+            };
 
-                if (equal) {
-                    clearTimeout(timer);
-                    emitter.removeListener(eventId, listener);
-                    resolve(params);
-                }
-            });
-
-            emitter.prependListener(eventId, listener);
-            connection.sendNotification(messageType, payload);
+            emitter.prependListener(eventId, handler);
+            response = connection.sendRequest(messageType, payload);
         });
     }
 
@@ -93,7 +84,7 @@ export namespace ErrorMessages {
     export const GETSERVERTYPES_TIMEOUT = 'Failed to retrieve supported servers in time';
     export const GETREQUIREDATTRS_TIMEOUT = 'Failed to retrieve required server attributes in time';
     export const GETOPTIONALATTRS_TIMEOUT = 'Failed to retrieve optional server attributes in time';
-    export const DELETESERVERSYNC_TIMEOUT = 'Failed to delete server in time';
+    export const DELETESERVER_TIMEOUT = 'Failed to delete server in time';
     export const GETLAUNCHMODES_TIMEOUT = 'Failed to get launch modes in time';
     export const GETREQUIREDLAUNCHATTRS_TIMEOUT = 'Failed to get required launch attributes in time';
     export const GETOPTIONALLAUNCHATTRS_TIMEOUT = 'Failed to get optional launch attributes in time';

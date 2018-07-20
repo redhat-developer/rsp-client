@@ -182,39 +182,39 @@ describe('SSP Client', () => {
         });
 
         it('addDiscoveryPathSync should delegate to discovery utility', async () => {
-            const response = discoveryPath;
-            discoveryStub.addDiscoveryPathSync = sandbox.stub().resolves(response);
+            discoveryStub.addDiscoveryPathSync = sandbox.stub().resolves(discoveryPath);
 
             const result = await client.addDiscoveryPathSync('path');
 
             expect(discoveryStub.addDiscoveryPathSync).calledWith('path', defaultTimeout);
-            expect(result).equals(response);
+            expect(result).equals(discoveryPath);
         });
 
         it('addDiscoveryPathAsync should delegate to discovery utility', async () => {
-            discoveryStub.addDiscoveryPathAsync = sandbox.stub().resolves();
+            discoveryStub.addDiscoveryPathAsync = sandbox.stub().resolves(status);
 
-            await client.addDiscoveryPathAsync('path');
+            const result = await client.addDiscoveryPathAsync('path');
 
-            expect(discoveryStub.addDiscoveryPathAsync).calledWith('path');
+            expect(result).equals(status);
+            expect(discoveryStub.addDiscoveryPathAsync).calledWith('path', defaultTimeout);
         });
 
         it('removeDiscoveryPathSync should delegate to discovery utility', async () => {
-            const response = discoveryPath;
-            discoveryStub.removeDiscoveryPathSync = sandbox.stub().resolves(response);
+            discoveryStub.removeDiscoveryPathSync = sandbox.stub().resolves(discoveryPath);
 
-            const result = await client.removeDiscoveryPathSync(response);
+            const result = await client.removeDiscoveryPathSync(discoveryPath);
 
-            expect(discoveryStub.removeDiscoveryPathSync).calledWith(response, defaultTimeout);
-            expect(result).equals(response);
+            expect(discoveryStub.removeDiscoveryPathSync).calledWith(discoveryPath, defaultTimeout);
+            expect(result).equals(discoveryPath);
         });
 
         it('removeDiscoveryPathAsync should delegate to discovery utility', async () => {
-            discoveryStub.removeDiscoveryPathAsync = sandbox.stub().resolves();
+            discoveryStub.removeDiscoveryPathAsync = sandbox.stub().resolves(status);
 
-            await client.removeDiscoveryPathSync('path');
+            const result = await client.removeDiscoveryPathAsync('path');
 
-            expect(discoveryStub.removeDiscoveryPathSync).calledWith('path', defaultTimeout);
+            expect(result).equals(status);
+            expect(discoveryStub.removeDiscoveryPathAsync).calledWith('path', defaultTimeout);
         });
 
         it('getDiscoveryPaths should delegate to discovery utility', async () => {
@@ -308,11 +308,12 @@ describe('SSP Client', () => {
         });
 
         it('deleteServerAsync should delegate to server model utility', async () => {
-            modelStub.deleteServerAsync = sandbox.stub().resolves();
+            modelStub.deleteServerAsync = sandbox.stub().resolves(status);
 
-            client.deleteServerAsync(serverHandle);
+            const result = await client.deleteServerAsync(serverHandle);
 
-            expect(modelStub.deleteServerAsync).calledWith(serverHandle);
+            expect(result).equals(status);
+            expect(modelStub.deleteServerAsync).calledWith(serverHandle, defaultTimeout);
         });
 
         it('getServerHandles should delegate to server model utility', async () => {
