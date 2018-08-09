@@ -1,4 +1,5 @@
 # ssp-client
+[![Build Status](https://travis-ci.org/redhat-developer/rsp-client.svg?branch=master)](https://travis-ci.org/redhat-developer/rsp-client)
 A simple client for the Simple Server Protocol (SSP) written in typescript.
 
 Implements the API described [here](https://github.com/robstryker/org.jboss.tools.ssp/blob/master/api/src/main/java/org/jboss/tools/ssp/api/SSPClient.java) and [here](https://github.com/robstryker/org.jboss.tools.ssp/blob/master/api/src/main/java/org/jboss/tools/ssp/api/SSPServer.java).
