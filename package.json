@@ -29,14 +29,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sudhirverma/ssp-client.git"
+    "url": "git+https://github.com/redhat-developer/rsp-client.git"
   },
   "author": "Red Hat Developers",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sudhirverma/ssp-client/issues"
+    "url": "https://github.com/redhat-developer/rsp-client/issues"
   },
-  "homepage": "https://github.com/sudhirverma/ssp-client#readme",
+  "homepage": "https://github.com/redhat-developer/rsp-client#readme",
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/mocha": "^5.2.5",
