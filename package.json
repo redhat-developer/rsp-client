@@ -1,7 +1,7 @@
 {
-  "name": "ssp-client",
+  "name": "rsp-client",
   "version": "0.0.2",
-  "description": "Simple Server Protocol Client",
+  "description": "Runtime Server Protocol Client",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
@@ -29,14 +29,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sudhirverma/ssp-client.git"
+    "url": "git+https://github.com/redhat-developer/rsp-client.git"
   },
   "author": "Red Hat Developers",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/sudhirverma/ssp-client/issues"
+    "url": "https://github.com/redhat-developer/rsp-client/issues"
   },
-  "homepage": "https://github.com/sudhirverma/ssp-client#readme",
+  "homepage": "https://github.com/redhat-developer/rsp-client#readme",
   "devDependencies": {
     "@types/chai": "^4.1.4",
     "@types/mocha": "^5.2.5",
