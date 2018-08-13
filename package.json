@@ -1,7 +1,7 @@
 {
-  "name": "ssp-client",
+  "name": "rsp-client",
   "version": "0.0.2",
-  "description": "Simple Server Protocol Client",
+  "description": "Runtime Server Protocol Client",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
