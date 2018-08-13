@@ -1,25 +1,25 @@
-# ssp-client
+# rsp-client
 [![Build Status](https://travis-ci.org/redhat-developer/rsp-client.svg?branch=master)](https://travis-ci.org/redhat-developer/rsp-client)
-A simple client for the Simple Server Protocol (SSP) written in typescript.
+A simple client for the Runtime Server Protocol (RSP) written in typescript.
 
 Implements the API described [here](https://github.com/robstryker/org.jboss.tools.ssp/blob/master/api/src/main/java/org/jboss/tools/ssp/api/SSPClient.java) and [here](https://github.com/robstryker/org.jboss.tools.ssp/blob/master/api/src/main/java/org/jboss/tools/ssp/api/SSPServer.java).
 
-See the [SSP repo](https://github.com/robstryker/org.jboss.tools.ssp) for further details about SSP.
+See the [RSP repo](https://github.com/robstryker/org.jboss.tools.ssp) for further details about RSP.
 
 ## Installing
 
 ```sh
-npm i ssp-client
+npm i rsp-client
 ```
 
 ## Usage
 Basic "short" usage example, for full list of available methods, see [usage](USAGE.md).
 
 ```typescript
-import { SSPClient, Protocol, ServerState } from "ssp-client";
+import { RSPClient, Protocol, ServerState } from "rsp-client";
 
-// Use the host and port your SSP server is running on
-const client = new SSPClient('localhost', 27511);
+// Use the host and port your RSP server is running on
+const client = new RSPClient('localhost', 27511);
 
 // Initiate the connection
 await client.connect();
@@ -72,7 +72,7 @@ await client.stopServerAsync({ id: handle.id, force: false });
 
 // When all is done you can disconnect the client
 client.disconnect();
-// or even shut down the entire SSP server instead - don't use disconnect in this case
+// or even shut down the entire RSP server instead - don't use disconnect in this case
 client.shutdownServer();
 ```
 
