@@ -15,7 +15,7 @@ export class ServerLauncher {
 
     /**
      * Constructs a new server launch handler
-     * @param connection message connection to the SSP
+     * @param connection message connection to the RSP
      * @param emitter event emitter to handle notification events
      */
     constructor(connection: MessageConnection, emitter: EventEmitter) {
@@ -90,8 +90,8 @@ export class ServerLauncher {
     }
 
     /**
-     * Notifies the SSP a server is being started manually by the client
-     * @param startingAttributes launch parameters, set the 'initiatePolling' property to allow SSP to manage the server's state,
+     * Notifies the RSP a server is being started manually by the client
+     * @param startingAttributes launch parameters, set the 'initiatePolling' property to allow RSP to manage the server's state,
      * see {@link Protocol.ServerStartingAttributes}
      * @param timeout timeout in milliseconds
      */
@@ -101,7 +101,7 @@ export class ServerLauncher {
     }
 
     /**
-     * Notifies the SSP a server has been started manually by the client
+     * Notifies the RSP a server has been started manually by the client
      * @param launchPatameters parameters the server has been started with, see {@link Protocol.LaunchParameters}
      * @param timeout timeout in milliseconds
      */

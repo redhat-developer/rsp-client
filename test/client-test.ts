@@ -1,7 +1,7 @@
 import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
-import { SSPClient } from '../src/client';
+import { RSPClient } from '../src/client';
 import * as net from 'net';
 import * as rpc from 'vscode-jsonrpc';
 import { Discovery } from '../src/util/discovery';
@@ -15,12 +15,12 @@ import 'mocha';
 const expect = chai.expect;
 chai.use(sinonChai);
 
-describe('SSP Client', () => {
+describe('RSP Client', () => {
     const host = 'testhost';
     const port = 9001;
     const defaultTimeout = 2000;
     let sandbox: sinon.SinonSandbox;
-    let client: SSPClient;
+    let client: RSPClient;
     let connectStub: sinon.SinonStub;
     let readerStub: sinon.SinonStub;
     let writerStub: sinon.SinonStub;
@@ -102,7 +102,7 @@ describe('SSP Client', () => {
     };
 
     beforeEach(() => {
-        client = new SSPClient(host, port);
+        client = new RSPClient(host, port);
 
         sandbox = sinon.createSandbox();
         connectStub = sandbox.stub(net, 'connect').returns(fakeSocket);

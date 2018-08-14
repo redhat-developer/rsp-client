@@ -2,7 +2,7 @@ import { NotificationType, NotificationType0, RequestType0, RequestType } from '
 import { Protocol } from './protocol';
 
 /**
- * Message types sent between the SSP server and the client
+ * Message types sent between the RSP server and the client
  */
 export namespace Messages {
 
@@ -15,7 +15,7 @@ export namespace Messages {
          * The `server/getDiscoveryPaths` request is sent by the client to fetch a list
          * of discovery paths that can be searched.
          *
-         * Discovery paths exist in the SSP model as paths suitable to be searched for
+         * Discovery paths exist in the RSP model as paths suitable to be searched for
          * server runtime installations. Additional paths may be added via the
          * `server/addDiscoveryPath` entry point, or removed via the
          * `server/removeDiscoveryPath` entry point.
@@ -28,7 +28,7 @@ export namespace Messages {
          * The `server/findServerBeans` request is sent by the client to fetch a list of
          * server beans for the given path.
          *
-         * The SSP model will iterate through a number of `IServerBeanTypeProvider`
+         * The RSP model will iterate through a number of `IServerBeanTypeProvider`
          * instances and ask them if they recognize the contents of the folder
          * underlying the discovery path. Any providers that claim to be able to handle
          * the given path will return an object representing the details of this
@@ -69,7 +69,7 @@ export namespace Messages {
         /**
          * The `server/getServerTypes` request is sent by the client to list the server
          * types currently supported. The details of how many server types are supported
-         * by an SSP, or how they are registered, is implementation-specific.
+         * by an RSP, or how they are registered, is implementation-specific.
          */
         export namespace GetServerTypesRequest {
             export const type = new RequestType0<Array<Protocol.ServerType>, void, void>('server/getServerTypes');
@@ -168,7 +168,7 @@ export namespace Messages {
         /**
          * The `server/serverStartingByClient` request is sent by the client to the
          * server to inform the server that the client itself has launched the server
-         * instead of asking the SSP to do so.
+         * instead of asking the RSP to do so.
          *
          * The parameters include both the request used to get the launch command, and a
          * boolean as to whether the server should initiate the 'state-polling'
@@ -176,7 +176,7 @@ export namespace Messages {
          * startup.
          *
          * If the `polling` boolean is false, the client is expected to also alert
-         * the SSP when the launched server has completed its startup via the
+         * the RSP when the launched server has completed its startup via the
          * `server/serverStartedByClient` request.
          */
         export namespace ServerStartingByClientRequest {
@@ -186,7 +186,7 @@ export namespace Messages {
         /**
          * The `server/serverStartedByClient` request is sent by the client to the
          * server to inform the server that the client itself has launched the server
-         * instead of asking the SSP to do so, AND that the startup has completed.
+         * instead of asking the RSP to do so, AND that the startup has completed.
          */
         export namespace ServerStartedByClientRequest {
             export const type = new RequestType<Protocol.LaunchParameters, Protocol.Status, void, void>('server/serverStartedByClient');
@@ -214,7 +214,7 @@ export namespace Messages {
 
         /**
          * The `server/shutdown` notification is sent by the client to shut down the
-         * SSP itself.
+         * RSP itself.
          */
         export namespace ShutdownNotification {
             export const type = new NotificationType0<void>('server/shutdown');
@@ -230,7 +230,7 @@ export namespace Messages {
          * The `client/discoveryPathAdded` notification is sent by the server to all
          * clients in response to the `server/addDiscoveryPath` notification.
          *
-         * This call indicates that a discovery path has been added to the SSP model
+         * This call indicates that a discovery path has been added to the RSP model
          * which keeps track of filesystem paths that may be searched for server
          * runtimes.
          */
@@ -242,7 +242,7 @@ export namespace Messages {
          * The `client/discoveryPathRemoved` notification is sent by the server to all
          * clients in response to the `server/removeDiscoveryPath` notification.
          *
-         * This call indicates that a discovery path has been removed from the SSP model
+         * This call indicates that a discovery path has been removed from the RSP model
          * which keeps track of filesystem paths that may be searched for server
          * runtimes.
          */
@@ -255,7 +255,7 @@ export namespace Messages {
          * a response to the `server/createServer` notification.
          *
          * This notification indicates that a new server adapter has been created in the
-         * SSP model of existing servers. As mentioned above, this was most likely in
+         * RSP model of existing servers. As mentioned above, this was most likely in
          * response to a server/createServer notification, but is not strictly limited
          * to this entrypoint.
          */
@@ -268,7 +268,7 @@ export namespace Messages {
          * in response to the `server/deleteServer` notification.
          *
          * This notification indicates that a server adapter has been removed from the
-         * SSP model of existing servers. As mentioned above, this was most likely in
+         * RSP model of existing servers. As mentioned above, this was most likely in
          * response to a server/deleteServer notification, but is not strictly limited
          * to this entrypoint.
          */

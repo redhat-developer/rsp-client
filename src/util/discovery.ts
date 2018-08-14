@@ -14,7 +14,7 @@ export class Discovery {
 
     /**
      * Constructs a new discovery handler
-     * @param connection message connection to the SSP
+     * @param connection message connection to the RSP
      * @param emitter event emitter to handle notification events
      */
     constructor(connection: MessageConnection, emitter: EventEmitter) {
@@ -47,7 +47,7 @@ export class Discovery {
     }
 
     /**
-     * Sends notification to the SSP to add a directory to its discovery paths.
+     * Sends notification to the RSP to add a directory to its discovery paths.
      * 'discoveryPathAdded' event will be fired when a response notification is received
      * @param path path to the desired directory
      * @param timeout timeout in milliseconds
@@ -58,7 +58,7 @@ export class Discovery {
     }
 
     /**
-     * Synchronously adds discovery path to SSP by sending a notification and then waiting for
+     * Synchronously adds discovery path to RSP by sending a notification and then waiting for
      * 'discoveryPathAdded' event to be fired
      * @param path path to the desired directory
      * @param timeout timeout in milliseconds
@@ -73,7 +73,7 @@ export class Discovery {
     }
 
     /**
-     * Sends notification to the SSP to remove a directory from its discovery paths.
+     * Sends notification to the RSP to remove a directory from its discovery paths.
      * 'discoveryPathRemoved' event will be fired when a response notification is received
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
      * @param timeout timeout in milliseconds
@@ -87,7 +87,7 @@ export class Discovery {
     }
 
     /**
-     * Synchronously removes discovery path from SSP by sending a notification and then waiting for
+     * Synchronously removes discovery path from RSP by sending a notification and then waiting for
      * 'discoveryPathRemoved' event to be fired
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
      * @param timeout timeout in milliseconds
@@ -108,7 +108,7 @@ export class Discovery {
     }
 
     /**
-     * Retrieves all discovery paths from the SSP server
+     * Retrieves all discovery paths from the RSP server
      * @param timeout timeout in milliseconds
      */
     getDiscoveryPaths(timeout: number = 2000): Promise<Protocol.DiscoveryPath[]> {
