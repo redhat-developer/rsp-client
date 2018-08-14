@@ -50,9 +50,11 @@ export class Discovery {
      * Sends notification to the SSP to add a directory to its discovery paths.
      * 'discoveryPathAdded' event will be fired when a response notification is received
      * @param path path to the desired directory
+     * @param timeout timeout in milliseconds
      */
-    addDiscoveryPathAsync(path: string): void {
-        Common.sendSimpleNotification(this.connection, Messages.Server.AddDiscoveryPathNotification.type, { filepath: path });
+    addDiscoveryPathAsync(path: string, timeout: number = 2000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.AddDiscoveryPathRequest.type,
+             { filepath: path }, timeout, ErrorMessages.ADDPATH_TIMEOUT);
     }
 
     /**
@@ -63,20 +65,25 @@ export class Discovery {
      */
     addDiscoveryPathSync(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
         const discoveryPath = { filepath: path };
-        return Common.sendNotificationSync(this.connection, Messages.Server.AddDiscoveryPathNotification.type,
-             discoveryPath, this.emitter, 'discoveryPathAdded', timeout, ErrorMessages.ADDPATH_TIMEOUT);
+        const listener = (param: Protocol.DiscoveryPath) => {
+            return param.filepath === discoveryPath.filepath;
+        };
+        return Common.sendRequestSync(this.connection, Messages.Server.AddDiscoveryPathRequest.type, discoveryPath,
+            this.emitter, 'discoveryPathAdded', listener, timeout, ErrorMessages.ADDPATH_TIMEOUT);
     }
 
     /**
      * Sends notification to the SSP to remove a directory from its discovery paths.
      * 'discoveryPathRemoved' event will be fired when a response notification is received
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
+     * @param timeout timeout in milliseconds
      */
-    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath): void {
+    removeDiscoveryPathAsync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.Status> {
         if (typeof(path) === 'string') {
             path = { filepath: path };
         }
-        Common.sendSimpleNotification(this.connection, Messages.Server.RemoveDiscoveryPathNotification.type, path);
+        return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDiscoveryPathRequest.type,
+             path, timeout, ErrorMessages.REMOVEPATH_TIMEOUT);
     }
 
     /**
@@ -86,12 +93,18 @@ export class Discovery {
      * @param timeout timeout in milliseconds
      */
     removeDiscoveryPathSync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
+        let discoveryPath: Protocol.DiscoveryPath;
         if (typeof(path) === 'string') {
-            path = { filepath: path };
+            discoveryPath = { filepath: path };
+        } else {
+            discoveryPath = path;
         }
+        const listener = (param: Protocol.DiscoveryPath) => {
+            return param.filepath === discoveryPath.filepath;
+        };
 
-        return Common.sendNotificationSync(this.connection, Messages.Server.RemoveDiscoveryPathNotification.type,
-            path, this.emitter, 'discoveryPathRemoved', timeout, ErrorMessages.REMOVEPATH_TIMEOUT);
+        return Common.sendRequestSync(this.connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath, this.emitter,
+            'discoveryPathRemoved', listener, timeout, ErrorMessages.REMOVEPATH_TIMEOUT);
     }
 
     /**

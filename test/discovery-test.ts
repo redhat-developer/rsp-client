@@ -20,11 +20,18 @@ describe('Discovery Utility', () => {
     const defaultTimeout = 2000;
 
     let requestStub: sinon.SinonStub;
-    let notificationStub: sinon.SinonStub;
     let syncStub: sinon.SinonStub;
 
     const discoveryPath: Protocol.DiscoveryPath = {
         filepath: 'path'
+    };
+    const status: Protocol.Status = {
+        code: 0,
+        message: 'ok',
+        ok: true,
+        plugin: 'plugin',
+        severity: 0,
+        trace: 'trace'
     };
 
     beforeEach(() => {
@@ -39,8 +46,7 @@ describe('Discovery Utility', () => {
         emitter = new EventEmitter();
         discovery = new Discovery(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
-        notificationStub = sandbox.stub(Common, 'sendSimpleNotification');
-        syncStub = sandbox.stub(Common, 'sendNotificationSync');
+        syncStub = sandbox.stub(Common, 'sendRequestSync');
     });
 
     afterEach(() => {
@@ -57,12 +63,13 @@ describe('Discovery Utility', () => {
             discoveryPath, defaultTimeout, ErrorMessages.FINDBEANS_TIMEOUT);
     });
 
-    it('addDiscoveryPathAsync should delegate to the Common utility', () => {
-        notificationStub.returns(null);
-        discovery.addDiscoveryPathAsync(discoveryPath.filepath);
+    it('addDiscoveryPathAsync should delegate to the Common utility', async () => {
+        requestStub.resolves(status);
+        const result = await discovery.addDiscoveryPathAsync(discoveryPath.filepath);
 
-        expect(notificationStub).calledOnce;
-        expect(notificationStub).calledWith(connection, Messages.Server.AddDiscoveryPathNotification.type, discoveryPath);
+        expect(result).equals(status);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWith(connection, Messages.Server.AddDiscoveryPathRequest.type, discoveryPath);
     });
 
     it('addDiscoveryPathSync should delegate to the Common utility', async () => {
@@ -71,24 +78,26 @@ describe('Discovery Utility', () => {
 
         expect(result).equals(discoveryPath);
         expect(syncStub).calledOnce;
-        expect(syncStub).calledWith(connection, Messages.Server.AddDiscoveryPathNotification.type, discoveryPath,
-            emitter, 'discoveryPathAdded', defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+        expect(syncStub).calledWith(connection, Messages.Server.AddDiscoveryPathRequest.type, discoveryPath,
+            emitter, 'discoveryPathAdded', sinon.match.func, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
     });
 
-    it('removePathAsync should accept string path', () => {
-        notificationStub.returns(null);
-        discovery.removeDiscoveryPathAsync(discoveryPath.filepath);
+    it('removePathAsync should accept string path', async () => {
+        requestStub.resolves(status);
+        const result = await discovery.removeDiscoveryPathAsync(discoveryPath.filepath);
 
-        expect(notificationStub).calledOnce;
-        expect(notificationStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathNotification.type, discoveryPath);
+        expect(result).equals(status);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath);
     });
 
-    it('removePathAsync should accept DiscoveryPath', () => {
-        notificationStub.returns(null);
-        discovery.removeDiscoveryPathAsync(discoveryPath);
+    it('removePathAsync should accept DiscoveryPath', async () => {
+        requestStub.resolves(status);
+        const result = await discovery.removeDiscoveryPathAsync(discoveryPath);
 
-        expect(notificationStub).calledOnce;
-        expect(notificationStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathNotification.type, discoveryPath);
+        expect(result).equals(status);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath);
     });
 
     it('removePathSync should accept string path', async () => {
@@ -97,8 +106,8 @@ describe('Discovery Utility', () => {
 
         expect(result).equals(discoveryPath);
         expect(syncStub).calledOnce;
-        expect(syncStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathNotification.type, discoveryPath,
-            emitter, 'discoveryPathRemoved', defaultTimeout, ErrorMessages.REMOVEPATH_TIMEOUT);
+        expect(syncStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath,
+            emitter, 'discoveryPathRemoved', sinon.match.func, defaultTimeout, ErrorMessages.REMOVEPATH_TIMEOUT);
     });
 
     it('removePathSync should accept DiscoveryPath', async () => {
@@ -107,8 +116,8 @@ describe('Discovery Utility', () => {
 
         expect(result).equals(discoveryPath);
         expect(syncStub).calledOnce;
-        expect(syncStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathNotification.type, discoveryPath,
-            emitter, 'discoveryPathRemoved', defaultTimeout, ErrorMessages.REMOVEPATH_TIMEOUT);
+        expect(syncStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath,
+            emitter, 'discoveryPathRemoved', sinon.match.func, defaultTimeout, ErrorMessages.REMOVEPATH_TIMEOUT);
     });
 
     it('getDiscoveryPaths should delegate to Common utility', async () => {

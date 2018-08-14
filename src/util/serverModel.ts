@@ -158,8 +158,11 @@ export class ServerModel {
      * @param timeout timeout in milliseconds
      */
     deleteServerSync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerHandle> {
-        return Common.sendNotificationSync(this.connection, Messages.Server.DeleteServerNotification.type, serverHandle,
-             this.emitter, 'serverRemoved', timeout, ErrorMessages.DELETESERVERSYNC_TIMEOUT);
+        const listener = (param: Protocol.ServerHandle) => {
+            return param.id === serverHandle.id;
+        };
+        return Common.sendRequestSync(this.connection, Messages.Server.DeleteServerRequest.type, serverHandle, this.emitter,
+            'serverRemoved', listener, timeout, ErrorMessages.DELETESERVER_TIMEOUT);
     }
 
     /**
@@ -167,8 +170,9 @@ export class ServerModel {
      * when the removal finishes
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
      */
-    deleteServerAsync(serverHandle: Protocol.ServerHandle): void {
-        Common.sendSimpleNotification(this.connection, Messages.Server.DeleteServerNotification.type, serverHandle);
+    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.DeleteServerRequest.type, serverHandle, timeout,
+             ErrorMessages.DELETESERVER_TIMEOUT);
     }
 
     /**

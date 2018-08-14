@@ -39,21 +39,21 @@ export namespace Messages {
         }
 
         /**
-         * The `server/addDiscoveryPath` notification is sent by the client to add a new
+         * The `server/addDiscoveryPath` request is sent by the client to add a new
          * path to search when discovering servers. These paths will be stored in a
          * model, to be queried or searched later by a client.
          */
-        export namespace AddDiscoveryPathNotification {
-            export const type = new NotificationType<Protocol.DiscoveryPath, void>('server/addDiscoveryPath');
+        export namespace AddDiscoveryPathRequest {
+            export const type = new RequestType<Protocol.DiscoveryPath, Protocol.Status, void, void>('server/addDiscoveryPath');
         }
 
         /**
-         * The `server/removeDiscoveryPath` notification is sent by the client to remove
+         * The `server/removeDiscoveryPath` request is sent by the client to remove
          * a path from the model and prevent it from being searched by clients when
          * discovering servers in the future.
          */
-        export namespace RemoveDiscoveryPathNotification {
-            export const type = new NotificationType<Protocol.DiscoveryPath, void>('server/removeDiscoveryPath');
+        export namespace RemoveDiscoveryPathRequest {
+            export const type = new RequestType<Protocol.DiscoveryPath, Protocol.Status, void, void>('server/removeDiscoveryPath');
         }
 
         /**
@@ -76,12 +76,12 @@ export namespace Messages {
         }
 
         /**
-         * The `server/deleteServer` notification is sent by the client to delete a
+         * The `server/deleteServer` request is sent by the client to delete a
          * server from the model. This server will no longer be able to be started, shut
          * down, or interacted with in any fashion.
          */
-        export namespace DeleteServerNotification {
-            export const type = new NotificationType<Protocol.ServerHandle, void>('server/deleteServer');
+        export namespace DeleteServerRequest {
+            export const type = new RequestType<Protocol.ServerHandle, Protocol.Status, void, void>('server/deleteServer');
         }
 
         /**

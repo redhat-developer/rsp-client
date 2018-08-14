@@ -69,7 +69,7 @@ describe('Sever Model Utility', () => {
         model = new ServerModel(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
         notificationStub = sandbox.stub(Common, 'sendSimpleNotification');
-        syncStub = sandbox.stub(Common, 'sendNotificationSync');
+        syncStub = sandbox.stub(Common, 'sendRequestSync');
     });
 
     afterEach(() => {
@@ -122,17 +122,18 @@ describe('Sever Model Utility', () => {
 
         expect(result).equals(serverHandle);
         expect(syncStub).calledOnce;
-        expect(syncStub).calledWith(connection, Messages.Server.DeleteServerNotification.type, serverHandle,
-            emitter, 'serverRemoved', defaultTimeout, ErrorMessages.DELETESERVERSYNC_TIMEOUT);
+        expect(syncStub).calledWith(connection, Messages.Server.DeleteServerRequest.type, serverHandle,
+            emitter, 'serverRemoved', sinon.match.func, defaultTimeout, ErrorMessages.DELETESERVER_TIMEOUT);
     });
 
     it('deleteServerAsync should delegate to the Common utility', async () => {
-        notificationStub.resolves(null);
+        requestStub.resolves(status);
 
-        model.deleteServerAsync(serverHandle);
+        const result = await model.deleteServerAsync(serverHandle);
 
-        expect(notificationStub).calledOnce;
-        expect(notificationStub).calledWith(connection, Messages.Server.DeleteServerNotification.type, serverHandle);
+        expect(result).equals(status);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWith(connection, Messages.Server.DeleteServerRequest.type, serverHandle);
     });
 
     it('getServerHandles should delegate to the Common utility', async () => {
