@@ -8,7 +8,7 @@ export class Common {
 
     /**
      * Template method for sending requests and receiving the response
-     * @param connection the message connection to SSP server
+     * @param connection the message connection to RSP server
      * @param messageType type of the message being sent
      * @param payload parameters of the message being sent
      * @param timeout timeout in milliseconds
@@ -28,8 +28,9 @@ export class Common {
     }
 
     /**
-     * Template method for sending requests and synchronously waiting for a response by subscribing to an event
-     * @param connection the message connection to SSP server
+
+     * Template method for sending notifications and synchronously waiting for a response by subscribing to an event
+     * @param connection the message connection to RSP server
      * @param messageType type of the message being sent
      * @param payload parameters of the message being sent
      * @param emitter event emitter used to subscribe for the response event

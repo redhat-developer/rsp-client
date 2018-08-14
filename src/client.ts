@@ -10,7 +10,7 @@ import { EventEmitter } from 'events';
 /**
  * Simple 'Simple Server Protocol' client implementation using json rpc
  */
-export class SSPClient {
+export class RSPClient {
 
     private host: string;
     private port: number;
@@ -22,9 +22,9 @@ export class SSPClient {
     private emitter: EventEmitter;
 
     /**
-     * Constructs a new SSP client
+     * Constructs a new RSP client
      * @param host hostname/address to connect to
-     * @param port port of the running SSP service
+     * @param port port of the running RSP service
      */
     constructor(host: string, port: number) {
         this.host = host;
@@ -33,7 +33,7 @@ export class SSPClient {
     }
 
     /**
-     * Initiates connection to the SSP server
+     * Initiates connection to the RSP server
      *
      * @param timeout operation timeout in milliseconds, default 2000 ms
      */
@@ -75,7 +75,7 @@ export class SSPClient {
     }
 
     /**
-     * Terminates the currently running SSP server instance and disconnects itself
+     * Terminates the currently running RSP server instance and disconnects itself
      */
     shutdownServer(): void {
         this.connection.sendNotification(Messages.Server.ShutdownNotification.type);
@@ -93,7 +93,7 @@ export class SSPClient {
     }
 
     /**
-     * Synchronously adds discovery path to SSP by sending a notification and then waiting for
+     * Synchronously adds discovery path to RSP by sending a notification and then waiting for
      * 'discoveryPathAdded' event to be fired
      *
      * @param path path to the desired directory
@@ -104,7 +104,7 @@ export class SSPClient {
     }
 
     /**
-     * Sends request to the SSP to add a directory to its discovery paths.
+     * Sends notification to the RSP to add a directory to its discovery paths.
      * 'discoveryPathAdded' event will be fired when a response notification is received
      *
      * @param path path to the desired directory
@@ -115,7 +115,7 @@ export class SSPClient {
     }
 
     /**
-     * Synchronously removes discovery path from SSP by sending a notification and then waiting for
+     * Synchronously removes discovery path from RSP by sending a notification and then waiting for
      * 'discoveryPathRemoved' event to be fired
      *
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
@@ -126,7 +126,8 @@ export class SSPClient {
     }
 
     /**
-     * Sends request to the SSP to remove a directory from its discovery paths.
+
+     * Sends notification to the RSP to remove a directory from its discovery paths.
      * 'discoveryPathRemoved' event will be fired when a response notification is received
      *
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
@@ -184,7 +185,7 @@ export class SSPClient {
     }
 
     /**
-     * Sends notification to remove a server from SSP, then waits for the appropriate 'serverRemoved' event
+     * Sends notification to remove a server from RSP, then waits for the appropriate 'serverRemoved' event
      *
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
@@ -194,7 +195,7 @@ export class SSPClient {
     }
 
     /**
-     * Sends request to remove a server from SSP. Subscribe to the 'serverRemoved' event to see
+     * Sends notification to remove a server from RSP. Subscribe to the 'serverRemoved' event to see
      * when the removal finishes
      *
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
@@ -205,7 +206,7 @@ export class SSPClient {
     }
 
     /**
-     * Retrieves handles for all servers created within the SSP instance
+     * Retrieves handles for all servers created within the RSP instance
      *
      * @param timeout timeout in milliseconds
      */
@@ -283,9 +284,9 @@ export class SSPClient {
     }
 
     /**
-     * Notifies the SSP that the client is launching one of the servers manually to update its state
+     * Notifies the RSP that the client is launching one of the servers manually to update its state
      *
-     * @param startingAttributes object representing the server being launched, set the 'initiatePolling' attribute to true to let SSP
+     * @param startingAttributes object representing the server being launched, set the 'initiatePolling' attribute to true to let RSP
      *  track the server's launch state to notify when it finished launching, see {@link Protocol.ServerStartingAttributes}
      * @param timeout timeout in milliseconds
      */
@@ -294,7 +295,7 @@ export class SSPClient {
     }
 
     /**
-     * Notifies the SSP that the client has launched one of the servers manually to update its state
+     * Notifies the RSP that the client has launched one of the servers manually to update its state
      *
      * @param startingAttributes object representing the server launched, see {@link Protocol.ServerStartingAttributes}
      * @param timeout timeout in milliseconds
@@ -304,7 +305,7 @@ export class SSPClient {
     }
 
     /**
-     * Requests the SSP to start a server. In order to then get the server state changes, subscribe to the
+     * Requests the RSP to start a server. In order to then get the server state changes, subscribe to the
      * 'serverStateChanged' event
      *
      * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
@@ -315,7 +316,7 @@ export class SSPClient {
     }
 
     /**
-     * Requests the SSP to stop a server. In order to then get the server state changes, subscribe to the
+     * Requests the RSP to stop a server. In order to then get the server state changes, subscribe to the
      * 'serverStateChanged' event
      *
      * @param stopAttributes server stopping parameters, set force to 'true' to force shutdown, see {@link Protocol.StopServerAttributes}
@@ -326,7 +327,7 @@ export class SSPClient {
     }
 
     /**
-     * Requests the SSP to start a server and waits until it receives a notification that the server changed
+     * Requests the RSP to start a server and waits until it receives a notification that the server changed
      * its state to STARTED
      *
      * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
@@ -337,7 +338,7 @@ export class SSPClient {
     }
 
     /**
-     * Requests the SSP to stop a server and waits until it receives a notification that the server changed
+     * Requests the RSP to stop a server and waits until it receives a notification that the server changed
      * its state to STOPPED
      *
      * @param stopAttributes server stopping parameters, set force to 'true' to force shutdown, see {@link Protocol.StopServerAttributes}
