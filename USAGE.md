@@ -1,9 +1,9 @@
-# Using the ssp client
+# Using the rsp client
 There are 3 modules you can import from this package: [Client](#client), [Protocol](#protocol), [ServerState](#serverstate).
 
 ## Protocol
 Defines the object types used in communication with the server. Some of these objects are also used as parameters or returned by the client methods.
-Refer to [this](src/protocol/protocol.ts) file for a complete list of definitions. This should mirror the definitions on the server side [here](https://github.com/robstryker/org.jboss.tools.ssp/blob/master/schema/src/main/resources/schema/typescript/protocol.unified.d.ts).
+Refer to [this](src/protocol/protocol.ts) file for a complete list of definitions. This should mirror the definitions on the server side [here](https://github.com/redhat-developer/rsp-server/blob/master/schema/src/main/resources/schema/typescript/protocol.unified.d.ts).
 
 ## ServerState
 Defines constants representing the states a server can be in - including both the state of the server itself and the state of the projects published to the server.
@@ -14,7 +14,7 @@ The main part that takes care of all the communication. Most methods have a time
 
 Create a new client by using the constructor:
 ```typescript
-const client = new SSPClient('host', port);
+const client = new RSPClient('host', port);
 ```
 
 ### Connection Handling
@@ -28,7 +28,7 @@ Disconnect the client:
 client.disconnect();
 ```
 
-Shut down the SSP server (and disconnect the client):
+Shut down the RSP server (and disconnect the client):
 ```typescript
 client.shutdownServer();
 ```
@@ -39,7 +39,7 @@ Search a path for suitable servers, resolves to an array of ServerBean objects, 
 client.findServerBeans('path');
 ```
 
-Send notification to the SSP to add a directory to its discovery paths. Discovery paths are locations SSP will scan for servers. See [events](#events) for async handling.
+Send notification to the RSP to add a directory to its discovery paths. Discovery paths are locations RSP will scan for servers. See [events](#events) for async handling.
 ```typescript
 client.addDiscoveryPathAsync('path');
 ```
@@ -49,7 +49,7 @@ Synchronous version of adding discovery paths, resolves to a DiscoveryPath objec
 client.addDiscoveryPathSync('path');
 ```
 
-Send notification to the SSP to remove a directory from its discovery paths.
+Send notification to the RSP to remove a directory from its discovery paths.
 ```typescript
 client.removeDiscoveryPathAsync('path' | path: DiscoveryPath);
 ```
@@ -119,7 +119,7 @@ Get the command usable to manually start a server from cli, resolves to a Comman
 client.getServerLaunchCommand(launchParameters: LaunchParameters);
 ```
 
-Notify SSP that the client is launching / has launched a server manually, resolves to a Status object:
+Notify RSP that the client is launching / has launched a server manually, resolves to a Status object:
 ```typescript
 client.serverStartingByClient(startingAttributes: ServerStartingAttributes);
 client.serverStartingByClient(launchParameters: LaunchParameters);

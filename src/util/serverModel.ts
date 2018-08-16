@@ -14,7 +14,7 @@ export class ServerModel {
 
     /**
      * Constructs a new server model handler
-     * @param connection message connection to the SSP
+     * @param connection message connection to the RSP
      * @param emitter event emitter to handle notification events
      */
     constructor(connection: MessageConnection, emitter: EventEmitter) {
@@ -165,7 +165,7 @@ export class ServerModel {
     }
 
     /**
-     * Sends notification to remove a server from SSP, then waits for the appropriate 'serverRemoved' event
+     * Sends notification to remove a server from RSP, then waits for the appropriate 'serverRemoved' event
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
      */
@@ -178,7 +178,7 @@ export class ServerModel {
     }
 
     /**
-     * Sends notification to remove a server from SSP. Subscribe to the 'serverRemoved' event to see
+     * Sends notification to remove a server from RSP. Subscribe to the 'serverRemoved' event to see
      * when the removal finishes
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
      */
@@ -188,7 +188,7 @@ export class ServerModel {
     }
 
     /**
-     * Retreives handles for all servers within SSP
+     * Retreives handles for all servers within RSP
      * @param timeout timeout in milliseconds
      */
     getServerHandles(timeout: number = 2000): Promise<Protocol.ServerHandle[]> {
