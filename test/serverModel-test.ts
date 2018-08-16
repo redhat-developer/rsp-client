@@ -300,7 +300,7 @@ describe('Sever Model Utility', () => {
                 expect(unregSpy).calledOnceWith('serverAdded');
             });
 
-            it('createServerFromPath should only react to server event with the correct id', async () => {
+            it('createServerFromBean should only react to server event with the correct id', async () => {
                 const unregSpy = sandbox.spy(emitter, 'removeListener');
 
                 setTimeout(() => {
@@ -315,7 +315,36 @@ describe('Sever Model Utility', () => {
                 }
             });
 
-            it('createServerFromPath should error on timeout', async () => {
+            it('createServerFromBean should work with minishift', async () => {
+                const bean: Protocol.ServerBean = {
+                    fullVersion: '1',
+                    location: 'location',
+                    name: 'server',
+                    serverAdapterTypeId: 'adapter',
+                    specificType: 'specificServer',
+                    typeCategory: 'MINISHIFT',
+                    version: '1'
+                };
+
+                const attrs: Protocol.ServerAttributes = {
+                    id: serverBean.name,
+                    serverType: serverBean.serverAdapterTypeId,
+                    attributes: {
+                        'server.home.dir': bean.location,
+                        'server.home.file': bean.location
+                    }
+                };
+                setTimeout(() => {
+                    emitter.emit('serverAdded', serverHandle1);
+                }, 1);
+
+                const result = await model.createServerFromBean(bean);
+
+                expect(result).equals(serverHandle1);
+                expect(stub).calledOnceWith(Messages.Server.CreateServerRequest.type, attrs);
+            });
+
+            it('createServerFromBean should error on timeout', async () => {
                 try {
                     await model.createServerFromBean(serverBean, 'id', 1);
                     expect.fail('No error thrown on timeout');
