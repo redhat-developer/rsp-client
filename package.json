@@ -1,6 +1,6 @@
 {
-  "name": "rsp-client",
-  "version": "0.0.2",
+  "name": "@redhat-developer/rsp-client",
+  "version": "0.0.3",
   "description": "Runtime Server Protocol Client",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
