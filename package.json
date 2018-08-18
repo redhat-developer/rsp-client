@@ -1,7 +1,7 @@
 {
   "name": "rsp-client",
-  "version": "0.0.3",
-  "description": "Runtime Server Protocol Client",
+  "version": "0.0.4",
+  "description": "Client Implementation of Runtime Server Protocol",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
   "scripts": {
@@ -31,6 +31,12 @@
     "type": "git",
     "url": "git+https://github.com/redhat-developer/rsp-client.git"
   },
+  "keywords": [
+    "runtime",
+    "server",
+    "adapters",
+    "protocol"
+  ],
   "author": "Red Hat Developers",
   "license": "MIT",
   "bugs": {
