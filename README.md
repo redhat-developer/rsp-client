@@ -38,12 +38,12 @@ client.onServerAdded((handle) => {
 await client.createServerAsync('path/to/server', 'server');
 
 // Starting a server:
-//  subscribe to the server producing output
+// subscribe to the server producing output
 client.onServerOutputAppended((output) => {
     console.log(output.text);
 });
 
-//  subscribe to server state changes to see when it started/stopped
+// subscribe to server state changes to see when it started/stopped
 client.onServerStateChange((state) => {
     console.log(`Server state code is ${state.state}`);
     if (state.state === ServerState.STARTED) {
@@ -53,7 +53,7 @@ client.onServerStateChange((state) => {
     }
 });
 
-//  get the starting parameters, we are using the normal run mode here
+// get the starting parameters, we are using the normal run mode here
 const attributes = await client.getServerRequiredLaunchAttributes({id: handle.id, mode: 'run'});
 const params: Protocol.LaunchParameters = {
     mode: 'run',
@@ -64,7 +64,7 @@ const params: Protocol.LaunchParameters = {
     }
 };
 
-//  finally start the server
+// finally start the server
 await client.startServerAsync(params);
 
 // Stopping a server, use force at your will

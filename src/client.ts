@@ -8,7 +8,7 @@ import { ServerLauncher } from './util/serverLauncher';
 import { EventEmitter } from 'events';
 
 /**
- * Simple 'Simple Server Protocol' client implementation using json rpc
+ * Runtime Server Protocol client implementation using JSON RPC
  */
 export class RSPClient {
 

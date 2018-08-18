@@ -28,7 +28,6 @@
         "no-default-export": true,
 		"no-duplicate-variable": true,
 		"no-duplicate-imports": true,
-		"no-unused-variable": true,
         "no-eval": true,
         "no-inferrable-types": [
             true,

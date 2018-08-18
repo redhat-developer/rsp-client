@@ -20,7 +20,6 @@ describe('Sever Model Utility', () => {
     const defaultTimeout = 2000;
 
     let requestStub: sinon.SinonStub;
-    let notificationStub: sinon.SinonStub;
     let syncStub: sinon.SinonStub;
 
     const discoveryPath: Protocol.DiscoveryPath = {
@@ -68,7 +67,6 @@ describe('Sever Model Utility', () => {
         emitter = new EventEmitter();
         model = new ServerModel(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
-        notificationStub = sandbox.stub(Common, 'sendSimpleNotification');
         syncStub = sandbox.stub(Common, 'sendRequestSync');
     });
 
