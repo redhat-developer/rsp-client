@@ -158,10 +158,10 @@ describe('Common', () => {
         });
 
         it('should send the correct message with the correct payload', () => {
-            Common.sendSimpleNotification(connection, messageType, payload);
+            Common.sendSimpleNotification(connection, messageType, null);
 
             expect(connection.sendNotification).calledOnce;
-            expect(connection.sendNotification).calledWith(messageType, payload);
+            expect(connection.sendNotification).calledWith(messageType, null);
         });
     });
 });

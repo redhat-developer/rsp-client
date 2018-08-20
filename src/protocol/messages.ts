@@ -1,4 +1,4 @@
-import { NotificationType, NotificationType0, RequestType0, RequestType } from 'vscode-jsonrpc';
+import { NotificationType, RequestType } from 'vscode-jsonrpc';
 import { Protocol } from './protocol';
 
 /**
@@ -21,7 +21,7 @@ export namespace Messages {
          * `server/removeDiscoveryPath` entry point.
          */
         export namespace GetDiscoveryPathsRequest {
-            export const type = new RequestType0<Array<Protocol.DiscoveryPath>, void, void>('server/getDiscoveryPaths');
+            export const type = new RequestType<void, Array<Protocol.DiscoveryPath>, void, void>('server/getDiscoveryPaths');
         }
 
         /**
@@ -63,7 +63,7 @@ export namespace Messages {
          * pre-configured by the server upon installation.
          */
         export namespace GetServerHandlesRequest {
-            export const type = new RequestType0<Array<Protocol.ServerHandle>, void, void>('server/getServerHandles');
+            export const type = new RequestType<void, Array<Protocol.ServerHandle>, void, void>('server/getServerHandles');
         }
 
         /**
@@ -72,7 +72,7 @@ export namespace Messages {
          * by an RSP, or how they are registered, is implementation-specific.
          */
         export namespace GetServerTypesRequest {
-            export const type = new RequestType0<Array<Protocol.ServerType>, void, void>('server/getServerTypes');
+            export const type = new RequestType<void, Array<Protocol.ServerType>, void, void>('server/getServerTypes');
         }
 
         /**
@@ -217,7 +217,7 @@ export namespace Messages {
          * RSP itself.
          */
         export namespace ShutdownNotification {
-            export const type = new NotificationType0<void>('server/shutdown');
+            export const type = new NotificationType<void, void>('server/shutdown');
         }
     }
 
