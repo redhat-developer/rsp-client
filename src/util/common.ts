@@ -1,4 +1,4 @@
-import { MessageConnection } from 'vscode-jsonrpc';
+import { MessageConnection, RequestType, NotificationType } from 'vscode-jsonrpc';
 import { EventEmitter } from 'events';
 
 /**
@@ -14,8 +14,8 @@ export class Common {
      * @param timeout timeout in milliseconds
      * @param timeoutMessage error message in case of timeout
      */
-    static sendSimpleRequest(connection: MessageConnection, messageType: any, payload: any, timeout: number, timeoutMessage: string): Promise<any> {
-        return new Promise((resolve, reject) => {
+    static sendSimpleRequest<P, R>(connection: MessageConnection, messageType: RequestType<P, R, any, any>, payload: P, timeout: number, timeoutMessage: string): Promise<R> {
+        return new Promise<R>((resolve, reject) => {
             const timer = setTimeout(() => {
                 reject(new Error(timeoutMessage));
             }, timeout);
@@ -39,15 +39,15 @@ export class Common {
      * @param timeout timeout in milliseconds
      * @param timeoutMessage error message in case of timeout
      */
-    static sendRequestSync(connection: MessageConnection, messageType: any , payload: any, emitter: EventEmitter,
-         eventId: string, listener: (params: any) => boolean, timeout: number, timeoutMessage: string): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
+    static sendRequestSync<P, R, E>(connection: MessageConnection, messageType: RequestType<P, R, any, any>, payload: P, emitter: EventEmitter,
+         eventId: string, listener: (params: E) => boolean, timeout: number, timeoutMessage: string): Promise<E> {
+        return new Promise<E>((resolve, reject) => {
             const timer = setTimeout(() => {
                 return reject(new Error(timeoutMessage));
             }, timeout);
 
-            let response: Thenable<any>;
-            const handler = (params: any) => {
+            let response: Thenable<R>;
+            const handler = (params: E) => {
                 if (listener(params)) {
                     response.then(() => {
                         clearTimeout(timer);
@@ -68,7 +68,7 @@ export class Common {
      * @param messageType type of the notification being sent
      * @param payload payload (parameters) of the message being sent
      */
-    static sendSimpleNotification(connection: MessageConnection, messageType: any, payload: any): void {
+    static sendSimpleNotification<P>(connection: MessageConnection, messageType: NotificationType<P, any>, payload: P): void {
         connection.sendNotification(messageType, payload);
     }
 }
