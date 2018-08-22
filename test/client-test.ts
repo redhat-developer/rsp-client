@@ -74,7 +74,7 @@ describe('RSP Client', () => {
         attributes: {}
     };
     const launchAttrRequest: Protocol.LaunchAttributesRequest = {
-        id: 'id',
+        serverTypeId: 'id',
         mode: 'mode'
     };
     const serverAttributes: Protocol.ServerAttributes = {
