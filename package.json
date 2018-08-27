@@ -7,7 +7,7 @@
   "scripts": {
     "prepare": "npm run build",
     "build": "tslint -p tslint.json && tsc",
-    "test": "nyc mocha",
+    "test": "if [ -z ${ENABLE_JUNIT_REPORTER} ]; then nyc mocha; else nyc mocha --reporter mocha-junit-reporter; fi",
     "coverage:upload": "codecov -f coverage/*.json",
     "update-deps": "node_modules/.bin/ncu --upgrade --loglevel verbose --packageFile package.json && npm update"
   },
@@ -53,6 +53,7 @@
     "chai": "^4.1.2",
     "codecov": "^3.0.4",
     "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.18.0",
     "nyc": "^12.0.2",
     "sinon": "^6.1.5",
     "sinon-chai": "^3.2.0",
