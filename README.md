@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/redhat-developer/rsp-client.svg?branch=master)](https://travis-ci.org/redhat-developer/rsp-client)
 A simple client for the Runtime Server Protocol (RSP) written in typescript.
 
-Implements the API described [here](https://github.com/redhat-developer/rsp-server/blob/master/api/src/main/java/org/jboss/tools/ssp/api/SSPClient.java) and [here](https://github.com/redhat-developer/rsp-server/blob/master/api/src/main/java/org/jboss/tools/ssp/api/SSPServer.java).
+Implements the API described [here](https://github.com/redhat-developer/rsp-server/blob/master/api/src/main/java/org/jboss/tools/rsp/api/RSPClient.java) and [here](https://github.com/redhat-developer/rsp-server/blob/master/api/src/main/java/org/jboss/tools/rsp/api/RSPServer.java).
 
 See the [RSP repo](https://github.com/redhat-developer/rsp-server) for further details about RSP.
 
