@@ -115,4 +115,17 @@ export namespace Protocol {
     export interface VMHandle {
         id: string;
     }
+
+    export interface CapabilitiesRequest {
+        list: string[];
+    }
+
+    export interface CapabilitiesResponse {
+        map: { [index: string]: string };
+    }
+
+    export interface StringPrompt {
+        code: number;
+        prompt: string;
+    }
 }

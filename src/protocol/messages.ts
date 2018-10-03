@@ -338,5 +338,13 @@ export namespace Messages {
         export namespace ServerProcessOutputAppendedNotification {
             export const type = new NotificationType<Protocol.ServerProcessOutput, void>('client/serverProcessOutputAppended');
         }
+
+        export namespace GetClientCapabilitiesRequest {
+            export const type = new RequestType<Protocol.CapabilitiesRequest, Protocol.CapabilitiesResponse, void, void>('client/getClientCapabilities');
+        }
+
+        export namespace PromptStringRequest {
+            export const type = new RequestType<Protocol.StringPrompt, String, void, void>('client/promptString');
+        }
     }
 }

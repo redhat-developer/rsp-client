@@ -5,6 +5,7 @@ import { Messages } from './protocol/messages';
 import { Discovery } from './util/discovery';
 import { ServerModel } from './util/serverModel';
 import { ServerLauncher } from './util/serverLauncher';
+import { Capabilities } from './util/capabilities';
 import { EventEmitter } from 'events';
 
 /**
@@ -48,11 +49,15 @@ export class RSPClient {
                 this.connection = rpc.createMessageConnection(
                     new rpc.StreamMessageReader(this.socket),
                     new rpc.StreamMessageWriter(this.socket));
-                this.connection.listen();
+                this.connection.trace(rpc.Trace.Verbose, {log: (message: string, data?: string) => {
+                    console.log('Message=' + message + 'data=' + data);
+                }});
 
                 this.discoveryUtil = new Discovery(this.connection, this.emitter);
                 this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
+                new Capabilities(this.connection, this.emitter);
+                this.connection.listen();
                 clearTimeout(timer);
                 resolve();
             });
@@ -427,6 +432,10 @@ export class RSPClient {
      */
     onServerProcessTerminated(listener: (arg: Protocol.ServerProcess) => void): void {
         this.emitter.on('serverProcessTerminated', listener);
+    }
+
+    onStringPrompt(listener: (arg: Protocol.StringPrompt, resolve: (s: string) => void, reject: (e: Error) => void) => void): void {
+        this.emitter.on(Messages.Client.PromptStringRequest.type.method, listener);
     }
 
     /**

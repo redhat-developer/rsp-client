@@ -1,6 +1,6 @@
 {
   "name": "rsp-client",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Client Implementation of Runtime Server Protocol",
   "main": "lib/main.js",
   "types": "lib/main.d.ts",
