@@ -1,6 +1,7 @@
 import { MessageConnection, RequestHandler } from 'vscode-jsonrpc';
 import { Protocol } from '../protocol/protocol';
 import { Messages } from '../protocol/messages';
+import { Common, ErrorMessages } from './common';
 import { EventEmitter } from 'events';
 
 /**
@@ -37,17 +38,6 @@ export class Capabilities {
      * Subscribe to server creation and deletion events
      */
     private listenToClientCapabilities() {
-        const handler: RequestHandler<Protocol.CapabilitiesRequest, Protocol.CapabilitiesResponse, void> = (p, token) => {
-            const response: Protocol.CapabilitiesResponse = {map: {}};
-            p.list.forEach(element => {
-                if (element === 'protocol.version') {
-                    response.map[element] = '0.10.0';
-                } else if (element === 'prompt.string') {
-                    response.map[element] =  'true';
-                }
-            });
-            return response;
-    };
     let acceptor: (s: string) => void;
     let rejector: (e: Error) => void;
     const promise = new Promise<string>((resolve, reject) => {
@@ -58,11 +48,20 @@ export class Capabilities {
             reject(e);
         };
     });
- this.connection.onRequest(Messages.Client.GetClientCapabilitiesRequest.type, handler);
         const handler1: RequestHandler<Protocol.StringPrompt, String, void> = (p, token) => {
             this.emitter.emit(Messages.Client.PromptStringRequest.type.method, p, acceptor, rejector);
             return promise;
         };
         this.connection.onRequest(Messages.Client.PromptStringRequest.type, handler1);
+    }
+
+       /**
+     * Finds suitable servers in a directory
+     * @param path path to the desired directory
+     * @param timeout timeout in milliseconds
+     */
+    registerClientCapabilities(capabilities: {}, timeout: number = 2000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.RegisterClientCapabilitiesRequest.type,
+             {map: capabilities}, timeout, ErrorMessages.REGISTERCLIENT_CAPABILITIES_TIMEOUT);
     }
 }

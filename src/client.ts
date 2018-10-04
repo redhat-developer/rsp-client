@@ -20,6 +20,7 @@ export class RSPClient {
     private discoveryUtil: Discovery;
     private serverUtil: ServerModel;
     private launcherUtil: ServerLauncher;
+    private capabilitiesUtil: Capabilities;
     private emitter: EventEmitter;
 
     /**
@@ -49,15 +50,18 @@ export class RSPClient {
                 this.connection = rpc.createMessageConnection(
                     new rpc.StreamMessageReader(this.socket),
                     new rpc.StreamMessageWriter(this.socket));
-                this.connection.trace(rpc.Trace.Verbose, {log: (message: string, data?: string) => {
-                    console.log('Message=' + message + 'data=' + data);
-                }});
+                if (this.connection.trace) {
+                    this.connection.trace(rpc.Trace.Verbose, {log: (message: string, data?: string) => {
+                        console.log('Message=' + message + 'data=' + data);
+                    }});
+                    }
 
+                this.connection.listen();
                 this.discoveryUtil = new Discovery(this.connection, this.emitter);
                 this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
-                new Capabilities(this.connection, this.emitter);
-                this.connection.listen();
+                this.capabilitiesUtil = new Capabilities(this.connection, this.emitter);
+                this.capabilitiesUtil.registerClientCapabilities(this.getCapabilities());
                 clearTimeout(timer);
                 resolve();
             });
@@ -464,5 +468,12 @@ export class RSPClient {
      */
     removeAllListeners(eventName: string): void {
         this.emitter.removeAllListeners(eventName);
+    }
+
+    /**
+     * Returns the capabilities implemented by the client
+     */
+    getCapabilities(): {} {
+        return {'protocol.version': '0.10.0', 'prompt.string': true};
     }
 }

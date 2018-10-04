@@ -53,7 +53,7 @@ export class ServerModel {
                 'server.home.dir': serverBeans[0].location
             }
         };
-        if (serverBeans[0].typeCategory === 'MINISHIFT') {
+        if ((serverBeans[0].typeCategory === 'MINISHIFT') || (serverBeans[0].typeCategory === 'CDK')) {
             serverAttributes.attributes['server.home.file'] = serverBeans[0].location;
         }
         return Common.sendSimpleRequest(this.connection, Messages.Server.CreateServerRequest.type, serverAttributes,
@@ -76,7 +76,7 @@ export class ServerModel {
                 'server.home.dir': serverBean.location
             }
         };
-        if (serverBean.typeCategory === 'MINISHIFT') {
+        if ((serverBean.typeCategory === 'MINISHIFT') || (serverBean.typeCategory === 'CDK')) {
             serverAttributes.attributes['server.home.file'] = serverBean.location;
         }
         return Common.sendSimpleRequest(this.connection, Messages.Server.CreateServerRequest.type, serverAttributes,
@@ -116,7 +116,7 @@ export class ServerModel {
                     'server.home.dir': serverBeans[0].location
                 }
             };
-            if (serverBeans[0].typeCategory === 'MINISHIFT') {
+            if ((serverBeans[0].typeCategory === 'MINISHIFT') || (serverBeans[0].typeCategory === 'CDK')) {
                 serverAttributes.attributes['server.home.file'] = serverBeans[0].location;
             }
 
@@ -157,7 +157,7 @@ export class ServerModel {
                     'server.home.dir': serverBean.location
                 }
             };
-            if (serverBean.typeCategory === 'MINISHIFT') {
+            if ((serverBean.typeCategory === 'MINISHIFT') || (serverBean.typeCategory === 'CDK')) {
                 serverAttributes.attributes['server.home.file'] = serverBean.location;
             }
             result = this.connection.sendRequest(Messages.Server.CreateServerRequest.type, serverAttributes);

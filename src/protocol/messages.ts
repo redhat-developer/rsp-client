@@ -219,6 +219,10 @@ export namespace Messages {
         export namespace ShutdownNotification {
             export const type = new NotificationType<void, void>('server/shutdown');
         }
+
+        export namespace RegisterClientCapabilitiesRequest {
+            export const type = new RequestType<Protocol.CapabilitiesRequest, Protocol.Status, void, void>('server/registerClientCapabilities');
+        }
     }
 
     /**
@@ -337,10 +341,6 @@ export namespace Messages {
          */
         export namespace ServerProcessOutputAppendedNotification {
             export const type = new NotificationType<Protocol.ServerProcessOutput, void>('client/serverProcessOutputAppended');
-        }
-
-        export namespace GetClientCapabilitiesRequest {
-            export const type = new RequestType<Protocol.CapabilitiesRequest, Protocol.CapabilitiesResponse, void, void>('client/getClientCapabilities');
         }
 
         export namespace PromptStringRequest {

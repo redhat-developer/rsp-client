@@ -95,4 +95,5 @@ export namespace ErrorMessages {
     export const STARTSERVER_TIMEOUT = 'Failed to start server in time';
     export const STOPSERVER_TIMEOUT = 'Failed to stop server in time';
     export const CREATESERVER_TIMEOUT = 'Failed to create server in time';
+    export const REGISTERCLIENT_CAPABILITIES_TIMEOUT = 'Failed to register capabilities';
 }

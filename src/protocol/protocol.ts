@@ -117,10 +117,6 @@ export namespace Protocol {
     }
 
     export interface CapabilitiesRequest {
-        list: string[];
-    }
-
-    export interface CapabilitiesResponse {
         map: { [index: string]: string };
     }
 
