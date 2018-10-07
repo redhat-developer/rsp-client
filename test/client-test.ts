@@ -251,7 +251,7 @@ describe('RSP Client', () => {
 
             const result = await client.createServerSync('path', 'id');
 
-            expect(modelStub.createServerFromPath).calledWith('path', 'id', defaultTimeout);
+            expect(modelStub.createServerFromPath).calledWith('path', 'id', undefined, defaultTimeout);
             expect(result).equals(response);
         });
 
@@ -273,7 +273,7 @@ describe('RSP Client', () => {
 
             const result = await client.createServerSync(serverBean);
 
-            expect(modelStub.createServerFromBean).calledWith(serverBean, undefined, defaultTimeout);
+            expect(modelStub.createServerFromBean).calledWith(serverBean, undefined, undefined, defaultTimeout);
             expect(result).equals(response);
         });
 

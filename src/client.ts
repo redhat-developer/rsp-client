@@ -162,14 +162,14 @@ export class RSPClient {
      * @param id unique identifier for the newly created server
      * @param timeout timeout in milliseconds
      */
-    createServerSync(pathOrBean: string | Protocol.ServerBean, id?: string, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    createServerSync(pathOrBean: string | Protocol.ServerBean, id?: string, attributes?: any, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         if (typeof(pathOrBean) === 'string') {
             if (!id) {
                 return Promise.reject(new Error('ID is required when creating server from a path'));
             }
-            return this.serverUtil.createServerFromPath(pathOrBean, id, timeout);
+            return this.serverUtil.createServerFromPath(pathOrBean, id, attributes, timeout);
         } else {
-            return this.serverUtil.createServerFromBean(pathOrBean, id, timeout);
+            return this.serverUtil.createServerFromBean(pathOrBean, id, attributes, timeout);
         }
     }
 
