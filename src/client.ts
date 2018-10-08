@@ -61,7 +61,6 @@ export class RSPClient {
                 this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
                 this.capabilitiesUtil = new Capabilities(this.connection, this.emitter);
-                this.capabilitiesUtil.registerClientCapabilities(this.getCapabilities());
                 clearTimeout(timer);
                 resolve();
             });
@@ -468,6 +467,16 @@ export class RSPClient {
      */
     removeAllListeners(eventName: string): void {
         this.emitter.removeAllListeners(eventName);
+    }
+
+    /**
+     * register client capabilities to the server
+     *
+     * @param capabilities client capabilities to register
+     * @param timeout timeout in milliseconds
+     */
+    registerClientCapabilities(capabilities:any, timeout: number = 2000) : Promise<Protocol.Status> {
+        return this.capabilitiesUtil.registerClientCapabilities(capabilities);
     }
 
     /**

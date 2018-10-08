@@ -128,9 +128,10 @@ describe('RSP Client', () => {
             expect(connectStub).calledWith(port, host);
         });
 
-        it('connect should call registerClientCapabilities', async () => {
+        it('registerClientCapabilities should delegate to capabilities utility', async () => {
             capabilitiesStub.registerClientCapabilities = sandbox.stub().resolves(status);
             await client.connect();
+            client.registerClientCapabilities(client.getCapabilities());
             expect(connectStub).calledOnce;
             expect(connectStub).calledWith(port, host);
             expect(capabilitiesStub.registerClientCapabilities).calledOnce;
