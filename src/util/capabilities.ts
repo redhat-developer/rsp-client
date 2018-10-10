@@ -55,9 +55,9 @@ export class Capabilities {
         this.connection.onRequest(Messages.Client.PromptStringRequest.type, handler1);
     }
 
-       /**
-     * Finds suitable servers in a directory
-     * @param path path to the desired directory
+    /**
+     * Register client capabilities to the server
+     * @param capabilities the client capabilities
      * @param timeout timeout in milliseconds
      */
     registerClientCapabilities(capabilities: {}, timeout: number = 2000): Promise<Protocol.Status> {
