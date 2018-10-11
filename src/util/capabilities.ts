@@ -7,17 +7,6 @@ import { EventEmitter } from 'events';
 /**
  * Client capabilities handler
  */
-export class LocalPromise extends Promise<string> {
-    resolve: (s: string) => void;
-    reject: (e: Error) => void;
-
-    constructor(callback: (resolve: (s: string) => void, reject: (e: Error) => void) => void) {
-        super((resolve, reject) => {
-        });
-}
-
-}
-
 export class Capabilities {
 
     private connection: MessageConnection;
