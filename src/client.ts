@@ -475,7 +475,7 @@ export class RSPClient {
      * @param capabilities client capabilities to register
      * @param timeout timeout in milliseconds
      */
-    registerClientCapabilities(capabilities:any, timeout: number = 2000) : Promise<Protocol.Status> {
+    registerClientCapabilities(capabilities:any, timeout: number = 2000) : Promise<Protocol.ServerCapabilitesResponse> {
         return this.capabilitiesUtil.registerClientCapabilities(capabilities);
     }
 

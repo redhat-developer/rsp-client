@@ -60,7 +60,7 @@ export class Capabilities {
      * @param capabilities the client capabilities
      * @param timeout timeout in milliseconds
      */
-    registerClientCapabilities(capabilities: {}, timeout: number = 2000): Promise<Protocol.Status> {
+    registerClientCapabilities(capabilities: {}, timeout: number = 2000): Promise<Protocol.ServerCapabilitesResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RegisterClientCapabilitiesRequest.type,
              {map: capabilities}, timeout, ErrorMessages.REGISTERCLIENT_CAPABILITIES_TIMEOUT);
     }

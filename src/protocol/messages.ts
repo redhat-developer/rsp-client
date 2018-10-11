@@ -221,7 +221,7 @@ export namespace Messages {
         }
 
         export namespace RegisterClientCapabilitiesRequest {
-            export const type = new RequestType<Protocol.CapabilitiesRequest, Protocol.Status, void, void>('server/registerClientCapabilities');
+            export const type = new RequestType<Protocol.ClientCapabilitiesRequest, Protocol.ServerCapabilitesResponse, void, void>('server/registerClientCapabilities');
         }
     }
 

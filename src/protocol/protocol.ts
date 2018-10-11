@@ -116,7 +116,12 @@ export namespace Protocol {
         id: string;
     }
 
-    export interface CapabilitiesRequest {
+    export interface ClientCapabilitiesRequest {
+        map: { [index: string]: string };
+    }
+
+    export interface ServerCapabilitesResponse {
+        clientRegistrationStatus: Status;
         map: { [index: string]: string };
     }
 
