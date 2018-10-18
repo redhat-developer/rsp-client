@@ -437,8 +437,9 @@ export class RSPClient {
         this.emitter.on('serverProcessTerminated', listener);
     }
 
-    onStringPrompt(listener: (arg: Protocol.StringPrompt, resolve: (s: string) => void, reject: (e: Error) => void) => void): void {
-        this.emitter.on(Messages.Client.PromptStringRequest.type.method, listener);
+    onStringPrompt(listener: (arg: Protocol.StringPrompt) => Promise<string>): void {
+        //this.emitter.on(Messages.Client.PromptStringRequest.type.method, listener);
+        this.capabilitiesUtil.onStringPrompt(listener);
     }
 
     /**
@@ -475,14 +476,14 @@ export class RSPClient {
      * @param capabilities client capabilities to register
      * @param timeout timeout in milliseconds
      */
-    registerClientCapabilities(capabilities: any, timeout: number = 2000): Promise<Protocol.ServerCapabilitesResponse> {
+    registerClientCapabilities(capabilities: Protocol.ClientCapabilitiesRequest, timeout: number = 2000): Promise<Protocol.ServerCapabilitesResponse> {
         return this.capabilitiesUtil.registerClientCapabilities(capabilities);
     }
 
     /**
      * Returns the capabilities implemented by the client
      */
-    getCapabilities(): {} {
-        return {'protocol.version': '0.10.0', 'prompt.string': true};
+    getCapabilities(): Protocol.ClientCapabilitiesRequest {
+        return {map: {'protocol.version': '0.10.0', 'prompt.string': 'true'}};
     }
 }
