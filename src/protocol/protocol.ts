@@ -33,16 +33,6 @@ export namespace Protocol {
         params: ServerAttributes;
     }
 
-    export interface Attributes {
-        attributes: { [index: string]: Attribute };
-    }
-
-    export interface Attribute {
-        type: string;
-        description: string;
-        defaultVal: any;
-    }
-
     export interface ServerAttributes {
         serverType: string;
         id: string;

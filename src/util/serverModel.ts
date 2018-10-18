@@ -44,7 +44,7 @@ export class ServerModel {
      * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    async createServerFromPathAsync(path: string, id: string, attributes?: any, timeout: number = 2000): Promise<Protocol.Status> {
+    async createServerFromPathAsync(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.Status> {
         const serverBeans = await Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
             {filepath: path}, timeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
             const atts = Object.assign({}, attributes);
