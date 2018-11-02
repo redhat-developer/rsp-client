@@ -60,7 +60,7 @@ export class RSPClient {
                 this.discoveryUtil = new Discovery(this.connection, this.emitter);
                 this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
-                this.capabilitiesUtil = new Capabilities(this.connection, this.emitter);
+                this.capabilitiesUtil = new Capabilities(this.connection);
                 clearTimeout(timer);
                 resolve();
             });
@@ -437,8 +437,12 @@ export class RSPClient {
         this.emitter.on('serverProcessTerminated', listener);
     }
 
+    /**
+     * Register a listener for the onString prompt notification
+     * 
+     * @param listener the listener to register
+     */
     onStringPrompt(listener: (arg: Protocol.StringPrompt) => Promise<string>): void {
-        //this.emitter.on(Messages.Client.PromptStringRequest.type.method, listener);
         this.capabilitiesUtil.onStringPrompt(listener);
     }
 
