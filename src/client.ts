@@ -439,7 +439,7 @@ export class RSPClient {
 
     /**
      * Register a listener for the onString prompt notification
-     * 
+     *
      * @param listener the listener to register
      */
     onStringPrompt(listener: (arg: Protocol.StringPrompt) => Promise<string>): void {

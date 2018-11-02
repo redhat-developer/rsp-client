@@ -9,7 +9,7 @@ import { Common, ErrorMessages } from './common';
 export class Capabilities {
 
     private connection: MessageConnection;
- 
+
     /**
      * Constructs a new server model handler
      * @param connection message connection to the RSP
@@ -30,8 +30,8 @@ export class Capabilities {
 
     /**
      * Register a listen for the onStringPrompt notification.
-     * 
-     * @param listener the listener  
+     *
+     * @param listener the listener
      */
     onStringPrompt(listener: (p: Protocol.StringPrompt) => Promise<string>): void {
         this.connection.onRequest(Messages.Client.PromptStringRequest.type, listener);

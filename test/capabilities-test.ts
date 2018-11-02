@@ -15,7 +15,6 @@ describe('Capabilities Utility', () => {
 
     let capabilitiesStub: sinon.SinonStubbedInstance<Capabilities>;
 
-
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         sandbox.stub(rpc, 'createMessageConnection');
@@ -26,7 +25,7 @@ describe('Capabilities Utility', () => {
         connection.onNotification = sandbox.stub().returns(null);
 
         capabilitiesStub = sandbox.stub(Capabilities.prototype);
-        capabilitiesStub.onStringPrompt.callsArgWith(0, {code:100, prompt: 'Enter your name'});
+        capabilitiesStub.onStringPrompt.callsArgWith(0, {code: 100, prompt: 'Enter your name'});
     });
 
     afterEach(() => {
@@ -34,11 +33,11 @@ describe('Capabilities Utility', () => {
     });
 
     it('onStringPrompt listener should be called', async () => {
-        let listener = (p:Protocol.StringPrompt) : Promise<String> => {
-            return Promise.resolve("Joe Doe");
+        const listener = (p: Protocol.StringPrompt): Promise<String> => {
+            return Promise.resolve('Joe Doe');
 
         };
-        let listenerSpy = sinon.spy(listener);
+        const listenerSpy = sinon.spy(listener);
         capabilitiesStub.onStringPrompt(listenerSpy);
 
         expect(listenerSpy).calledOnce;
