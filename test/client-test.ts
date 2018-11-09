@@ -7,6 +7,7 @@ import * as rpc from 'vscode-jsonrpc';
 import { Discovery } from '../src/util/discovery';
 import { ServerModel } from '../src/util/serverModel';
 import { ServerLauncher } from '../src/util/serverLauncher';
+import { Capabilities } from '../src/util/capabilities';
 import { Messages } from '../src/protocol/messages';
 import { Protocol } from '../src/protocol/protocol';
 import { EventEmitter } from 'events';
@@ -27,6 +28,7 @@ describe('RSP Client', () => {
     let discoveryStub: sinon.SinonStubbedInstance<Discovery>;
     let modelStub: sinon.SinonStubbedInstance<ServerModel>;
     let launcherStub: sinon.SinonStubbedInstance<ServerLauncher>;
+    let capabilitiesStub: sinon.SinonStubbedInstance<Capabilities>;
 
     const fakeSocket = {
         end: () => {},
@@ -112,6 +114,7 @@ describe('RSP Client', () => {
         discoveryStub = sandbox.stub(Discovery.prototype);
         modelStub = sandbox.stub(ServerModel.prototype);
         launcherStub = sandbox.stub(ServerLauncher.prototype);
+        capabilitiesStub = sandbox.stub(Capabilities.prototype);
     });
 
     afterEach(() => {
@@ -123,6 +126,15 @@ describe('RSP Client', () => {
             await client.connect();
             expect(connectStub).calledOnce;
             expect(connectStub).calledWith(port, host);
+        });
+
+        it('registerClientCapabilities should delegate to capabilities utility', async () => {
+            capabilitiesStub.registerClientCapabilities = sandbox.stub().resolves(status);
+            await client.connect();
+            client.registerClientCapabilities(client.getCapabilities());
+            expect(connectStub).calledOnce;
+            expect(connectStub).calledWith(port, host);
+            expect(capabilitiesStub.registerClientCapabilities).calledOnce;
         });
 
         it('connect should create a message connection', async () => {

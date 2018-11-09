@@ -5,6 +5,7 @@ import { Messages } from './protocol/messages';
 import { Discovery } from './util/discovery';
 import { ServerModel } from './util/serverModel';
 import { ServerLauncher } from './util/serverLauncher';
+import { Capabilities } from './util/capabilities';
 import { EventEmitter } from 'events';
 
 /**
@@ -19,6 +20,7 @@ export class RSPClient {
     private discoveryUtil: Discovery;
     private serverUtil: ServerModel;
     private launcherUtil: ServerLauncher;
+    private capabilitiesUtil: Capabilities;
     private emitter: EventEmitter;
 
     /**
@@ -48,11 +50,17 @@ export class RSPClient {
                 this.connection = rpc.createMessageConnection(
                     new rpc.StreamMessageReader(this.socket),
                     new rpc.StreamMessageWriter(this.socket));
-                this.connection.listen();
+                if (this.connection.trace) {
+                    this.connection.trace(rpc.Trace.Verbose, {log: (message: string, data?: string) => {
+                        console.log('Message=' + message + 'data=' + data);
+                    }});
+                    }
 
+                this.connection.listen();
                 this.discoveryUtil = new Discovery(this.connection, this.emitter);
                 this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
+                this.capabilitiesUtil = new Capabilities(this.connection);
                 clearTimeout(timer);
                 resolve();
             });
@@ -430,6 +438,15 @@ export class RSPClient {
     }
 
     /**
+     * Register a listener for the onString prompt notification
+     *
+     * @param listener the listener to register
+     */
+    onStringPrompt(listener: (arg: Protocol.StringPrompt) => Promise<string>): void {
+        this.capabilitiesUtil.onStringPrompt(listener);
+    }
+
+    /**
      * Retrieves all listeners bound to an event
      *
      * @param eventName name of the event to get listeners for
@@ -455,5 +472,22 @@ export class RSPClient {
      */
     removeAllListeners(eventName: string): void {
         this.emitter.removeAllListeners(eventName);
+    }
+
+    /**
+     * register client capabilities to the server
+     *
+     * @param capabilities client capabilities to register
+     * @param timeout timeout in milliseconds
+     */
+    registerClientCapabilities(capabilities: Protocol.ClientCapabilitiesRequest, timeout: number = 2000): Promise<Protocol.ServerCapabilitesResponse> {
+        return this.capabilitiesUtil.registerClientCapabilities(capabilities, timeout);
+    }
+
+    /**
+     * Returns the capabilities implemented by the client
+     */
+    getCapabilities(): Protocol.ClientCapabilitiesRequest {
+        return {map: {'protocol.version': '0.10.0', 'prompt.string': 'true'}};
     }
 }
