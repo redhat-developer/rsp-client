@@ -69,7 +69,7 @@ export class ServerModel {
      * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    async createServerFromBeanAsync(serverBean: Protocol.ServerBean, id?: string, attributes?: any, timeout: number = 2000): Promise<Protocol.Status> {
+    async createServerFromBeanAsync(serverBean: Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.Status> {
         const serverId = id ? id : serverBean.name;
         const atts = Object.assign({}, attributes);
         atts['server.home.dir'] = serverBean.location;
@@ -93,7 +93,7 @@ export class ServerModel {
      * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    createServerFromPath(path: string, id: string, attributes?: any, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    createServerFromPath(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
             const timer = setTimeout(() => {
                 return reject(new Error(ErrorMessages.CREATESERVER_TIMEOUT));
@@ -131,9 +131,10 @@ export class ServerModel {
      * event with the given id
      * @param serverBean ServerBean object
      * @param id unique identifier for the new server, if left empty, the serverBean.name will be used
+     * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    createServerFromBean(serverBean: Protocol.ServerBean, id?: string, attributes?: any, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    createServerFromBean(serverBean: Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
             const serverId = id ? id : serverBean.name;
             const timer = setTimeout(() => {
