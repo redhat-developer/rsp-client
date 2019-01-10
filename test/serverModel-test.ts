@@ -236,7 +236,7 @@ describe('Sever Model Utility', () => {
                 }, 1);
 
                 try {
-                    await model.createServerFromPath(discoveryPath.filepath, 'id', 2);
+                    await model.createServerFromPath(discoveryPath.filepath, 'id', undefined, 2);
                     expect.fail('Creation finished with the wrong server id');
                 } catch (err) {
                     expect(unregSpy).not.called;
@@ -245,7 +245,7 @@ describe('Sever Model Utility', () => {
 
             it('createServerFromPath should error on timeout', async () => {
                 try {
-                    await model.createServerFromPath(discoveryPath.filepath, 'id', 1);
+                    await model.createServerFromPath(discoveryPath.filepath, 'id', undefined, 1);
                     expect.fail('No error thrown on timeout');
                 } catch (err) {
                     expect(err.message).equals(ErrorMessages.CREATESERVER_TIMEOUT);
@@ -306,7 +306,7 @@ describe('Sever Model Utility', () => {
                 }, 1);
 
                 try {
-                    await model.createServerFromBean(serverBean, serverBean.name, 2);
+                    await model.createServerFromBean(serverBean, serverBean.name, undefined, 2);
                     expect.fail('Creation finished with the wrong server id');
                 } catch (err) {
                     expect(unregSpy).not.called;
@@ -344,7 +344,7 @@ describe('Sever Model Utility', () => {
 
             it('createServerFromBean should error on timeout', async () => {
                 try {
-                    await model.createServerFromBean(serverBean, 'id', 1);
+                    await model.createServerFromBean(serverBean, 'id', undefined, 1);
                     expect.fail('No error thrown on timeout');
                 } catch (err) {
                     expect(err.message).equals(ErrorMessages.CREATESERVER_TIMEOUT);
