@@ -160,9 +160,10 @@ export class RSPClient {
      *
      * @param path path to the server's root directory, or a ServerBean object representing the server
      * @param id unique identifier for the newly created server
+     * @param attributes optional server attributes
      * @param timeout timeout in milliseconds
      */
-    createServerSync(pathOrBean: string | Protocol.ServerBean, id?: string, attributes?: any, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    createServerSync(pathOrBean: string | Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.ServerHandle> {
         if (typeof(pathOrBean) === 'string') {
             if (!id) {
                 return Promise.reject(new Error('ID is required when creating server from a path'));
@@ -179,9 +180,10 @@ export class RSPClient {
      *
      * @param path path to the server's root directory, or a ServerBean object representing the server
      * @param id unique identifier for the newly created server
+     * @param attributes optional server attributes
      * @param timeout timeout in milliseconds
      */
-    createServerAsync(pathOrBean: string | Protocol.ServerBean, id?: string, attributes?: any, timeout: number = 2000): Promise<Protocol.Status> {
+    createServerAsync(pathOrBean: string | Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.Status> {
         if (typeof(pathOrBean) === 'string') {
             if (!id) {
                 return Promise.reject(new Error('ID is required when creating server from a path'));

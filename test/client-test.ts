@@ -102,6 +102,9 @@ describe('RSP Client', () => {
         properties: { foo: 'foo' },
         workingDir: 'dir'
     };
+    const extraAttributes:{ [index: string]: any } = {
+        att1: 'value1'
+    };
 
     beforeEach(() => {
         client = new RSPClient(host, port);
@@ -255,6 +258,16 @@ describe('RSP Client', () => {
             expect(result).equals(response);
         });
 
+        it('createServerSync should accept a path and attributes', async () => {
+            const response = serverHandle;
+            modelStub.createServerFromPath = sandbox.stub().resolves(response);
+
+            const result = await client.createServerSync('path', 'id', extraAttributes);
+
+            expect(modelStub.createServerFromPath).calledWith('path', 'id', extraAttributes, defaultTimeout);
+            expect(result).equals(response);
+        });
+
         it('createServerSync should require and id when called with a path', async () => {
             modelStub.createServerFromPath = sandbox.stub();
 
@@ -284,6 +297,16 @@ describe('RSP Client', () => {
             const result = await client.createServerAsync('path', 'id');
 
             expect(modelStub.createServerFromPathAsync).calledWith('path', 'id', undefined, defaultTimeout);
+            expect(result).equals(response);
+        });
+
+        it('createServerAsync should accept a path and attributes', async () => {
+            const response = status;
+            modelStub.createServerFromPathAsync = sandbox.stub().resolves(response);
+
+            const result = await client.createServerAsync('path', 'id', extraAttributes);
+
+            expect(modelStub.createServerFromPathAsync).calledWith('path', 'id', extraAttributes, defaultTimeout);
             expect(result).equals(response);
         });
 
