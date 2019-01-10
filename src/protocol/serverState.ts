@@ -34,12 +34,6 @@ export namespace ServerState {
     export const STOPPED = 4;
 
     /**
-	 * Publish state constant (value 0) indicating that it's
-	 * in an unknown state.
-	 */
-    export const PUBLISH_STATE_UNKNOWN = 0;
-
-    /**
 	 * Publish state constant (value 1) indicating that there
 	 * is no publish required.
 	 */
@@ -58,6 +52,24 @@ export namespace ServerState {
     export const PUBLISH_STATE_FULL = 3;
 
     /**
+	 * Publish state constant (value 4) indicating that the
+	 * deployable has yet to be added / deployed, and should be.
+	 */
+    export const PUBLISH_STATE_ADD = 4;
+
+    /**
+	 * Publish state constant (value 5) indicating that a
+	 * removal of the deployable is required
+	 */
+    export const  PUBLISH_STATE_REMOVE = 5;
+
+    /**
+	 * Publish state constant (value 6) indicating that it's
+	 * in an unknown state.
+	 */
+    export const PUBLISH_STATE_UNKNOWN = 6;
+
+    /**
 	 * Publish kind constant (value 1) indicating an incremental publish request.
 	 */
     export const PUBLISH_INCREMENTAL = 1;
@@ -68,12 +80,12 @@ export namespace ServerState {
     export const PUBLISH_FULL = 2;
 
     /**
-	 * Publish kind constant (value 3) indicating an automatic publish request.
+	 * Publish kind constant (value 3) indicating a publish clean request
 	 */
-    export const PUBLISH_AUTO = 3;
+    export const PUBLISH_CLEAN = 3;
 
     /**
-	 * Publish kind constant (value 4) indicating a publish clean request
+	 * Publish kind constant (value 4) indicating an automatic publish request.
 	 */
-    export const PUBLISH_CLEAN = 4;
+    export const PUBLISH_AUTO = 4;
 }

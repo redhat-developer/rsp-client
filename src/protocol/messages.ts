@@ -221,7 +221,7 @@ export namespace Messages {
         }
 
         export namespace RegisterClientCapabilitiesRequest {
-            export const type = new RequestType<Protocol.ClientCapabilitiesRequest, Protocol.ServerCapabilitesResponse, void, void>('server/registerClientCapabilities');
+            export const type = new RequestType<Protocol.ClientCapabilitiesRequest, Protocol.ServerCapabilitiesResponse, void, void>('server/registerClientCapabilities');
         }
     }
 
@@ -300,7 +300,7 @@ export namespace Messages {
          *   `4` representing stopped
          */
         export namespace ServerStateChangedNotification {
-            export const type = new NotificationType<Protocol.ServerStateChange, void>('client/serverStateChanged');
+            export const type = new NotificationType<Protocol.ServerState, void>('client/serverStateChanged');
         }
 
         /**

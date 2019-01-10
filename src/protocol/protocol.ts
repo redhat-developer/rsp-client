@@ -2,6 +2,7 @@
  * Json objects sent between the server and the client
  */
 export namespace Protocol {
+
     export interface Attribute {
         type: string;
         description: string;
@@ -12,6 +13,10 @@ export namespace Protocol {
         attributes: { [index: string]: Attribute };
     }
 
+    export interface ClientCapabilitiesRequest {
+        map: { [index: string]: string };
+    }
+
     export interface CommandLineDetails {
         cmdLine: string[];
         workingDir: string;
@@ -19,8 +24,43 @@ export namespace Protocol {
         properties: { [index: string]: string };
     }
 
+    export interface CreateServerResponse {
+        status: Status;
+        invalidKeys: string[];
+    }
+
+    export interface DeployableReference {
+        label: string;
+        path: string;
+    }
+
+    export interface DeployableState {
+        reference: DeployableReference;
+        state: number;
+        publishState: number;
+    }
+
     export interface DiscoveryPath {
         filepath: string;
+    }
+
+    export interface DownloadRuntimeDescription {
+        name: string;
+        id: string;
+        version: string;
+        url: string;
+        licenseURL: string;
+        humanUrl: string;
+        disclaimer: boolean;
+        properties: { [index: string]: string };
+        size: string;
+        installationMethod: string;
+    }
+
+    export interface DownloadSingleRuntimeRequest {
+        requestId: number;
+        downloadRuntimeId: string;
+        data: { [index: string]: any };
     }
 
     export interface LaunchAttributesRequest {
@@ -31,6 +71,20 @@ export namespace Protocol {
     export interface LaunchParameters {
         mode: string;
         params: ServerAttributes;
+    }
+
+    export interface ListDownloadRuntimeResponse {
+        runtimes: DownloadRuntimeDescription[];
+    }
+
+    export interface ModifyDeployableRequest {
+        server: ServerHandle;
+        deployable: DeployableReference;
+    }
+
+    export interface PublishServerRequest {
+        server: ServerHandle;
+        kind: number;
     }
 
     export interface ServerAttributes {
@@ -47,6 +101,11 @@ export namespace Protocol {
         version: string;
         fullVersion: string;
         serverAdapterTypeId: string;
+    }
+
+    export interface ServerCapabilitiesResponse {
+        serverCapabilities: { [index: string]: string };
+        clientRegistrationStatus: Status;
     }
 
     export interface ServerHandle {
@@ -76,9 +135,11 @@ export namespace Protocol {
         request: LaunchParameters;
     }
 
-    export interface ServerStateChange {
+    export interface ServerState {
         server: ServerHandle;
         state: number;
+        publishState: number;
+        deployableStates: DeployableState[];
     }
 
     export interface ServerType {
@@ -94,6 +155,7 @@ export namespace Protocol {
 
     export interface Status {
         severity: number;
+        pluginId: string;
         code: number;
         message: string;
         trace: string;
@@ -106,6 +168,11 @@ export namespace Protocol {
         force: boolean;
     }
 
+    export interface StringPrompt {
+        code: number;
+        prompt: string;
+    }
+
     export interface VMDescription {
         id: string;
         installLocation: string;
@@ -116,17 +183,18 @@ export namespace Protocol {
         id: string;
     }
 
-    export interface ClientCapabilitiesRequest {
-        map: { [index: string]: string };
+    export interface WorkflowResponse {
+        status: Status;
+        requestId: number;
+        items: WorkflowResponseItem[];
     }
 
-    export interface ServerCapabilitesResponse {
-        clientRegistrationStatus: Status;
-        map: { [index: string]: string };
-    }
-
-    export interface StringPrompt {
-        code: number;
-        prompt: string;
+    export interface WorkflowResponseItem {
+        id: string;
+        itemType: string;
+        label: string;
+        content: string;
+        responseType: string;
+        validResponses: string[];
     }
 }
