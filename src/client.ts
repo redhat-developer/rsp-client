@@ -52,9 +52,9 @@ export class RSPClient {
                     new rpc.StreamMessageWriter(this.socket));
                 if (this.connection.trace) {
                     this.connection.trace(rpc.Trace.Verbose, {log: (message: string, data?: string) => {
-                        console.log('Message=' + message + 'data=' + data);
+                        console.log(`Message=${message} data=${data}`);
                     }});
-                    }
+                }
 
                 this.connection.listen();
                 this.discoveryUtil = new Discovery(this.connection, this.emitter);
