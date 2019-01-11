@@ -4,13 +4,14 @@
     "module": "commonjs",
     "declaration": true,
     "outDir": "lib",
-    "rootDir": "src",
+    "rootDir": ".",
     "strict": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "noUnusedLocals": true
   },
   "include": [
-    "src"
+    "src",
+    "test"
   ]
 }

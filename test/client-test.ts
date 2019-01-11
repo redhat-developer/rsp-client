@@ -22,6 +22,7 @@ describe('RSP Client', () => {
     const defaultTimeout = 2000;
     let sandbox: sinon.SinonSandbox;
     let client: RSPClient;
+    let rpcStub: sinon.SinonStub;
     let connectStub: sinon.SinonStub;
     let readerStub: sinon.SinonStub;
     let writerStub: sinon.SinonStub;
@@ -29,18 +30,21 @@ describe('RSP Client', () => {
     let modelStub: sinon.SinonStubbedInstance<ServerModel>;
     let launcherStub: sinon.SinonStubbedInstance<ServerLauncher>;
     let capabilitiesStub: sinon.SinonStubbedInstance<Capabilities>;
+    let fakeSocket: net.Socket;
 
-    const fakeSocket = {
-        end: () => {},
-        destroy: () => {},
-        on: (event: string, listener: () => void) => {
-            listener();
-        }
-    };
-    const fakeConnection = {
+    const fakeConnection: rpc.MessageConnection = {
         dispose: () => {},
         listen: () => {},
-        sendNotification: () => {}
+        sendNotification: () => {},
+        inspect: () => {},
+        onClose: sinon.stub(),
+        onDispose: sinon.stub(),
+        onError: sinon.stub(),
+        onNotification: sinon.stub(),
+        onRequest: sinon.stub(),
+        onUnhandledNotification: sinon.stub(),
+        sendRequest: sinon.stub(),
+        trace: sinon.stub()
     };
 
     const discoveryPath: Protocol.DiscoveryPath = {
@@ -102,18 +106,19 @@ describe('RSP Client', () => {
         properties: { foo: 'foo' },
         workingDir: 'dir'
     };
-    const extraAttributes:{ [index: string]: any } = {
+    const extraAttributes: { [index: string]: any } = {
         att1: 'value1'
     };
 
     beforeEach(() => {
         client = new RSPClient(host, port);
+        fakeSocket = new net.Socket();
 
         sandbox = sinon.createSandbox();
         connectStub = sandbox.stub(net, 'connect').returns(fakeSocket);
         readerStub = sandbox.stub(rpc, 'StreamMessageReader');
         writerStub = sandbox.stub(rpc, 'StreamMessageWriter');
-        sandbox.stub(rpc, 'createMessageConnection').returns(fakeConnection);
+        rpcStub = sandbox.stub(rpc, 'createMessageConnection').returns(fakeConnection);
         discoveryStub = sandbox.stub(Discovery.prototype);
         modelStub = sandbox.stub(ServerModel.prototype);
         launcherStub = sandbox.stub(ServerLauncher.prototype);
@@ -124,16 +129,23 @@ describe('RSP Client', () => {
         sandbox.restore();
     });
 
+    async function fakeConnect() {
+        setTimeout(() => {
+            fakeSocket.emit('connect');
+        }, 1);
+        return await client.connect();
+    }
+
     describe('Connection Handling', () => {
         it('connect should attach to websocket with given host and port', async () => {
-            await client.connect();
+            await fakeConnect();
             expect(connectStub).calledOnce;
             expect(connectStub).calledWith(port, host);
         });
 
         it('registerClientCapabilities should delegate to capabilities utility', async () => {
             capabilitiesStub.registerClientCapabilities = sandbox.stub().resolves(status);
-            await client.connect();
+            await fakeConnect();
             client.registerClientCapabilities(client.getCapabilities());
             expect(connectStub).calledOnce;
             expect(connectStub).calledWith(port, host);
@@ -141,9 +153,9 @@ describe('RSP Client', () => {
         });
 
         it('connect should create a message connection', async () => {
-            await client.connect();
-            expect(rpc.createMessageConnection).calledOnce;
-            expect(rpc.createMessageConnection).calledWith(readerStub.prototype, writerStub.prototype);
+            await fakeConnect();
+            expect(rpcStub).calledOnce;
+            expect(rpcStub).calledWith(readerStub.prototype, writerStub.prototype);
         });
 
         it('disconnect should throw if no connection has been established', () => {
@@ -160,7 +172,7 @@ describe('RSP Client', () => {
             const endSpy = sandbox.spy(fakeSocket, 'end');
             const destroySpy = sandbox.spy(fakeSocket, 'destroy');
 
-            await client.connect();
+            await fakeConnect();
             client.disconnect();
 
             expect(disposeSpy).calledOnce;
@@ -170,9 +182,9 @@ describe('RSP Client', () => {
 
         it('shutdownServer should send shutdown notification and disconnect itself', async () => {
             const sendSpy = sandbox.spy(fakeConnection, 'sendNotification');
-            const discStub = sandbox.stub(client, 'disconnect').returns(null);
+            const discStub = sandbox.stub(client, 'disconnect').returns();
 
-            await client.connect();
+            await fakeConnect();
             client.shutdownServer();
 
             expect(sendSpy).calledOnce;
@@ -183,7 +195,7 @@ describe('RSP Client', () => {
 
     describe('Discovery', () => {
         beforeEach(async () => {
-            await client.connect();
+            await fakeConnect();
         });
 
         it('findServerBeans should delegate to discovery utility', async () => {
@@ -245,7 +257,7 @@ describe('RSP Client', () => {
 
     describe('Server Model', () => {
         beforeEach(async () => {
-            await client.connect();
+            await fakeConnect();
         });
 
         it('createServerSync should accept a path', async () => {
@@ -394,7 +406,7 @@ describe('RSP Client', () => {
 
     describe('Server Launching', () => {
         beforeEach(async () => {
-            await client.connect();
+            await fakeConnect();
         });
 
         it('getServerLaunchModes should delegate to server launcher utility', async () => {
@@ -518,7 +530,7 @@ describe('RSP Client', () => {
         let eventStub: sinon.SinonStub;
 
         beforeEach(async () => {
-            await client.connect();
+            await fakeConnect();
             eventStub = sandbox.stub(EventEmitter.prototype, 'on');
         });
 

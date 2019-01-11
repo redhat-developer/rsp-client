@@ -2,14 +2,13 @@
   "name": "rsp-client",
   "version": "0.0.5",
   "description": "Client Implementation of Runtime Server Protocol",
-  "main": "lib/main.js",
-  "types": "lib/main.d.ts",
+  "main": "lib/src/main.js",
+  "types": "lib/src/main.d.ts",
   "scripts": {
     "prepare": "npm run build",
-    "build": "tslint -p tslint.json && tsc",
-    "test": "if [ -z ${ENABLE_JUNIT_REPORTER} ]; then nyc mocha; else nyc mocha --reporter mocha-junit-reporter; fi",
-    "coverage:upload": "codecov -f coverage/*.json",
-    "update-deps": "node_modules/.bin/ncu --upgrade --loglevel verbose --packageFile package.json && npm update"
+    "build": "rm -rf lib/ || rmdir lib /s /q && tslint -p tslint.json && tsc",
+    "test": "nyc mocha",
+    "coverage:upload": "codecov -f coverage/*.json"
   },
   "nyc": {
     "extension": [
