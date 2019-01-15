@@ -223,6 +223,22 @@ export namespace Messages {
         export namespace RegisterClientCapabilitiesRequest {
             export const type = new RequestType<Protocol.ClientCapabilitiesRequest, Protocol.ServerCapabilitiesResponse, void, void>('server/registerClientCapabilities');
         }
+        export namespace GetDeployablesRequest {
+            export const type = new RequestType<Protocol.ServerHandle, Protocol.DeployableState[], void, void>('server/getDeployables');
+        }
+
+        export namespace AddDeployableRequest {
+            export const type = new RequestType<Protocol.ModifyDeployableRequest, Protocol.Status, void, void>('server/addDeployable');
+        }
+
+        export namespace RemoveDeployableRequest {
+            export const type = new RequestType<Protocol.ModifyDeployableRequest, Protocol.Status, void, void>('server/removeDeployable');
+        }
+
+        export namespace PublishRequest {
+            export const type = new RequestType<Protocol.PublishServerRequest, Protocol.Status, void, void>('server/publish');
+        }
+
     }
 
     /**

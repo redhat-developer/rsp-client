@@ -358,6 +358,53 @@ export class RSPClient {
         return this.launcherUtil.stopServerSync(stopAttributes, timeout);
     }
 
+
+
+    /**
+     * Get a list of deployments for the given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    getDeployables(server: Protocol.ServerHandle, timeout: number = 60000): Promise<Protocol.DeployableState[]> {
+        return this.serverUtil.getDeployables(server, timeout);
+    }
+
+
+    /**
+     * Add a deployable to a given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    addDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return this.serverUtil.addDeployable(req, timeout);
+    }
+
+
+    /**
+     * Remove a deployable from a given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    removeDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return this.serverUtil.removeDeployable(req, timeout);
+    }
+
+
+    /**
+     * Publish a given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    publish(req: Protocol.PublishServerRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return this.serverUtil.publish(req, timeout);
+    }
+
+
+
     /**
      * Attaches a listener to discovery path added event
      *
