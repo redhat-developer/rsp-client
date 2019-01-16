@@ -35,6 +35,7 @@ export namespace Protocol {
     }
 
     export interface DeployableState {
+        server: ServerHandle;
         reference: DeployableReference;
         state: number;
         publishState: number;
