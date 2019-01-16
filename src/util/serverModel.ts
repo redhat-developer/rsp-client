@@ -203,6 +203,16 @@ export class ServerModel {
     }
 
     /**
+     * Retreives ServerState by ServerHandle
+     * @param timeout timeout in milliseconds
+     */
+    getServerState(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerState> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerStateRequest.type, serverHandle,
+             timeout, ErrorMessages.GETSERVERS_TIMEOUT);
+    }
+
+
+    /**
      * Retreives all supported server types
      * @param timeout timeout in milliseconds
      */

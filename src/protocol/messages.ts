@@ -67,6 +67,13 @@ export namespace Messages {
         }
 
         /**
+         * The `server/getServerState` request is sent by the client
+         */
+        export namespace GetServerStateRequest {
+            export const type = new RequestType<Protocol.ServerHandle, Protocol.ServerState, void, void>('server/getServerState');
+        }
+
+        /**
          * The `server/getServerTypes` request is sent by the client to list the server
          * types currently supported. The details of how many server types are supported
          * by an RSP, or how they are registered, is implementation-specific.

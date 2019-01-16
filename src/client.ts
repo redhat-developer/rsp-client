@@ -224,6 +224,10 @@ export class RSPClient {
         return this.serverUtil.getServerHandles(timeout);
     }
 
+    getServerState(handle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerState> {
+        return this.serverUtil.getServerState(handle, timeout);
+    }
+
     /**
      * Retreives all supported server types
      *
