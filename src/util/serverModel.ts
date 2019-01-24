@@ -203,6 +203,16 @@ export class ServerModel {
     }
 
     /**
+     * Retreives ServerState by ServerHandle
+     * @param timeout timeout in milliseconds
+     */
+    getServerState(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerState> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerStateRequest.type, serverHandle,
+             timeout, ErrorMessages.GETSERVERS_TIMEOUT);
+    }
+
+
+    /**
      * Retreives all supported server types
      * @param timeout timeout in milliseconds
      */
@@ -230,4 +240,50 @@ export class ServerModel {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
             timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     }
+
+    /**
+     * Get a list of deployments for the given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    getDeployables(server: Protocol.ServerHandle, timeout: number = 60000): Promise<Protocol.DeployableState[]> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetDeployablesRequest.type, server,
+            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+    }
+
+    /**
+     * Add a deployable to a server
+     *
+     * @param req A request properties object {@link Protocol.ModifyDeployableRequest}
+     * @param timeout timeout in milliseconds
+     */
+    addDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.AddDeployableRequest.type, req,
+            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+    }
+
+    /**
+     * Remove a deployable from a server
+     *
+     * @param req A request properties object {@link Protocol.ModifyDeployableRequest}
+     * @param timeout timeout in milliseconds
+     */
+    removeDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDeployableRequest.type, req,
+            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+    }
+
+
+    /**
+     * Publish a server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    publish(server: Protocol.PublishServerRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.PublishRequest.type, server,
+            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+    }
+
 }

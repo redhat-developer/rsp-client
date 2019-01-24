@@ -96,9 +96,11 @@ describe('RSP Client', () => {
         force: false,
         id: 'id'
     };
-    const stateChange: Protocol.ServerStateChange = {
+    const stateChange: Protocol.ServerState = {
         server: serverHandle,
-        state: 0
+        state: 0,
+        publishState: 0,
+        deployableStates: []
     };
     const cliArgs: Protocol.CommandLineDetails = {
         cmdLine: ['command'],

@@ -67,6 +67,13 @@ export namespace Messages {
         }
 
         /**
+         * The `server/getServerState` request is sent by the client
+         */
+        export namespace GetServerStateRequest {
+            export const type = new RequestType<Protocol.ServerHandle, Protocol.ServerState, void, void>('server/getServerState');
+        }
+
+        /**
          * The `server/getServerTypes` request is sent by the client to list the server
          * types currently supported. The details of how many server types are supported
          * by an RSP, or how they are registered, is implementation-specific.
@@ -221,8 +228,24 @@ export namespace Messages {
         }
 
         export namespace RegisterClientCapabilitiesRequest {
-            export const type = new RequestType<Protocol.ClientCapabilitiesRequest, Protocol.ServerCapabilitesResponse, void, void>('server/registerClientCapabilities');
+            export const type = new RequestType<Protocol.ClientCapabilitiesRequest, Protocol.ServerCapabilitiesResponse, void, void>('server/registerClientCapabilities');
         }
+        export namespace GetDeployablesRequest {
+            export const type = new RequestType<Protocol.ServerHandle, Protocol.DeployableState[], void, void>('server/getDeployables');
+        }
+
+        export namespace AddDeployableRequest {
+            export const type = new RequestType<Protocol.ModifyDeployableRequest, Protocol.Status, void, void>('server/addDeployable');
+        }
+
+        export namespace RemoveDeployableRequest {
+            export const type = new RequestType<Protocol.ModifyDeployableRequest, Protocol.Status, void, void>('server/removeDeployable');
+        }
+
+        export namespace PublishRequest {
+            export const type = new RequestType<Protocol.PublishServerRequest, Protocol.Status, void, void>('server/publish');
+        }
+
     }
 
     /**
@@ -300,7 +323,7 @@ export namespace Messages {
          *   `4` representing stopped
          */
         export namespace ServerStateChangedNotification {
-            export const type = new NotificationType<Protocol.ServerStateChange, void>('client/serverStateChanged');
+            export const type = new NotificationType<Protocol.ServerState, void>('client/serverStateChanged');
         }
 
         /**

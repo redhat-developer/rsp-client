@@ -224,6 +224,10 @@ export class RSPClient {
         return this.serverUtil.getServerHandles(timeout);
     }
 
+    getServerState(handle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerState> {
+        return this.serverUtil.getServerState(handle, timeout);
+    }
+
     /**
      * Retreives all supported server types
      *
@@ -343,7 +347,7 @@ export class RSPClient {
      * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
      * @param timeout timeout in milliseconds
      */
-    startServerSync(launchParameters: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
+    startServerSync(launchParameters: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerState> {
         return this.launcherUtil.startServerSync(launchParameters, timeout);
     }
 
@@ -354,9 +358,56 @@ export class RSPClient {
      * @param stopAttributes server stopping parameters, set force to 'true' to force shutdown, see {@link Protocol.StopServerAttributes}
      * @param timeout timeout in milliseconds
      */
-    stopServerSync(stopAttributes: Protocol.StopServerAttributes, timeout: number = 60000): Promise<Protocol.ServerStateChange> {
+    stopServerSync(stopAttributes: Protocol.StopServerAttributes, timeout: number = 60000): Promise<Protocol.ServerState> {
         return this.launcherUtil.stopServerSync(stopAttributes, timeout);
     }
+
+
+
+    /**
+     * Get a list of deployments for the given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    getDeployables(server: Protocol.ServerHandle, timeout: number = 60000): Promise<Protocol.DeployableState[]> {
+        return this.serverUtil.getDeployables(server, timeout);
+    }
+
+
+    /**
+     * Add a deployable to a given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    addDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return this.serverUtil.addDeployable(req, timeout);
+    }
+
+
+    /**
+     * Remove a deployable from a given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    removeDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return this.serverUtil.removeDeployable(req, timeout);
+    }
+
+
+    /**
+     * Publish a given server
+     *
+     * @param server A server handle see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
+    publish(req: Protocol.PublishServerRequest, timeout: number = 60000): Promise<Protocol.Status> {
+        return this.serverUtil.publish(req, timeout);
+    }
+
+
 
     /**
      * Attaches a listener to discovery path added event
@@ -399,7 +450,7 @@ export class RSPClient {
      *
      * @param listener callback to handle the event
      */
-    onServerStateChange(listener: (arg: Protocol.ServerStateChange) => void): void {
+    onServerStateChange(listener: (arg: Protocol.ServerState) => void): void {
         this.emitter.on('serverStateChanged', listener);
     }
 
@@ -482,7 +533,7 @@ export class RSPClient {
      * @param capabilities client capabilities to register
      * @param timeout timeout in milliseconds
      */
-    registerClientCapabilities(capabilities: Protocol.ClientCapabilitiesRequest, timeout: number = 2000): Promise<Protocol.ServerCapabilitesResponse> {
+    registerClientCapabilities(capabilities: Protocol.ClientCapabilitiesRequest, timeout: number = 2000): Promise<Protocol.ServerCapabilitiesResponse> {
         return this.capabilitiesUtil.registerClientCapabilities(capabilities, timeout);
     }
 
