@@ -181,9 +181,11 @@ describe('Server Launcher Utility', () => {
         });
 
         it('startServerSync should send the correct message', async () => {
-            const stateChange: Protocol.ServerStateChange = {
+            const stateChange: Protocol.ServerState = {
                 server: serverHandle,
-                state: 2
+                state: 2,
+                publishState: 0,
+                deployableStates: []
             };
 
             setTimeout(() => {
@@ -198,9 +200,11 @@ describe('Server Launcher Utility', () => {
         });
 
         it('startServerSync should register for the correct event and unregister after done', async () => {
-            const stateChange: Protocol.ServerStateChange = {
+            const stateChange: Protocol.ServerState = {
                 server: serverHandle,
-                state: 2
+                state: 2,
+                publishState: 0,
+                deployableStates: []
             };
             const regSpy = sandbox.spy(emitter, 'prependListener');
             const unregSpy = sandbox.spy(emitter, 'removeListener');
@@ -218,9 +222,11 @@ describe('Server Launcher Utility', () => {
         });
 
         it('startServerSync should only react to state.STARTED events', async () => {
-            const stateChange: Protocol.ServerStateChange = {
+            const stateChange: Protocol.ServerState = {
                 server: serverHandle,
-                state: 1
+                state: 1,
+                publishState: 0,
+                deployableStates: []
             };
             const unregSpy = sandbox.spy(emitter, 'removeListener');
 
@@ -246,9 +252,11 @@ describe('Server Launcher Utility', () => {
         });
 
         it('stopServerSync should send the correct message', async () => {
-            const stateChange: Protocol.ServerStateChange = {
+            const stateChange: Protocol.ServerState = {
                 server: serverHandle,
-                state: 4
+                state: 4,
+                publishState: 0,
+                deployableStates: []
             };
 
             setTimeout(() => {
@@ -263,9 +271,11 @@ describe('Server Launcher Utility', () => {
         });
 
         it('stopServerSync should register for the correct event and unregister after done', async () => {
-            const stateChange: Protocol.ServerStateChange = {
+            const stateChange: Protocol.ServerState = {
                 server: serverHandle,
-                state: 4
+                state: 4,
+                publishState: 0,
+                deployableStates: []
             };
             const regSpy = sandbox.spy(emitter, 'prependListener');
             const unregSpy = sandbox.spy(emitter, 'removeListener');
@@ -283,9 +293,11 @@ describe('Server Launcher Utility', () => {
         });
 
         it('stopServerSync should only react to state.STOPPED events', async () => {
-            const stateChange: Protocol.ServerStateChange = {
+            const stateChange: Protocol.ServerState = {
                 server: serverHandle,
-                state: 2
+                state: 2,
+                publishState: 0,
+                deployableStates: []
             };
             const unregSpy = sandbox.spy(emitter, 'removeListener');
 
