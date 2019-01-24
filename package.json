@@ -1,9 +1,12 @@
 {
   "name": "rsp-client",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Client Implementation of Runtime Server Protocol",
   "main": "lib/src/main.js",
   "types": "lib/src/main.d.ts",
+  "files": [
+    "lib/src/**/*.js"
+  ],
   "scripts": {
     "prepare": "npm run build",
     "build": "rm -rf lib/ || rmdir lib /s /q && tslint -p tslint.json && tsc",
