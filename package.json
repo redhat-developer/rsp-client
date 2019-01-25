@@ -14,6 +14,9 @@
     "coverage:upload": "codecov -f coverage/*.json"
   },
   "nyc": {
+    "require": [
+      "ts-node/register"
+    ],
     "extension": [
       ".ts"
     ],
@@ -26,9 +29,13 @@
     "reporter": [
       "json",
       "html",
-      "text"
+      "text",
+      "lcov",
+      "text-summary"
     ],
-    "all": true
+    "all": true,
+    "sourceMap": true,
+    "instrument": true
   },
   "repository": {
     "type": "git",
