@@ -211,7 +211,6 @@ export class ServerModel {
              timeout, ErrorMessages.GETSERVERS_TIMEOUT);
     }
 
-
     /**
      * Retreives all supported server types
      * @param timeout timeout in milliseconds
@@ -273,7 +272,6 @@ export class ServerModel {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDeployableRequest.type, req,
             timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     }
-
 
     /**
      * Publish a server
