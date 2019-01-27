@@ -225,7 +225,7 @@ export class RSPClient {
     }
 
     /**
-     * Retrives Server state representation for server
+     * Retrives Server state representation for provided Server handler
      * @param handle server handle containing the server id and type, see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
      */
