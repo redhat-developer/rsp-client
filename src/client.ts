@@ -224,6 +224,11 @@ export class RSPClient {
         return this.serverUtil.getServerHandles(timeout);
     }
 
+    /**
+     * Retrives Server state representation for server
+     * @param handle server handle containing the server id and type, see {@link Protocol.ServerHandle}
+     * @param timeout timeout in milliseconds
+     */
     getServerState(handle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerState> {
         return this.serverUtil.getServerState(handle, timeout);
     }
