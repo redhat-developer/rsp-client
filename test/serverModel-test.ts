@@ -89,6 +89,18 @@ describe('Sever Model Utility', () => {
         deployable: deployableReference
     };
 
+    enum PublishKind {
+        Incremental,
+        Full,
+        Clean,
+        Auto
+    }
+
+    const publishServerRequest: Protocol.PublishServerRequest = {
+        server: serverHandle,
+        kind: PublishKind.Full
+    };
+
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         sandbox.stub(rpc, 'createMessageConnection');
@@ -249,12 +261,12 @@ describe('Sever Model Utility', () => {
     it('publish should send PublishServerRequest', async () => {
         requestStub.resolves(status);
 
-        const result: Protocol.Status = await model.publish(modifyDeployableRequest);
+        const result: Protocol.Status = await model.publish(publishServerRequest);
 
         expect(result).deep.equals(status);
         expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
-            ServerModel.LONG_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
+        expect(requestStub).calledWithExactly(connection, Messages.Server.PublishRequest.type, publishServerRequest,
+            ServerModel.LONG_TIMEOUT, ErrorMessages.PUBLISH_TIMEOUT);
     });
 
     describe('Synchronous Server Creation', () => {
