@@ -9,6 +9,9 @@ import { Common, ErrorMessages } from './common';
  */
 export class ServerModel {
 
+    public static DEFAULT_TIMEOUT: number =  2000;
+    public static LONG_TIMEOUT: number =  6000;
+
     private connection: MessageConnection;
     private emitter: EventEmitter;
 
@@ -44,7 +47,8 @@ export class ServerModel {
      * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    async createServerFromPathAsync(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.Status> {
+    async createServerFromPathAsync(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = ServerModel.DEFAULT_TIMEOUT)
+        : Promise<Protocol.Status> {
         const serverBeans = await Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
             {filepath: path}, timeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
             const atts = Object.assign({}, attributes);
@@ -69,7 +73,8 @@ export class ServerModel {
      * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    async createServerFromBeanAsync(serverBean: Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.Status> {
+    async createServerFromBeanAsync(serverBean: Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = ServerModel.DEFAULT_TIMEOUT)
+        : Promise<Protocol.Status> {
         const serverId = id ? id : serverBean.name;
         const atts = Object.assign({}, attributes);
         atts['server.home.dir'] = serverBean.location;
@@ -93,7 +98,8 @@ export class ServerModel {
      * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    createServerFromPath(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    createServerFromPath(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = ServerModel.DEFAULT_TIMEOUT)
+        : Promise<Protocol.ServerHandle> {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
             const timer = setTimeout(() => {
                 return reject(new Error(ErrorMessages.CREATESERVER_TIMEOUT));
@@ -134,7 +140,8 @@ export class ServerModel {
      * @param attributes optional extra server attributes
      * @param timeout timeout in milliseconds
      */
-    createServerFromBean(serverBean: Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    createServerFromBean(serverBean: Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = ServerModel.DEFAULT_TIMEOUT)
+        : Promise<Protocol.ServerHandle> {
         return new Promise<Protocol.ServerHandle>(async (resolve, reject) => {
             const serverId = id ? id : serverBean.name;
             const timer = setTimeout(() => {
@@ -175,7 +182,7 @@ export class ServerModel {
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
      */
-    deleteServerSync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerHandle> {
+    deleteServerSync(serverHandle: Protocol.ServerHandle, timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.ServerHandle> {
         const listener = (param: Protocol.ServerHandle) => {
             return param.id === serverHandle.id;
         };
@@ -188,7 +195,7 @@ export class ServerModel {
      * when the removal finishes
      * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
      */
-    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.Status> {
+    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.DeleteServerRequest.type, serverHandle, timeout,
              ErrorMessages.DELETESERVER_TIMEOUT);
     }
@@ -197,7 +204,7 @@ export class ServerModel {
      * Retreives handles for all servers within RSP
      * @param timeout timeout in milliseconds
      */
-    getServerHandles(timeout: number = 2000): Promise<Protocol.ServerHandle[]> {
+    getServerHandles(timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.ServerHandle[]> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerHandlesRequest.type, null,
              timeout, ErrorMessages.GETSERVERS_TIMEOUT);
     }
@@ -206,7 +213,7 @@ export class ServerModel {
      * Retreives ServerState by ServerHandle
      * @param timeout timeout in milliseconds
      */
-    getServerState(serverHandle: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerState> {
+    getServerState(serverHandle: Protocol.ServerHandle, timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.ServerState> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerStateRequest.type, serverHandle,
              timeout, ErrorMessages.GETSERVERS_TIMEOUT);
     }
@@ -215,7 +222,7 @@ export class ServerModel {
      * Retreives all supported server types
      * @param timeout timeout in milliseconds
      */
-    getServerTypes(timeout: number = 2000): Promise<Protocol.ServerType[]> {
+    getServerTypes(timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.ServerType[]> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerTypesRequest.type, null,
              timeout, ErrorMessages.GETSERVERTYPES_TIMEOUT);
     }
@@ -225,7 +232,7 @@ export class ServerModel {
      * @param serverType object representing the server type, see {@link Protocol.ServerType}
      * @param timeout timeout in milliseconds
      */
-    getServerTypeRequiredAttributes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.Attributes> {
+    getServerTypeRequiredAttributes(serverType: Protocol.ServerType, timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetRequiredAttributesRequest.type, serverType,
              timeout, ErrorMessages.GETREQUIREDATTRS_TIMEOUT);
     }
@@ -235,7 +242,7 @@ export class ServerModel {
      * @param serverType object representing the server type, see {@link Protocol.ServerType}
      * @param timeout timeout in milliseconds
      */
-    getServerTypeOptionalAttributes(serverType: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.Attributes> {
+    getServerTypeOptionalAttributes(serverType: Protocol.ServerType, timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
             timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     }
@@ -246,42 +253,42 @@ export class ServerModel {
      * @param server A server handle see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
      */
-    getDeployables(server: Protocol.ServerHandle, timeout: number = 60000): Promise<Protocol.DeployableState[]> {
+    getDeployables(server: Protocol.ServerHandle, timeout: number = ServerModel.LONG_TIMEOUT): Promise<Protocol.DeployableState[]> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetDeployablesRequest.type, server,
-            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+            timeout, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
     }
 
     /**
-     * Add a deployable to a server
+     * Add a deployable to the given server
      *
      * @param req A request properties object {@link Protocol.ModifyDeployableRequest}
      * @param timeout timeout in milliseconds
      */
-    addDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+    addDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = ServerModel.LONG_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.AddDeployableRequest.type, req,
-            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+            timeout, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
     }
 
     /**
-     * Remove a deployable from a server
+     * Remove a deployable from the given server
      *
      * @param req A request properties object {@link Protocol.ModifyDeployableRequest}
      * @param timeout timeout in milliseconds
      */
-    removeDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
+    removeDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = ServerModel.LONG_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDeployableRequest.type, req,
-            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+            timeout, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     }
 
     /**
-     * Publish a server
+     * Publish all outstanding changes to the given server
      *
      * @param server A server handle see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
      */
-    publish(server: Protocol.PublishServerRequest, timeout: number = 60000): Promise<Protocol.Status> {
+    publish(server: Protocol.PublishServerRequest, timeout: number = ServerModel.LONG_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.PublishRequest.type, server,
-            timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+            timeout, ErrorMessages.PUBLISH_TIMEOUT);
     }
 
 }
