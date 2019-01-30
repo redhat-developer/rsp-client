@@ -286,8 +286,8 @@ export class ServerModel {
      * @param server A server handle see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
      */
-    publish(server: Protocol.PublishServerRequest, timeout: number = ServerModel.LONG_TIMEOUT): Promise<Protocol.Status> {
-        return Common.sendSimpleRequest(this.connection, Messages.Server.PublishRequest.type, server,
+    publish(req: Protocol.PublishServerRequest, timeout: number = ServerModel.LONG_TIMEOUT): Promise<Protocol.Status> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.PublishRequest.type, req,
             timeout, ErrorMessages.PUBLISH_TIMEOUT);
     }
 
