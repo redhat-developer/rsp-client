@@ -55,6 +55,35 @@ describe('Sever Model Utility', () => {
         attributes: {}
     };
 
+    const enum RunState {
+        Unknown,
+        Starting,
+        Started,
+        Stopping,
+        Stopped
+    }
+
+    const enum PublishState {
+        None,
+        Incremental,
+        Full,
+        Add,
+        Remove,
+        Unknown
+    }
+
+    const deployableReference: Protocol.DeployableReference = {
+        label: 'deployable-label',
+        path: '/path/to/deployable'
+    };
+
+    const deployableState: Protocol.DeployableState = {
+        server: serverHandle,
+        reference: deployableReference,
+        state: RunState.Started,
+        publishState: PublishState.Add
+    };
+
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         sandbox.stub(rpc, 'createMessageConnection');
@@ -176,6 +205,18 @@ describe('Sever Model Utility', () => {
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
             defaultTimeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+    });
+
+    it('getDeployables should send GetDeployablesRequest', async () => {
+        const deployableStates: Protocol.DeployableState[] = [deployableState];
+        requestStub.resolves(deployableStates);
+
+        const result: Protocol.DeployableState[] = await model.getDeployables(serverHandle);
+
+        expect(result).deep.equals(deployableStates);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.GetDeployablesRequest.type, serverHandle,
+            ServerModel.LONG_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
     });
 
     describe('Synchronous Server Creation', () => {
