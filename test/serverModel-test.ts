@@ -84,6 +84,11 @@ describe('Sever Model Utility', () => {
         publishState: PublishState.Add
     };
 
+    const modifyDeployableRequest: Protocol.ModifyDeployableRequest = {
+        server: serverHandle,
+        deployable: deployableReference
+    };
+
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         sandbox.stub(rpc, 'createMessageConnection');
@@ -217,6 +222,39 @@ describe('Sever Model Utility', () => {
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetDeployablesRequest.type, serverHandle,
             ServerModel.LONG_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
+    });
+
+    it('addDeployable should send AddDeployableRequest', async () => {
+        requestStub.resolves(status);
+
+        const result: Protocol.Status = await model.addDeployable(modifyDeployableRequest);
+
+        expect(result).deep.equals(status);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.AddDeployableRequest.type, modifyDeployableRequest,
+            ServerModel.LONG_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
+    });
+
+    it('removeDeployable should send RemoveDeployableRequest', async () => {
+        requestStub.resolves(status);
+
+        const result: Protocol.Status = await model.removeDeployable(modifyDeployableRequest);
+
+        expect(result).deep.equals(status);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
+            ServerModel.LONG_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
+    });
+
+    it('publish should send PublishServerRequest', async () => {
+        requestStub.resolves(status);
+
+        const result: Protocol.Status = await model.publish(modifyDeployableRequest);
+
+        expect(result).deep.equals(status);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
+            ServerModel.LONG_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     });
 
     describe('Synchronous Server Creation', () => {
