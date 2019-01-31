@@ -100,4 +100,5 @@ export namespace ErrorMessages {
     export const ADDDEPLOYABLE_TIMEOUT = 'Failed to add deployable in time';
     export const REMOVEDEPLOYABLE_TIMEOUT = 'Failed to remove deployable in time';
     export const PUBLISH_TIMEOUT = 'Failed to publish server in time';
+    export const GETSERVERSTATE_TIMEOUT = 'Failed to get server state in time';
 }
