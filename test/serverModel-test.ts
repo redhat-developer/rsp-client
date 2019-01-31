@@ -101,6 +101,13 @@ describe('Sever Model Utility', () => {
         kind: PublishKind.Full
     };
 
+    const serverState: Protocol.ServerState = {
+        server: serverHandle,
+        state: RunState.Started,
+        publishState: PublishState.Add,
+        deployableStates: [ deployableState]
+    };
+
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         sandbox.stub(rpc, 'createMessageConnection');
@@ -189,6 +196,18 @@ describe('Sever Model Utility', () => {
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerHandlesRequest.type, null,
             defaultTimeout, ErrorMessages.GETSERVERS_TIMEOUT);
+    });
+
+
+    it('getServerState should send GetServerStateRequest', async () => {
+        requestStub.resolves(serverState);
+
+        const result = await model.getServerState(serverHandle);
+
+        expect(result).deep.equals(serverState);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerStateRequest.type, serverHandle,
+            defaultTimeout, ErrorMessages.GETSERVERSTATE_TIMEOUT);
     });
 
     it('getServerTypes should delegate to the Common utility', async () => {
