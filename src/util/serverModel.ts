@@ -215,7 +215,7 @@ export class ServerModel {
      */
     getServerState(serverHandle: Protocol.ServerHandle, timeout: number = ServerModel.DEFAULT_TIMEOUT): Promise<Protocol.ServerState> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerStateRequest.type, serverHandle,
-             timeout, ErrorMessages.GETSERVERS_TIMEOUT);
+             timeout, ErrorMessages.GETSERVERSTATE_TIMEOUT);
     }
 
     /**
