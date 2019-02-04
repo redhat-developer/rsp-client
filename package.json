@@ -5,7 +5,8 @@
   "main": "lib/src/main.js",
   "types": "lib/src/main.d.ts",
   "files": [
-    "lib/src/**/*.js"
+    "lib/src/**/*.js",
+    "lib/src/**/*.d.ts"
   ],
   "scripts": {
     "prepare": "npm run build",
