@@ -33,6 +33,10 @@ describe('Sever Model Utility', () => {
         severity: 0,
         trace: 'trace'
     };
+    const createStatus: Protocol.CreateServerResponse = {
+        status: status,
+        invalidKeys: []
+    };
     const serverBean: Protocol.ServerBean = {
         fullVersion: '1',
         location: 'location',
@@ -129,7 +133,7 @@ describe('Sever Model Utility', () => {
 
     it('createSeverFromPathAsync should delegate to the Common utility', async () => {
         requestStub.onFirstCall().resolves([serverBean]);
-        requestStub.onSecondCall().resolves(status);
+        requestStub.onSecondCall().resolves(createStatus);
 
         const result = await model.createServerFromPathAsync(discoveryPath.filepath, 'id');
         const attributes: Protocol.ServerAttributes = {
@@ -140,7 +144,7 @@ describe('Sever Model Utility', () => {
             }
         };
 
-        expect(result).equals(status);
+        expect(result).equals(createStatus);
         expect(requestStub).calledTwice;
         expect(requestStub).calledWithExactly(connection, Messages.Server.FindServerBeansRequest.type, discoveryPath,
             defaultTimeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
@@ -149,7 +153,7 @@ describe('Sever Model Utility', () => {
     });
 
     it('createSeverFromBeanAsync should delegate to the Common utility', async () => {
-        requestStub.resolves(status);
+        requestStub.resolves(createStatus);
 
         const result = await model.createServerFromBeanAsync(serverBean);
         const attributes: Protocol.ServerAttributes = {
@@ -160,7 +164,7 @@ describe('Sever Model Utility', () => {
             }
         };
 
-        expect(result).equals(status);
+        expect(result).equals(createStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.CreateServerRequest.type, attributes,
             defaultTimeout, ErrorMessages.CREATESERVER_TIMEOUT);
@@ -197,7 +201,6 @@ describe('Sever Model Utility', () => {
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerHandlesRequest.type, null,
             defaultTimeout, ErrorMessages.GETSERVERS_TIMEOUT);
     });
-
 
     it('getServerState should send GetServerStateRequest', async () => {
         requestStub.resolves(serverState);

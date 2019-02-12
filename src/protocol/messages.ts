@@ -121,7 +121,7 @@ export namespace Messages {
          * detail the cause of error.
          */
         export namespace CreateServerRequest {
-            export const type = new RequestType<Protocol.ServerAttributes, Protocol.Status, void, void>('server/createServer');
+            export const type = new RequestType<Protocol.ServerAttributes, Protocol.CreateServerResponse, void, void>('server/createServer');
         }
 
         /**
