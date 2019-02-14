@@ -183,7 +183,7 @@ export class RSPClient {
      * @param attributes optional server attributes
      * @param timeout timeout in milliseconds
      */
-    createServerAsync(pathOrBean: string | Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.Status> {
+    createServerAsync(pathOrBean: string | Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = 2000): Promise<Protocol.CreateServerResponse> {
         if (typeof(pathOrBean) === 'string') {
             if (!id) {
                 return Promise.reject(new Error('ID is required when creating server from a path'));

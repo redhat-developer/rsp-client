@@ -48,7 +48,7 @@ export class ServerModel {
      * @param timeout timeout in milliseconds
      */
     async createServerFromPathAsync(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = ServerModel.DEFAULT_TIMEOUT)
-        : Promise<Protocol.Status> {
+        : Promise<Protocol.CreateServerResponse> {
         const serverBeans = await Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
             {filepath: path}, timeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
             const atts = Object.assign({}, attributes);
@@ -74,7 +74,7 @@ export class ServerModel {
      * @param timeout timeout in milliseconds
      */
     async createServerFromBeanAsync(serverBean: Protocol.ServerBean, id?: string, attributes?: { [index: string]: any }, timeout: number = ServerModel.DEFAULT_TIMEOUT)
-        : Promise<Protocol.Status> {
+        : Promise<Protocol.CreateServerResponse> {
         const serverId = id ? id : serverBean.name;
         const atts = Object.assign({}, attributes);
         atts['server.home.dir'] = serverBean.location;
@@ -105,7 +105,7 @@ export class ServerModel {
                 return reject(new Error(ErrorMessages.CREATESERVER_TIMEOUT));
             }, timeout);
 
-            let result: Thenable<Protocol.Status>;
+            let result: Thenable<Protocol.CreateServerResponse>;
             const listener = (handle: Protocol.ServerHandle) => {
                 if (handle.id === id) {
                     result.then(status => {
@@ -148,7 +148,7 @@ export class ServerModel {
                 return reject(new Error(ErrorMessages.CREATESERVER_TIMEOUT));
             }, timeout);
 
-            let result: Thenable<Protocol.Status>;
+            let result: Thenable<Protocol.CreateServerResponse>;
             const listener = (handle: Protocol.ServerHandle) => {
                 if (handle.id === serverId) {
                     result.then(status => {
