@@ -26,7 +26,7 @@ export class DownloadRuntimes {
     listDownloadableRuntimes(timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.ListDownloadRuntimeResponse> {
       return Common.sendSimpleRequest(this.connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
           timeout, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
-  }
+    }
 
     /**
      * Starts the workflow to download a single runtime.
@@ -36,6 +36,6 @@ export class DownloadRuntimes {
     downloadRuntime(req: Protocol.DownloadSingleRuntimeRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.WorkflowResponse> {
       return Common.sendSimpleRequest(this.connection, Messages.Server.DownloadRuntimeRequest.type, req,
           timeout, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
-  }
+    }
 
 }

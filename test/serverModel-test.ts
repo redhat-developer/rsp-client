@@ -88,23 +88,6 @@ describe('Sever Model Utility', () => {
         publishState: PublishState.Add
     };
 
-    const modifyDeployableRequest: Protocol.ModifyDeployableRequest = {
-        server: serverHandle,
-        deployable: deployableReference
-    };
-
-    enum PublishKind {
-        Incremental,
-        Full,
-        Clean,
-        Auto
-    }
-
-    const publishServerRequest: Protocol.PublishServerRequest = {
-        server: serverHandle,
-        kind: PublishKind.Full
-    };
-
     const serverState: Protocol.ServerState = {
         server: serverHandle,
         state: RunState.Started,
@@ -244,51 +227,6 @@ describe('Sever Model Utility', () => {
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
             defaultTimeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
-    });
-
-    it('getDeployables should send GetDeployablesRequest', async () => {
-        const deployableStates: Protocol.DeployableState[] = [deployableState];
-        requestStub.resolves(deployableStates);
-
-        const result: Protocol.DeployableState[] = await model.getDeployables(serverHandle);
-
-        expect(result).deep.equals(deployableStates);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.GetDeployablesRequest.type, serverHandle,
-            Common.LONG_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
-    });
-
-    it('addDeployable should send AddDeployableRequest', async () => {
-        requestStub.resolves(okStatus);
-
-        const result: Protocol.Status = await model.addDeployable(modifyDeployableRequest);
-
-        expect(result).deep.equals(okStatus);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.AddDeployableRequest.type, modifyDeployableRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
-    });
-
-    it('removeDeployable should send RemoveDeployableRequest', async () => {
-        requestStub.resolves(okStatus);
-
-        const result: Protocol.Status = await model.removeDeployable(modifyDeployableRequest);
-
-        expect(result).deep.equals(okStatus);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
-    });
-
-    it('publish should send PublishServerRequest', async () => {
-        requestStub.resolves(okStatus);
-
-        const result: Protocol.Status = await model.publish(publishServerRequest);
-
-        expect(result).deep.equals(okStatus);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.PublishRequest.type, publishServerRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.PUBLISH_TIMEOUT);
     });
 
   describe('Synchronous Server Creation', () => {

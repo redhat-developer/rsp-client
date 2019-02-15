@@ -6,8 +6,8 @@ import { EventEmitter } from 'events';
  */
 export class Common {
 
-  public static DEFAULT_TIMEOUT: number =  2000;
-  public static LONG_TIMEOUT: number =  6000;
+  public static readonly DEFAULT_TIMEOUT: number =  2000;
+  public static readonly LONG_TIMEOUT: number =  6000;
 
     /**
      * Template method for sending requests and receiving the response

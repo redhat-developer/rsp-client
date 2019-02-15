@@ -104,6 +104,7 @@ describe('Download Runtimes', () => {
         }
       ]
     };
+
     beforeEach(() => {
         sandbox = sinon.createSandbox();
         sandbox.stub(rpc, 'createMessageConnection');
@@ -130,16 +131,16 @@ describe('Download Runtimes', () => {
       expect(requestStub).calledOnce;
       expect(requestStub).calledWithExactly(connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
           Common.LONG_TIMEOUT, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
-  });
+    });
 
-  it('downloadRuntime should send DownloadRuntimeRequest', async () => {
-    requestStub.resolves(downloadWf14WorkflowItem);
+    it('downloadRuntime should send DownloadRuntimeRequest', async () => {
+      requestStub.resolves(downloadWf14WorkflowItem);
 
-    const result: Protocol.WorkflowResponse = await downloadRuntimes.downloadRuntime(downloadWfl14Request);
+      const result: Protocol.WorkflowResponse = await downloadRuntimes.downloadRuntime(downloadWfl14Request);
 
-    expect(result).deep.equals(downloadWf14WorkflowItem);
-    expect(requestStub).calledOnce;
-    expect(requestStub).calledWithExactly(connection, Messages.Server.DownloadRuntimeRequest.type, downloadWfl14Request,
+      expect(result).deep.equals(downloadWf14WorkflowItem);
+      expect(requestStub).calledOnce;
+      expect(requestStub).calledWithExactly(connection, Messages.Server.DownloadRuntimeRequest.type, downloadWfl14Request,
         Common.LONG_TIMEOUT, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
-  });
+    });
 });

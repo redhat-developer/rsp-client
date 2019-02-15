@@ -252,8 +252,8 @@ export namespace Messages {
 
         export namespace DownloadRuntimeRequest {
           export const type = new RequestType<Protocol.DownloadSingleRuntimeRequest, Protocol.WorkflowResponse, void, void>('server/downloadRuntime');
+        }
     }
-  }
 
     /**
      * Client methods
@@ -376,5 +376,5 @@ export namespace Messages {
         export namespace PromptStringRequest {
             export const type = new RequestType<Protocol.StringPrompt, string, void, void>('client/promptString');
         }
-    }
+      }
 }
