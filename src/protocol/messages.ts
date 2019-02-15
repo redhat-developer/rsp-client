@@ -246,7 +246,14 @@ export namespace Messages {
             export const type = new RequestType<Protocol.PublishServerRequest, Protocol.Status, void, void>('server/publish');
         }
 
+        export namespace ListDownloadableRuntimesRequest {
+          export const type = new RequestType<void, Protocol.ListDownloadRuntimeResponse, void, void>('server/listDownloadableRuntimes');
+        }
+
+        export namespace DownloadRuntimeRequest {
+          export const type = new RequestType<Protocol.DownloadSingleRuntimeRequest, Protocol.WorkflowResponse, void, void>('server/downloadRuntime');
     }
+  }
 
     /**
      * Client methods
@@ -367,7 +374,7 @@ export namespace Messages {
         }
 
         export namespace PromptStringRequest {
-            export const type = new RequestType<Protocol.StringPrompt, String, void, void>('client/promptString');
+            export const type = new RequestType<Protocol.StringPrompt, string, void, void>('client/promptString');
         }
     }
 }

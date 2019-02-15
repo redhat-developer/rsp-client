@@ -7,6 +7,7 @@ import { ServerModel } from './util/serverModel';
 import { ServerLauncher } from './util/serverLauncher';
 import { Capabilities } from './util/capabilities';
 import { EventEmitter } from 'events';
+import { DownloadRuntimes } from './util/downloadRuntimes';
 
 /**
  * Runtime Server Protocol client implementation using JSON RPC
@@ -21,6 +22,7 @@ export class RSPClient {
     private serverUtil: ServerModel;
     private launcherUtil: ServerLauncher;
     private capabilitiesUtil: Capabilities;
+    private downloadRuntimes: DownloadRuntimes;
     private emitter: EventEmitter;
 
     /**
@@ -61,6 +63,7 @@ export class RSPClient {
                 this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
                 this.capabilitiesUtil = new Capabilities(this.connection);
+                this.downloadRuntimes = new DownloadRuntimes(this.connection);
                 clearTimeout(timer);
                 resolve();
             });
@@ -398,7 +401,7 @@ export class RSPClient {
     }
 
     /**
-     * Publish a given server
+     * Publishes a given server
      *
      * @param server A server handle see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
@@ -408,6 +411,20 @@ export class RSPClient {
     }
 
     /**
+     * Lists the downloadable runtimes
+     */
+    listDownloadRuntimes(timeout?: number): Promise<Protocol.ListDownloadRuntimeResponse> {
+      return this.downloadRuntimes.listDownloadableRuntimes(timeout);
+  }
+
+    /**
+     * Starts the workflow to download a runtime
+     */
+    downloadRuntime(req: Protocol.DownloadSingleRuntimeRequest, timeout?: number): Promise<Protocol.WorkflowResponse> {
+      return this.downloadRuntimes.downloadRuntime(req, timeout);
+  }
+
+  /**
      * Attaches a listener to discovery path added event
      *
      * @param listener callback to handle the event
