@@ -7,6 +7,8 @@ import { ServerModel } from './util/serverModel';
 import { ServerLauncher } from './util/serverLauncher';
 import { Capabilities } from './util/capabilities';
 import { EventEmitter } from 'events';
+import { DownloadRuntimes } from './util/downloadRuntimes';
+import { Publishing } from './util/publishing';
 
 /**
  * Runtime Server Protocol client implementation using JSON RPC
@@ -21,6 +23,8 @@ export class RSPClient {
     private serverUtil: ServerModel;
     private launcherUtil: ServerLauncher;
     private capabilitiesUtil: Capabilities;
+    private downloadRuntimes: DownloadRuntimes;
+    private publishingUtil: Publishing;
     private emitter: EventEmitter;
 
     /**
@@ -61,6 +65,8 @@ export class RSPClient {
                 this.serverUtil = new ServerModel(this.connection, this.emitter);
                 this.launcherUtil = new ServerLauncher(this.connection, this.emitter);
                 this.capabilitiesUtil = new Capabilities(this.connection);
+                this.publishingUtil = new Publishing(this.connection);
+                this.downloadRuntimes = new DownloadRuntimes(this.connection);
                 clearTimeout(timer);
                 resolve();
             });
@@ -374,7 +380,7 @@ export class RSPClient {
      * @param timeout timeout in milliseconds
      */
     getDeployables(server: Protocol.ServerHandle, timeout: number = 60000): Promise<Protocol.DeployableState[]> {
-        return this.serverUtil.getDeployables(server, timeout);
+        return this.publishingUtil.getDeployables(server, timeout);
     }
 
     /**
@@ -384,7 +390,7 @@ export class RSPClient {
      * @param timeout timeout in milliseconds
      */
     addDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
-        return this.serverUtil.addDeployable(req, timeout);
+        return this.publishingUtil.addDeployable(req, timeout);
     }
 
     /**
@@ -394,20 +400,34 @@ export class RSPClient {
      * @param timeout timeout in milliseconds
      */
     removeDeployable(req: Protocol.ModifyDeployableRequest, timeout: number = 60000): Promise<Protocol.Status> {
-        return this.serverUtil.removeDeployable(req, timeout);
+        return this.publishingUtil.removeDeployable(req, timeout);
     }
 
     /**
-     * Publish a given server
+     * Publishes a given server
      *
      * @param server A server handle see {@link Protocol.ServerHandle}
      * @param timeout timeout in milliseconds
      */
     publish(req: Protocol.PublishServerRequest, timeout: number = 60000): Promise<Protocol.Status> {
-        return this.serverUtil.publish(req, timeout);
+        return this.publishingUtil.publish(req, timeout);
     }
 
     /**
+     * Lists the downloadable runtimes
+     */
+    listDownloadRuntimes(timeout?: number): Promise<Protocol.ListDownloadRuntimeResponse> {
+      return this.downloadRuntimes.listDownloadableRuntimes(timeout);
+    }
+
+    /**
+     * Starts the workflow to download a runtime
+     */
+    downloadRuntime(req: Protocol.DownloadSingleRuntimeRequest, timeout?: number): Promise<Protocol.WorkflowResponse> {
+      return this.downloadRuntimes.downloadRuntime(req, timeout);
+    }
+
+  /**
      * Attaches a listener to discovery path added event
      *
      * @param listener callback to handle the event

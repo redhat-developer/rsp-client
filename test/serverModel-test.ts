@@ -25,7 +25,7 @@ describe('Sever Model Utility', () => {
     const discoveryPath: Protocol.DiscoveryPath = {
         filepath: 'path'
     };
-    const status: Protocol.Status = {
+    const okStatus: Protocol.Status = {
         code: 0,
         message: 'ok',
         ok: true,
@@ -34,7 +34,7 @@ describe('Sever Model Utility', () => {
         trace: 'trace'
     };
     const createStatus: Protocol.CreateServerResponse = {
-        status: status,
+        status: okStatus,
         invalidKeys: []
     };
     const serverBean: Protocol.ServerBean = {
@@ -88,28 +88,11 @@ describe('Sever Model Utility', () => {
         publishState: PublishState.Add
     };
 
-    const modifyDeployableRequest: Protocol.ModifyDeployableRequest = {
-        server: serverHandle,
-        deployable: deployableReference
-    };
-
-    enum PublishKind {
-        Incremental,
-        Full,
-        Clean,
-        Auto
-    }
-
-    const publishServerRequest: Protocol.PublishServerRequest = {
-        server: serverHandle,
-        kind: PublishKind.Full
-    };
-
     const serverState: Protocol.ServerState = {
         server: serverHandle,
         state: RunState.Started,
         publishState: PublishState.Add,
-        deployableStates: [ deployableState]
+        deployableStates: [ deployableState ]
     };
 
     beforeEach(() => {
@@ -182,11 +165,11 @@ describe('Sever Model Utility', () => {
     });
 
     it('deleteServerAsync should delegate to the Common utility', async () => {
-        requestStub.resolves(status);
+        requestStub.resolves(okStatus);
 
         const result = await model.deleteServerAsync(serverHandle);
 
-        expect(result).equals(status);
+        expect(result).equals(okStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.DeleteServerRequest.type, serverHandle);
     });
@@ -246,59 +229,14 @@ describe('Sever Model Utility', () => {
             defaultTimeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     });
 
-    it('getDeployables should send GetDeployablesRequest', async () => {
-        const deployableStates: Protocol.DeployableState[] = [deployableState];
-        requestStub.resolves(deployableStates);
-
-        const result: Protocol.DeployableState[] = await model.getDeployables(serverHandle);
-
-        expect(result).deep.equals(deployableStates);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.GetDeployablesRequest.type, serverHandle,
-            ServerModel.LONG_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
-    });
-
-    it('addDeployable should send AddDeployableRequest', async () => {
-        requestStub.resolves(status);
-
-        const result: Protocol.Status = await model.addDeployable(modifyDeployableRequest);
-
-        expect(result).deep.equals(status);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.AddDeployableRequest.type, modifyDeployableRequest,
-            ServerModel.LONG_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
-    });
-
-    it('removeDeployable should send RemoveDeployableRequest', async () => {
-        requestStub.resolves(status);
-
-        const result: Protocol.Status = await model.removeDeployable(modifyDeployableRequest);
-
-        expect(result).deep.equals(status);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
-            ServerModel.LONG_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
-    });
-
-    it('publish should send PublishServerRequest', async () => {
-        requestStub.resolves(status);
-
-        const result: Protocol.Status = await model.publish(publishServerRequest);
-
-        expect(result).deep.equals(status);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.PublishRequest.type, publishServerRequest,
-            ServerModel.LONG_TIMEOUT, ErrorMessages.PUBLISH_TIMEOUT);
-    });
-
-    describe('Synchronous Server Creation', () => {
+  describe('Synchronous Server Creation', () => {
         let stub: sinon.SinonStub;
 
         describe('from path', () => {
             beforeEach(() => {
                 stub = sandbox.stub();
                 stub.onFirstCall().resolves([serverBean]);
-                stub.onSecondCall().resolves(status);
+                stub.onSecondCall().resolves(okStatus);
                 connection.sendRequest = stub;
             });
 
@@ -374,7 +312,7 @@ describe('Sever Model Utility', () => {
 
             beforeEach(() => {
                 stub = sandbox.stub();
-                stub.resolves(status);
+                stub.resolves(okStatus);
                 connection.sendRequest = stub;
             });
 

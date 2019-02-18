@@ -6,6 +6,9 @@ import { EventEmitter } from 'events';
  */
 export class Common {
 
+  public static readonly DEFAULT_TIMEOUT: number =  2000;
+  public static readonly LONG_TIMEOUT: number =  6000;
+
     /**
      * Template method for sending requests and receiving the response
      * @param connection the message connection to RSP server
@@ -100,5 +103,7 @@ export namespace ErrorMessages {
     export const ADDDEPLOYABLE_TIMEOUT = 'Failed to add deployable in time';
     export const REMOVEDEPLOYABLE_TIMEOUT = 'Failed to remove deployable in time';
     export const PUBLISH_TIMEOUT = 'Failed to publish server in time';
+    export const LISTDOWNLOADABLERUNTIMES_TIMEOUT = 'Failed to list downloadable runtimes in time';
+    export const DOWNLOADRUNTIME_TIMEOUT = 'Failed to start the workflow to download a runtimes in time';
     export const GETSERVERSTATE_TIMEOUT = 'Failed to get server state in time';
 }
