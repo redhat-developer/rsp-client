@@ -229,7 +229,7 @@ describe('Sever Model Utility', () => {
             defaultTimeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     });
 
-  describe('Synchronous Server Creation', () => {
+    describe('Synchronous Server Creation', () => {
         let stub: sinon.SinonStub;
 
         describe('from path', () => {

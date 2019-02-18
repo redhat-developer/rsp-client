@@ -48,12 +48,12 @@ export class ServerModel {
         : Promise<Protocol.CreateServerResponse> {
         const serverBeans = await Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
             {filepath: path}, timeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
-            const atts = Object.assign({}, attributes);
-            atts['server.home.dir'] = serverBeans[0].location;
-            if ((serverBeans[0].typeCategory === 'MINISHIFT') || (serverBeans[0].typeCategory === 'CDK')) {
-                atts['server.home.file'] = serverBeans[0].location;
-            }
-            const serverAttributes: Protocol.ServerAttributes = {
+        const atts = Object.assign({}, attributes);
+        atts['server.home.dir'] = serverBeans[0].location;
+        if ((serverBeans[0].typeCategory === 'MINISHIFT') || (serverBeans[0].typeCategory === 'CDK')) {
+            atts['server.home.file'] = serverBeans[0].location;
+        }
+        const serverAttributes: Protocol.ServerAttributes = {
             id: id,
             serverType: serverBeans[0].serverAdapterTypeId,
             attributes: atts
@@ -121,9 +121,9 @@ export class ServerModel {
                 atts['server.home.file'] = serverBeans[0].location;
             }
             const serverAttributes: Protocol.ServerAttributes = {
-              id: id,
-              serverType: serverBeans[0].serverAdapterTypeId,
-              attributes: atts
+                id: id,
+                serverType: serverBeans[0].serverAdapterTypeId,
+                attributes: atts
             };
             result = this.connection.sendRequest(Messages.Server.CreateServerRequest.type, serverAttributes);
         });
@@ -162,7 +162,7 @@ export class ServerModel {
             if ((serverBean.typeCategory === 'MINISHIFT') || (serverBean.typeCategory === 'CDK')) {
                 atts['server.home.file'] = serverBean.location;
             }
-                const serverAttributes: Protocol.ServerAttributes = {
+            const serverAttributes: Protocol.ServerAttributes = {
                 id: serverId,
                 serverType: serverBean.serverAdapterTypeId,
                 attributes: atts
@@ -240,7 +240,7 @@ export class ServerModel {
      * @param timeout timeout in milliseconds
      */
     getServerTypeOptionalAttributes(serverType: Protocol.ServerType, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
-      return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
+        return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
           timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
     }
 }
