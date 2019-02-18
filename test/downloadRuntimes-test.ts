@@ -18,91 +18,91 @@ describe('Download Runtimes', () => {
     let downloadRuntimes: DownloadRuntimes;
 
     const provideInputStatus: Protocol.Status = {
-      code: 0,
-      message: 'Please fill the requried information',
-      ok: true,
-      plugin: 'unknown',
-      severity: 1,
-      trace: ''
+        code: 0,
+        message: 'Please fill the requried information',
+        ok: true,
+        plugin: 'unknown',
+        severity: 1,
+        trace: ''
     };
     const wildfly14Runtime: Protocol.DownloadRuntimeDescription = {
-      name: 'WildFly 14.0.0 Final',
-      id: 'wildfly-1400finalruntime',
-      version: '14.0.0.Final',
-      url: 'http://download.jboss.org/wildfly/14.0.0.Final/wildfly-14.0.0.Final.zip',
-      licenseURL: 'http://www.gnu.org/copyleft/lesser.txt',
-      humanUrl: 'http://wildfly.org/downloads/',
-      disclaimer: true,
-      properties: {
-        'wtp-runtime-type': 'org.jboss.ide.eclipse.as.runtime.wildfly.140',
-        'runtime-type': 'AS',
-        'runtime-category': 'SERVER'
-      },
-      size: '',
-      installationMethod: ''
+        name: 'WildFly 14.0.0 Final',
+        id: 'wildfly-1400finalruntime',
+        version: '14.0.0.Final',
+        url: 'http://download.jboss.org/wildfly/14.0.0.Final/wildfly-14.0.0.Final.zip',
+        licenseURL: 'http://www.gnu.org/copyleft/lesser.txt',
+        humanUrl: 'http://wildfly.org/downloads/',
+        disclaimer: true,
+        properties: {
+            'wtp-runtime-type': 'org.jboss.ide.eclipse.as.runtime.wildfly.140',
+            'runtime-type': 'AS',
+            'runtime-category': 'SERVER'
+        },
+        size: '',
+        installationMethod: ''
     };
 
     const as71Runtime: Protocol.DownloadRuntimeDescription = {
-      name: 'JBoss AS 7.1.1 (Brontes)',
-      id: 'org.jboss.tools.runtime.core.as.711',
-      version: '7.1.1.Final',
-      url: 'http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip',
-      licenseURL: 'http://www.gnu.org/copyleft/lesser.txt',
-      humanUrl: 'http://www.jboss.org/jbossas/downloads',
-      disclaimer: true,
-      properties: {
-        'wtp-runtime-type': 'org.jboss.ide.eclipse.as.runtime.71',
-        'runtime-type': 'AS',
-        'runtime-category': 'SERVER',
-        PROPERTY_ALTERNATE_ID: 'jboss-as711runtime'
-      },
-      size: '',
-      installationMethod: ''
+        name: 'JBoss AS 7.1.1 (Brontes)',
+        id: 'org.jboss.tools.runtime.core.as.711',
+        version: '7.1.1.Final',
+        url: 'http://download.jboss.org/jbossas/7.1/jboss-as-7.1.1.Final/jboss-as-7.1.1.Final.zip',
+        licenseURL: 'http://www.gnu.org/copyleft/lesser.txt',
+        humanUrl: 'http://www.jboss.org/jbossas/downloads',
+        disclaimer: true,
+        properties: {
+            'wtp-runtime-type': 'org.jboss.ide.eclipse.as.runtime.71',
+            'runtime-type': 'AS',
+            'runtime-category': 'SERVER',
+            PROPERTY_ALTERNATE_ID: 'jboss-as711runtime'
+        },
+        size: '',
+        installationMethod: ''
     };
 
     const downloadableRuntimes: Protocol.ListDownloadRuntimeResponse = {
         runtimes: [
-          as71Runtime,
-          wildfly14Runtime
+            as71Runtime,
+            wildfly14Runtime
         ]
     };
 
     const downloadWfl14Request: Protocol.DownloadSingleRuntimeRequest = {
-      requestId: 0,
-      downloadRuntimeId: wildfly14Runtime.id,
-      data: {}
+        requestId: 0,
+        downloadRuntimeId: wildfly14Runtime.id,
+        data: {}
     };
 
     const downloadWf14WorkflowItem: Protocol.WorkflowResponse = {
-      status: provideInputStatus,
-      requestId: downloadWfl14Request.requestId + 1,
-      items: [
-        {
-          id: 'workflow.license',
-          itemType: '',
-          label: 'Please approve the following license:',
-          content: `                   GNU LESSER GENERAL PUBLIC LICENSE
-          Version 3, 29 June 2007`,
-          responseType: 'none',
-          validResponses: []
-        },
-        {
-          id: 'workflow.license.url',
-          itemType: '',
-          label: 'License URL: ',
-          content: 'http://www.gnu.org/copyleft/lesser.txt',
-          responseType: 'none',
-          validResponses: []
-        },
-        {
-          id: 'workflow.license.sign',
-          itemType: '',
-          label: 'Do you agree to the license?',
-          content: '',
-          responseType: 'bool',
-          validResponses: []
-        }
-      ]
+        status: provideInputStatus,
+        requestId: downloadWfl14Request.requestId + 1,
+        items: [
+            {
+                id: 'workflow.license',
+                itemType: '',
+                label: 'Please approve the following license:',
+                content: `                   GNU LESSER GENERAL PUBLIC LICENSE
+                Version 3, 29 June 2007`,
+                responseType: 'none',
+                validResponses: []
+            },
+            {
+                id: 'workflow.license.url',
+                itemType: '',
+                label: 'License URL: ',
+                content: 'http://www.gnu.org/copyleft/lesser.txt',
+                responseType: 'none',
+                validResponses: []
+            },
+            {
+                id: 'workflow.license.sign',
+                itemType: '',
+                label: 'Do you agree to the license?',
+                content: '',
+                responseType: 'bool',
+                validResponses: []
+            }
+        ]
     };
 
     beforeEach(() => {
@@ -123,24 +123,24 @@ describe('Download Runtimes', () => {
     });
 
     it('listDownloadableRuntimes should send ListDownloadableRuntimesRequest', async () => {
-      requestStub.resolves(downloadableRuntimes);
+        requestStub.resolves(downloadableRuntimes);
 
-      const result: Protocol.ListDownloadRuntimeResponse = await downloadRuntimes.listDownloadableRuntimes();
+        const result: Protocol.ListDownloadRuntimeResponse = await downloadRuntimes.listDownloadableRuntimes();
 
-      expect(result).deep.equals(downloadableRuntimes);
-      expect(requestStub).calledOnce;
-      expect(requestStub).calledWithExactly(connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
-          Common.LONG_TIMEOUT, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
+        expect(result).deep.equals(downloadableRuntimes);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
+            Common.LONG_TIMEOUT, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
     });
 
     it('downloadRuntime should send DownloadRuntimeRequest', async () => {
-      requestStub.resolves(downloadWf14WorkflowItem);
+        requestStub.resolves(downloadWf14WorkflowItem);
 
-      const result: Protocol.WorkflowResponse = await downloadRuntimes.downloadRuntime(downloadWfl14Request);
+        const result: Protocol.WorkflowResponse = await downloadRuntimes.downloadRuntime(downloadWfl14Request);
 
-      expect(result).deep.equals(downloadWf14WorkflowItem);
-      expect(requestStub).calledOnce;
-      expect(requestStub).calledWithExactly(connection, Messages.Server.DownloadRuntimeRequest.type, downloadWfl14Request,
-        Common.LONG_TIMEOUT, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
+        expect(result).deep.equals(downloadWf14WorkflowItem);
+        expect(requestStub).calledOnce;
+        expect(requestStub).calledWithExactly(connection, Messages.Server.DownloadRuntimeRequest.type, downloadWfl14Request,
+            Common.LONG_TIMEOUT, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
     });
 });

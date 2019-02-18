@@ -24,7 +24,7 @@ export class DownloadRuntimes {
      * @param timeout timeout in milliseconds
      */
     listDownloadableRuntimes(timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.ListDownloadRuntimeResponse> {
-      return Common.sendSimpleRequest(this.connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
+        return Common.sendSimpleRequest(this.connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
           timeout, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
     }
 
@@ -34,7 +34,7 @@ export class DownloadRuntimes {
      * @param timeout timeout in milliseconds
      */
     downloadRuntime(req: Protocol.DownloadSingleRuntimeRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.WorkflowResponse> {
-      return Common.sendSimpleRequest(this.connection, Messages.Server.DownloadRuntimeRequest.type, req,
+        return Common.sendSimpleRequest(this.connection, Messages.Server.DownloadRuntimeRequest.type, req,
           timeout, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
     }
 

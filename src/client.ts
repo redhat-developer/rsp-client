@@ -125,7 +125,7 @@ export class RSPClient {
      * @param timeout timeout in milliseconds
      */
     addDiscoveryPathAsync(path: string, timeout: number = 2000): Promise<Protocol.Status> {
-       return this.discoveryUtil.addDiscoveryPathAsync(path, timeout);
+        return this.discoveryUtil.addDiscoveryPathAsync(path, timeout);
     }
 
     /**
@@ -417,14 +417,14 @@ export class RSPClient {
      * Lists the downloadable runtimes
      */
     listDownloadRuntimes(timeout?: number): Promise<Protocol.ListDownloadRuntimeResponse> {
-      return this.downloadRuntimes.listDownloadableRuntimes(timeout);
+        return this.downloadRuntimes.listDownloadableRuntimes(timeout);
     }
 
     /**
      * Starts the workflow to download a runtime
      */
     downloadRuntime(req: Protocol.DownloadSingleRuntimeRequest, timeout?: number): Promise<Protocol.WorkflowResponse> {
-      return this.downloadRuntimes.downloadRuntime(req, timeout);
+        return this.downloadRuntimes.downloadRuntime(req, timeout);
     }
 
   /**
