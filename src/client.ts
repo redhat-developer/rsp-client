@@ -559,6 +559,6 @@ export class RSPClient {
      * Returns the capabilities implemented by the client
      */
     getCapabilities(): Protocol.ClientCapabilitiesRequest {
-        return {map: {'protocol.version': '0.13.1', 'prompt.string': 'true'}};
+        return {map: {'protocol.version': '0.14.0', 'prompt.string': 'true'}};
     }
 }

@@ -7,6 +7,7 @@ export namespace Protocol {
         type: string;
         description: string;
         defaultVal: any;
+        secret: boolean;
     }
 
     export interface Attributes {
@@ -156,6 +157,7 @@ export namespace Protocol {
 
     export interface Status {
         severity: number;
+        pluginId: string;
         code: number;
         message: string;
         trace: string;
@@ -171,6 +173,7 @@ export namespace Protocol {
     export interface StringPrompt {
         code: number;
         prompt: string;
+        secret: boolean;
     }
 
     export interface VMDescription {
@@ -195,6 +198,7 @@ export namespace Protocol {
         label: string;
         content: string;
         responseType: string;
+        responseSecret: boolean;
         validResponses: string[];
     }
 }
