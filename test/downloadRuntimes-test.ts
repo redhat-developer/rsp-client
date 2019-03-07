@@ -83,6 +83,7 @@ describe('Download Runtimes', () => {
                 label: 'Please approve the following license:',
                 content: `                   GNU LESSER GENERAL PUBLIC LICENSE
                 Version 3, 29 June 2007`,
+                responseSecret: false,
                 responseType: 'none',
                 validResponses: []
             },
@@ -91,6 +92,7 @@ describe('Download Runtimes', () => {
                 itemType: '',
                 label: 'License URL: ',
                 content: 'http://www.gnu.org/copyleft/lesser.txt',
+                responseSecret: false,
                 responseType: 'none',
                 validResponses: []
             },
@@ -99,6 +101,7 @@ describe('Download Runtimes', () => {
                 itemType: '',
                 label: 'Do you agree to the license?',
                 content: '',
+                responseSecret: false,
                 responseType: 'bool',
                 validResponses: []
             }
