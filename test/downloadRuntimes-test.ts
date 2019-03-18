@@ -76,6 +76,7 @@ describe('Download Runtimes', () => {
     const downloadWf14WorkflowItem: Protocol.WorkflowResponse = {
         status: provideInputStatus,
         requestId: downloadWfl14Request.requestId + 1,
+        jobId: '',
         items: [
             {
                 id: 'workflow.license',
