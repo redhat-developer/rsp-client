@@ -2,12 +2,13 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Messages } from '../src/protocol/messages';
-import { Protocol } from '../src/protocol/protocol';
-import { EventEmitter } from 'events';
-import { Common, ErrorMessages } from '../src/util/common';
-import { Discovery } from '../src/util/discovery';
 import 'mocha';
+import { EventEmitter } from 'events';
+import { Messages } from '../src/protocol/generated/messages';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Common } from '../src/util/common';
+import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
+import { OutgoingSynchronous } from '../src/util/outgoingsync';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -15,7 +16,8 @@ chai.use(sinonChai);
 describe('Discovery Utility', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
-    let discovery: Discovery;
+    let outgoing: Outgoing;
+    let outgoingSync: OutgoingSynchronous;
     let emitter: EventEmitter;
     const defaultTimeout = 2000;
 
@@ -44,7 +46,8 @@ describe('Discovery Utility', () => {
         connection.onNotification = sandbox.stub().yields();
 
         emitter = new EventEmitter();
-        discovery = new Discovery(connection, emitter);
+        outgoing = new Outgoing(connection, emitter);
+        outgoingSync = new OutgoingSynchronous(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
         syncStub = sandbox.stub(Common, 'sendRequestSync');
     });
@@ -55,17 +58,17 @@ describe('Discovery Utility', () => {
 
     it('findServerBeans should delegate to the Common utility', async () => {
         requestStub.resolves([discoveryPath]);
-        const result = await discovery.findServerBeans(discoveryPath.filepath);
+        const result = await outgoing.findServerBeans(discoveryPath);
 
         expect(result).deep.equals([discoveryPath]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.FindServerBeansRequest.type,
-            discoveryPath, defaultTimeout, ErrorMessages.FINDBEANS_TIMEOUT);
+            discoveryPath, defaultTimeout, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
     });
 
     it('addDiscoveryPathAsync should delegate to the Common utility', async () => {
         requestStub.resolves(status);
-        const result = await discovery.addDiscoveryPathAsync(discoveryPath.filepath);
+        const result = await outgoing.addDiscoveryPath(discoveryPath);
 
         expect(result).equals(status);
         expect(requestStub).calledOnce;
@@ -74,59 +77,40 @@ describe('Discovery Utility', () => {
 
     it('addDiscoveryPathSync should delegate to the Common utility', async () => {
         syncStub.resolves(discoveryPath);
-        const result = await discovery.addDiscoveryPathSync(discoveryPath.filepath);
+        const result = await outgoingSync.addDiscoveryPathSync(discoveryPath.filepath);
 
         expect(result).equals(discoveryPath);
         expect(syncStub).calledOnce;
         expect(syncStub).calledWith(connection, Messages.Server.AddDiscoveryPathRequest.type, discoveryPath,
-            emitter, 'discoveryPathAdded', sinon.match.func, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
-    });
-
-    it('removePathAsync should accept string path', async () => {
-        requestStub.resolves(status);
-        const result = await discovery.removeDiscoveryPathAsync(discoveryPath.filepath);
-
-        expect(result).equals(status);
-        expect(requestStub).calledOnce;
-        expect(requestStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath);
+            emitter, 'discoveryPathAdded', sinon.match.func, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
     });
 
     it('removePathAsync should accept DiscoveryPath', async () => {
         requestStub.resolves(status);
-        const result = await discovery.removeDiscoveryPathAsync(discoveryPath);
+        const result = await outgoing.removeDiscoveryPath(discoveryPath);
 
         expect(result).equals(status);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath);
     });
 
-    it('removePathSync should accept string path', async () => {
-        syncStub.resolves(discoveryPath);
-        const result = await discovery.removeDiscoveryPathSync(discoveryPath.filepath);
-
-        expect(result).equals(discoveryPath);
-        expect(syncStub).calledOnce;
-        expect(syncStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath,
-            emitter, 'discoveryPathRemoved', sinon.match.func, defaultTimeout, ErrorMessages.REMOVEPATH_TIMEOUT);
-    });
-
     it('removePathSync should accept DiscoveryPath', async () => {
         syncStub.resolves(discoveryPath);
-        const result = await discovery.removeDiscoveryPathSync(discoveryPath);
+        const result = await outgoingSync.removeDiscoveryPathSync(discoveryPath);
 
         expect(result).equals(discoveryPath);
         expect(syncStub).calledOnce;
         expect(syncStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath,
-            emitter, 'discoveryPathRemoved', sinon.match.func, defaultTimeout, ErrorMessages.REMOVEPATH_TIMEOUT);
+            emitter, 'discoveryPathRemoved', sinon.match.func, defaultTimeout, ErrorMessages.REMOVEDISCOVERYPATH_TIMEOUT);
     });
 
     it('getDiscoveryPaths should delegate to Common utility', async () => {
         requestStub.resolves([discoveryPath]);
-        const result = await discovery.getDiscoveryPaths();
+        const result = await outgoing.getDiscoveryPaths();
 
         expect(result).deep.equals([discoveryPath]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetDiscoveryPathsRequest.type, null,
-            defaultTimeout, ErrorMessages.GETPATHS_TIMEOUT);
+            defaultTimeout, ErrorMessages.GETDISCOVERYPATHS_TIMEOUT);
     });
 });

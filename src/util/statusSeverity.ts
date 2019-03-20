@@ -1,4 +1,4 @@
-import { Protocol } from '../protocol/protocol';
+import { Protocol } from '../protocol/generated/protocol';
 
 export class StatusSeverity {
 

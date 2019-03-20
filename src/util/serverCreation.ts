@@ -1,13 +1,14 @@
 import { MessageConnection } from 'vscode-jsonrpc';
-import { Protocol } from '../protocol/protocol';
-import { Messages } from '../protocol/messages';
+import { Protocol } from '../protocol/generated/protocol';
+import { Messages } from '../protocol/generated/messages';
 import { EventEmitter } from 'events';
-import { Common, ErrorMessages } from './common';
+import { Common } from './common';
+import { ErrorMessages } from '../protocol/generated/outgoing';
 
 /**
- * Server creation/removal handler
+ * Server creation utility
  */
-export class ServerModel {
+export class ServerCreation {
 
     private connection: MessageConnection;
     private emitter: EventEmitter;
@@ -20,20 +21,6 @@ export class ServerModel {
     constructor(connection: MessageConnection, emitter: EventEmitter) {
         this.connection = connection;
         this.emitter = emitter;
-        this.listenToServerChanges();
-    }
-
-    /**
-     * Subscribe to server creation and deletion events
-     */
-    private listenToServerChanges() {
-        this.connection.onNotification(Messages.Client.ServerAddedNotification.type, handle => {
-            this.emitter.emit('serverAdded', handle);
-        });
-
-        this.connection.onNotification(Messages.Client.ServerRemovedNotification.type, handle => {
-            this.emitter.emit('serverRemoved', handle);
-        });
     }
 
     /**
@@ -47,7 +34,7 @@ export class ServerModel {
     async createServerFromPathAsync(path: string, id: string, attributes?: { [index: string]: any }, timeout: number = Common.DEFAULT_TIMEOUT)
         : Promise<Protocol.CreateServerResponse> {
         const serverBeans = await Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
-            {filepath: path}, timeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
+            {filepath: path}, timeout / 2, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
         const atts = Object.assign({}, attributes);
         atts['server.home.dir'] = serverBeans[0].location;
         if ((serverBeans[0].typeCategory === 'MINISHIFT') || (serverBeans[0].typeCategory === 'CDK')) {
@@ -174,73 +161,4 @@ export class ServerModel {
         });
     }
 
-    /**
-     * Sends notification to remove a server from RSP, then waits for the appropriate 'serverRemoved' event
-     * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
-     * @param timeout timeout in milliseconds
-     */
-    deleteServerSync(serverHandle: Protocol.ServerHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.ServerHandle> {
-        const listener = (param: Protocol.ServerHandle) => {
-            return param.id === serverHandle.id;
-        };
-        return Common.sendRequestSync(this.connection, Messages.Server.DeleteServerRequest.type, serverHandle, this.emitter,
-            'serverRemoved', listener, timeout, ErrorMessages.DELETESERVER_TIMEOUT);
-    }
-
-    /**
-     * Sends notification to remove a server from RSP. Subscribe to the 'serverRemoved' event to see
-     * when the removal finishes
-     * @param serverHandle server handle containing the server id and type, see {@link Protocol.ServerHandle}
-     */
-    deleteServerAsync(serverHandle: Protocol.ServerHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
-        return Common.sendSimpleRequest(this.connection, Messages.Server.DeleteServerRequest.type, serverHandle, timeout,
-             ErrorMessages.DELETESERVER_TIMEOUT);
-    }
-
-    /**
-     * Retreives handles for all servers within RSP
-     * @param timeout timeout in milliseconds
-     */
-    getServerHandles(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.ServerHandle[]> {
-        return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerHandlesRequest.type, null,
-             timeout, ErrorMessages.GETSERVERS_TIMEOUT);
-    }
-
-    /**
-     * Retreives ServerState by ServerHandle
-     * @param timeout timeout in milliseconds
-     */
-    getServerState(serverHandle: Protocol.ServerHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.ServerState> {
-        return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerStateRequest.type, serverHandle,
-             timeout, ErrorMessages.GETSERVERSTATE_TIMEOUT);
-    }
-
-    /**
-     * Retreives all supported server types
-     * @param timeout timeout in milliseconds
-     */
-    getServerTypes(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.ServerType[]> {
-        return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerTypesRequest.type, null,
-             timeout, ErrorMessages.GETSERVERTYPES_TIMEOUT);
-    }
-
-    /**
-     * Retreives required attributes for a given server type
-     * @param serverType object representing the server type, see {@link Protocol.ServerType}
-     * @param timeout timeout in milliseconds
-     */
-    getServerTypeRequiredAttributes(serverType: Protocol.ServerType, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
-        return Common.sendSimpleRequest(this.connection, Messages.Server.GetRequiredAttributesRequest.type, serverType,
-             timeout, ErrorMessages.GETREQUIREDATTRS_TIMEOUT);
-    }
-
-    /**
-     * Retreives optional attributes for a given server type
-     * @param serverType object representing the server type, see {@link Protocol.ServerType}
-     * @param timeout timeout in milliseconds
-     */
-    getServerTypeOptionalAttributes(serverType: Protocol.ServerType, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
-        return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
-          timeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
-    }
 }

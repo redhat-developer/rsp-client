@@ -75,35 +75,3 @@ export class Common {
         connection.sendNotification(messageType, payload);
     }
 }
-
-/**
- * Error messages
- */
-export namespace ErrorMessages {
-    export const FINDBEANS_TIMEOUT = 'Failed to retrieve server beans in time';
-    export const ADDPATH_TIMEOUT = 'Failed to add discovery path in time';
-    export const REMOVEPATH_TIMEOUT = 'Failed to remove discovery path in time';
-    export const GETPATHS_TIMEOUT = 'Failed to retrieve discovery paths in time';
-    export const GETSERVERS_TIMEOUT = 'Failed to retrieve servers in time';
-    export const GETSERVERTYPES_TIMEOUT = 'Failed to retrieve supported servers in time';
-    export const GETREQUIREDATTRS_TIMEOUT = 'Failed to retrieve required server attributes in time';
-    export const GETOPTIONALATTRS_TIMEOUT = 'Failed to retrieve optional server attributes in time';
-    export const DELETESERVER_TIMEOUT = 'Failed to delete server in time';
-    export const GETLAUNCHMODES_TIMEOUT = 'Failed to get launch modes in time';
-    export const GETREQUIREDLAUNCHATTRS_TIMEOUT = 'Failed to get required launch attributes in time';
-    export const GETOPTIONALLAUNCHATTRS_TIMEOUT = 'Failed to get optional launch attributes in time';
-    export const GETLAUNCHCOMMAND_TIMEOUT = 'Failed to get launch command in time';
-    export const SERVERSTARTINGBYCLIENT_TIMEOUT = 'Failed to notify of server starting in time';
-    export const SERVERSTARTEDBYCLIENT_TIMEOUT = 'Failed to notify of server started in time';
-    export const STARTSERVER_TIMEOUT = 'Failed to start server in time';
-    export const STOPSERVER_TIMEOUT = 'Failed to stop server in time';
-    export const CREATESERVER_TIMEOUT = 'Failed to create server in time';
-    export const REGISTERCLIENT_CAPABILITIES_TIMEOUT = 'Failed to register capabilities';
-    export const GETDEPLOYABLES_TIMEOUT = 'Failed to get deployables in time';
-    export const ADDDEPLOYABLE_TIMEOUT = 'Failed to add deployable in time';
-    export const REMOVEDEPLOYABLE_TIMEOUT = 'Failed to remove deployable in time';
-    export const PUBLISH_TIMEOUT = 'Failed to publish server in time';
-    export const LISTDOWNLOADABLERUNTIMES_TIMEOUT = 'Failed to list downloadable runtimes in time';
-    export const DOWNLOADRUNTIME_TIMEOUT = 'Failed to start the workflow to download a runtimes in time';
-    export const GETSERVERSTATE_TIMEOUT = 'Failed to get server state in time';
-}

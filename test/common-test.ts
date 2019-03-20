@@ -2,11 +2,12 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Messages } from '../src/protocol/messages';
-import { Protocol } from '../src/protocol/protocol';
-import { EventEmitter } from 'events';
-import { Common, ErrorMessages } from '../src/util/common';
 import 'mocha';
+import { EventEmitter } from 'events';
+import { Messages } from '../src/protocol/generated/messages';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Common } from '../src/util/common';
+import { ErrorMessages } from '../src/protocol/generated/outgoing';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -47,7 +48,7 @@ describe('Common', () => {
         });
 
         it('should send the correct message with the correct payload', async () => {
-            const result = await Common.sendSimpleRequest(connection, messageType, payload, defaultTimeout, ErrorMessages.FINDBEANS_TIMEOUT);
+            const result = await Common.sendSimpleRequest(connection, messageType, payload, defaultTimeout, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
 
             expect(connection.sendRequest).calledOnce;
             expect(connection.sendRequest).calledWith(messageType, payload);
@@ -65,10 +66,10 @@ describe('Common', () => {
             });
 
             try {
-                await Common.sendSimpleRequest(connection, messageType, payload, 1, ErrorMessages.FINDBEANS_TIMEOUT);
+                await Common.sendSimpleRequest(connection, messageType, payload, 1, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
                 expect.fail('No error thrown on timeout');
             } catch (err) {
-                expect(err.message).equals(ErrorMessages.FINDBEANS_TIMEOUT);
+                expect(err.message).equals(ErrorMessages.FINDSERVERBEANS_TIMEOUT);
             }
         });
     });
@@ -92,7 +93,7 @@ describe('Common', () => {
             }, 1);
 
             const result = await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
-                listener, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+                listener, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
 
             expect(connection.sendRequest).calledOnce;
             expect(connection.sendRequest).calledWith(messageType, payload);
@@ -107,7 +108,7 @@ describe('Common', () => {
             }, 1);
 
             await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
-                listener, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+                listener, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
 
             expect(subscribeSpy).calledOnce;
             expect(subscribeSpy).calledWith(eventId);
@@ -131,7 +132,7 @@ describe('Common', () => {
             }, 3);
 
             const result = await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
-                handler, defaultTimeout, ErrorMessages.ADDPATH_TIMEOUT);
+                handler, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
 
             expect(result).equals(payload);
         });
@@ -142,10 +143,10 @@ describe('Common', () => {
             }, 2);
             try {
                 await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
-                    listener, 1, ErrorMessages.ADDPATH_TIMEOUT);
+                    listener, 1, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
                 expect.fail('No error thrown on timeout');
             } catch (err) {
-                expect(err.message).equals(ErrorMessages.ADDPATH_TIMEOUT);
+                expect(err.message).equals(ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
             }
         });
     });

@@ -2,12 +2,14 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Messages } from '../src/protocol/messages';
-import { Protocol } from '../src/protocol/protocol';
-import { EventEmitter } from 'events';
-import { Common, ErrorMessages } from '../src/util/common';
-import { ServerModel } from '../src/util/serverModel';
 import 'mocha';
+import { EventEmitter } from 'events';
+import { Common } from '../src/util/common';
+import { Messages } from '../src/protocol/generated/messages';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
+import { ServerCreation } from '../src/util/serverCreation';
+import { OutgoingSynchronous } from '../src/main';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -15,12 +17,14 @@ chai.use(sinonChai);
 describe('Sever Model Utility', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
-    let model: ServerModel;
     let emitter: EventEmitter;
     const defaultTimeout = 2000;
 
     let requestStub: sinon.SinonStub;
     let syncStub: sinon.SinonStub;
+    let serverCreation: ServerCreation;
+    let outgoing: Outgoing;
+    let outgoingSync: OutgoingSynchronous;
 
     const discoveryPath: Protocol.DiscoveryPath = {
         filepath: 'path'
@@ -105,7 +109,9 @@ describe('Sever Model Utility', () => {
         connection.onNotification = sandbox.stub().returns(null);
 
         emitter = new EventEmitter();
-        model = new ServerModel(connection, emitter);
+        serverCreation = new ServerCreation(connection,emitter);
+        outgoing = new Outgoing(connection, emitter);
+        outgoingSync = new OutgoingSynchronous(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
         syncStub = sandbox.stub(Common, 'sendRequestSync');
     });
@@ -118,7 +124,7 @@ describe('Sever Model Utility', () => {
         requestStub.onFirstCall().resolves([serverBean]);
         requestStub.onSecondCall().resolves(createStatus);
 
-        const result = await model.createServerFromPathAsync(discoveryPath.filepath, 'id');
+        const result = await serverCreation.createServerFromPathAsync(discoveryPath.filepath, 'id');
         const attributes: Protocol.ServerAttributes = {
             id: 'id',
             serverType: serverBean.serverAdapterTypeId,
@@ -130,7 +136,7 @@ describe('Sever Model Utility', () => {
         expect(result).equals(createStatus);
         expect(requestStub).calledTwice;
         expect(requestStub).calledWithExactly(connection, Messages.Server.FindServerBeansRequest.type, discoveryPath,
-            defaultTimeout / 2, ErrorMessages.FINDBEANS_TIMEOUT);
+            defaultTimeout / 2, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
         expect(requestStub).calledWithExactly(connection, Messages.Server.CreateServerRequest.type, attributes,
             defaultTimeout, ErrorMessages.CREATESERVER_TIMEOUT);
     });
@@ -138,7 +144,7 @@ describe('Sever Model Utility', () => {
     it('createSeverFromBeanAsync should delegate to the Common utility', async () => {
         requestStub.resolves(createStatus);
 
-        const result = await model.createServerFromBeanAsync(serverBean);
+        const result = await serverCreation.createServerFromBeanAsync(serverBean);
         const attributes: Protocol.ServerAttributes = {
             id: serverBean.name,
             serverType: serverBean.serverAdapterTypeId,
@@ -156,7 +162,7 @@ describe('Sever Model Utility', () => {
     it('deleteServerSync should delegate to the Common utility', async () => {
         syncStub.resolves(serverHandle);
 
-        const result = await model.deleteServerSync(serverHandle);
+        const result = await outgoingSync.deleteServerSync(serverHandle);
 
         expect(result).equals(serverHandle);
         expect(syncStub).calledOnce;
@@ -167,7 +173,7 @@ describe('Sever Model Utility', () => {
     it('deleteServerAsync should delegate to the Common utility', async () => {
         requestStub.resolves(okStatus);
 
-        const result = await model.deleteServerAsync(serverHandle);
+        const result = await outgoing.deleteServer(serverHandle);
 
         expect(result).equals(okStatus);
         expect(requestStub).calledOnce;
@@ -177,18 +183,18 @@ describe('Sever Model Utility', () => {
     it('getServerHandles should delegate to the Common utility', async () => {
         requestStub.resolves([serverHandle]);
 
-        const result = await model.getServerHandles();
+        const result = await outgoing.getServerHandles();
 
         expect(result).deep.equals([serverHandle]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerHandlesRequest.type, null,
-            defaultTimeout, ErrorMessages.GETSERVERS_TIMEOUT);
+            defaultTimeout, ErrorMessages.GETSERVERHANDLES_TIMEOUT);
     });
 
     it('getServerState should send GetServerStateRequest', async () => {
         requestStub.resolves(serverState);
 
-        const result = await model.getServerState(serverHandle);
+        const result = await outgoing.getServerState(serverHandle);
 
         expect(result).deep.equals(serverState);
         expect(requestStub).calledOnce;
@@ -199,7 +205,7 @@ describe('Sever Model Utility', () => {
     it('getServerTypes should delegate to the Common utility', async () => {
         requestStub.resolves([serverType]);
 
-        const result = await model.getServerTypes();
+        const result = await outgoing.getServerTypes();
 
         expect(result).deep.equals([serverType]);
         expect(requestStub).calledOnce;
@@ -210,23 +216,23 @@ describe('Sever Model Utility', () => {
     it('getServerTypeRequiredAttributes should delegate to the Common utility', async () => {
         requestStub.resolves(attributes);
 
-        const result = await model.getServerTypeRequiredAttributes(serverType);
+        const result = await outgoing.getRequiredAttributes(serverType);
 
         expect(result).deep.equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetRequiredAttributesRequest.type, serverType,
-            defaultTimeout, ErrorMessages.GETREQUIREDATTRS_TIMEOUT);
+            defaultTimeout, ErrorMessages.GETREQUIREDATTRIBUTES_TIMEOUT);
     });
 
     it('getServerTypeOptionalAttributes should delegate to the Common utility', async () => {
         requestStub.resolves(attributes);
 
-        const result = await model.getServerTypeOptionalAttributes(serverType);
+        const result = await outgoing.getOptionalAttributes(serverType);
 
         expect(result).deep.equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
-            defaultTimeout, ErrorMessages.GETOPTIONALATTRS_TIMEOUT);
+            defaultTimeout, ErrorMessages.GETOPTIONALATTRIBUTES_TIMEOUT);
     });
 
     describe('Synchronous Server Creation', () => {
@@ -252,7 +258,7 @@ describe('Sever Model Utility', () => {
                     emitter.emit('serverAdded', serverHandle);
                 }, 1);
 
-                const result = await model.createServerFromPath(discoveryPath.filepath, 'id');
+                const result = await serverCreation.createServerFromPath(discoveryPath.filepath, 'id');
 
                 expect(result).equals(serverHandle);
                 expect(stub).calledTwice;
@@ -268,7 +274,7 @@ describe('Sever Model Utility', () => {
                     emitter.emit('serverAdded', serverHandle);
                 }, 1);
 
-                await model.createServerFromPath(discoveryPath.filepath, 'id');
+                await serverCreation.createServerFromPath(discoveryPath.filepath, 'id');
 
                 expect(regSpy).calledOnceWith('serverAdded');
                 expect(unregSpy).calledOnceWith('serverAdded');
@@ -287,7 +293,7 @@ describe('Sever Model Utility', () => {
                 }, 1);
 
                 try {
-                    await model.createServerFromPath(discoveryPath.filepath, 'id', undefined, 2);
+                    await serverCreation.createServerFromPath(discoveryPath.filepath, 'id', undefined, 2);
                     expect.fail('Creation finished with the wrong server id');
                 } catch (err) {
                     expect(unregSpy).not.called;
@@ -296,7 +302,7 @@ describe('Sever Model Utility', () => {
 
             it('createServerFromPath should error on timeout', async () => {
                 try {
-                    await model.createServerFromPath(discoveryPath.filepath, 'id', undefined, 1);
+                    await serverCreation.createServerFromPath(discoveryPath.filepath, 'id', undefined, 1);
                     expect.fail('No error thrown on timeout');
                 } catch (err) {
                     expect(err.message).equals(ErrorMessages.CREATESERVER_TIMEOUT);
@@ -328,7 +334,7 @@ describe('Sever Model Utility', () => {
                     emitter.emit('serverAdded', serverHandle1);
                 }, 1);
 
-                const result = await model.createServerFromBean(serverBean);
+                const result = await serverCreation.createServerFromBean(serverBean);
 
                 expect(result).equals(serverHandle1);
                 expect(stub).calledOnce;
@@ -343,7 +349,7 @@ describe('Sever Model Utility', () => {
                     emitter.emit('serverAdded', serverHandle1);
                 }, 1);
 
-                await model.createServerFromBean(serverBean);
+                await serverCreation.createServerFromBean(serverBean);
 
                 expect(regSpy).calledOnceWith('serverAdded');
                 expect(unregSpy).calledOnceWith('serverAdded');
@@ -357,7 +363,7 @@ describe('Sever Model Utility', () => {
                 }, 1);
 
                 try {
-                    await model.createServerFromBean(serverBean, serverBean.name, undefined, 2);
+                    await serverCreation.createServerFromBean(serverBean, serverBean.name, undefined, 2);
                     expect.fail('Creation finished with the wrong server id');
                 } catch (err) {
                     expect(unregSpy).not.called;
@@ -387,7 +393,7 @@ describe('Sever Model Utility', () => {
                     emitter.emit('serverAdded', serverHandle1);
                 }, 1);
 
-                const result = await model.createServerFromBean(bean);
+                const result = await serverCreation.createServerFromBean(bean);
 
                 expect(result).equals(serverHandle1);
                 expect(stub).calledOnceWith(Messages.Server.CreateServerRequest.type, attrs);
@@ -395,7 +401,7 @@ describe('Sever Model Utility', () => {
 
             it('createServerFromBean should error on timeout', async () => {
                 try {
-                    await model.createServerFromBean(serverBean, 'id', undefined, 1);
+                    await serverCreation.createServerFromBean(serverBean, 'id', undefined, 1);
                     expect.fail('No error thrown on timeout');
                 } catch (err) {
                     expect(err.message).equals(ErrorMessages.CREATESERVER_TIMEOUT);

@@ -1,6 +1,6 @@
 import * as chai from 'chai';
 import * as sinonChai from 'sinon-chai';
-import { Protocol } from '../src/protocol/protocol';
+import { Protocol } from '../src/protocol/generated/protocol';
 import { StatusSeverity } from '../src/util/statusSeverity';
 
 const expect = chai.expect;

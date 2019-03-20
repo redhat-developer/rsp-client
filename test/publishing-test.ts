@@ -2,11 +2,12 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Messages } from '../src/protocol/messages';
-import { Protocol } from '../src/protocol/protocol';
-import { Common, ErrorMessages } from '../src/util/common';
 import 'mocha';
-import { Publishing } from '../src/util/publishing';
+import { EventEmitter } from 'events';
+import { Messages } from '../src/protocol/generated/messages';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Common } from '../src/util/common';
+import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -14,7 +15,9 @@ chai.use(sinonChai);
 describe('Publishing', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
-    let publishing: Publishing;
+    let outgoing: Outgoing;
+    let emitter: EventEmitter;
+
 
     let requestStub: sinon.SinonStub;
 
@@ -90,8 +93,8 @@ describe('Publishing', () => {
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().returns(null);
-
-        publishing = new Publishing(connection);
+        emitter = new EventEmitter();
+        outgoing = new Outgoing(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
 
@@ -103,7 +106,7 @@ describe('Publishing', () => {
         const deployableStates: Protocol.DeployableState[] = [deployableState];
         requestStub.resolves(deployableStates);
 
-        const result: Protocol.DeployableState[] = await publishing.getDeployables(serverHandle);
+        const result: Protocol.DeployableState[] = await outgoing.getDeployables(serverHandle);
 
         expect(result).deep.equals(deployableStates);
         expect(requestStub).calledOnce;
@@ -114,7 +117,7 @@ describe('Publishing', () => {
     it('addDeployable should send AddDeployableRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await publishing.addDeployable(modifyDeployableRequest);
+        const result: Protocol.Status = await outgoing.addDeployable(modifyDeployableRequest);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
@@ -125,7 +128,7 @@ describe('Publishing', () => {
     it('removeDeployable should send RemoveDeployableRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await publishing.removeDeployable(modifyDeployableRequest);
+        const result: Protocol.Status = await outgoing.removeDeployable(modifyDeployableRequest);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
@@ -136,7 +139,7 @@ describe('Publishing', () => {
     it('publish should send PublishServerRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await publishing.publish(publishServerRequest);
+        const result: Protocol.Status = await outgoing.publish(publishServerRequest);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;

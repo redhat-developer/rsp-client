@@ -2,8 +2,8 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Protocol } from '../src/protocol/protocol';
-import { Capabilities } from '../src/util/capabilities';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Incoming } from '../src/protocol/generated/incoming';
 import 'mocha';
 
 const expect = chai.expect;
@@ -13,7 +13,7 @@ describe('Capabilities Utility', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
 
-    let capabilitiesStub: sinon.SinonStubbedInstance<Capabilities>;
+    let capabilitiesStub: sinon.SinonStubbedInstance<Incoming>;
 
     beforeEach(() => {
         sandbox = sinon.createSandbox();
@@ -24,8 +24,8 @@ describe('Capabilities Utility', () => {
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().returns(null);
 
-        capabilitiesStub = sandbox.stub(Capabilities.prototype);
-        capabilitiesStub.onStringPrompt.callsArgWith(0, {code: 100, prompt: 'Enter your name'});
+        capabilitiesStub = sandbox.stub(Incoming.prototype);
+        capabilitiesStub.onPromptString.callsArgWith(0, {code: 100, prompt: 'Enter your name'});
     });
 
     afterEach(() => {
@@ -38,7 +38,7 @@ describe('Capabilities Utility', () => {
 
         };
         const listenerSpy = sinon.spy(listener);
-        capabilitiesStub.onStringPrompt(listenerSpy);
+        capabilitiesStub.onPromptString(listenerSpy);
 
         expect(listenerSpy).calledOnce;
     });
