@@ -2,12 +2,13 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Messages } from '../src/protocol/messages';
-import { Protocol } from '../src/protocol/protocol';
-import { EventEmitter } from 'events';
-import { Common, ErrorMessages } from '../src/util/common';
-import { ServerLauncher } from '../src/util/serverLauncher';
 import 'mocha';
+import { EventEmitter } from 'events';
+import { Messages } from '../src/protocol/generated/messages';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Common } from '../src/util/common';
+import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
+import { OutgoingSynchronous } from '../src/util/outgoingsync';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -15,9 +16,9 @@ chai.use(sinonChai);
 describe('Server Launcher Utility', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
-    let launcher: ServerLauncher;
+    let outgoing: Outgoing;
+    let outgoingSync: OutgoingSynchronous;
     let emitter: EventEmitter;
-    const defaultTimeout = 2000;
 
     let requestStub: sinon.SinonStub;
 
@@ -85,9 +86,9 @@ describe('Server Launcher Utility', () => {
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().returns(null);
-
         emitter = new EventEmitter();
-        launcher = new ServerLauncher(connection, emitter);
+        outgoing = new Outgoing(connection);
+        outgoingSync = new OutgoingSynchronous(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
 
@@ -97,82 +98,82 @@ describe('Server Launcher Utility', () => {
 
     it('getLaunchModes should delegate to the Common utility', async () => {
         requestStub.resolves([launchMode]);
-        const result = await launcher.getLaunchModes(serverType);
+        const result = await outgoing.getLaunchModes(serverType);
 
         expect(result).deep.equals([launchMode]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetLaunchModesRequest.type, serverType,
-            defaultTimeout, ErrorMessages.GETLAUNCHMODES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETLAUNCHMODES_TIMEOUT);
     });
 
     it('getRequiredLaunchAttributes should delegate to the Common utility', async () => {
         requestStub.resolves(attributes);
-        const result = await launcher.getRequiredLaunchAttributes(launchAttrRequest);
+        const result = await outgoing.getRequiredLaunchAttributes(launchAttrRequest);
 
         expect(result).equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetRequiredLaunchAttributesRequest.type, launchAttrRequest,
-            defaultTimeout, ErrorMessages.GETREQUIREDLAUNCHATTRS_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETREQUIREDLAUNCHATTRIBUTES_TIMEOUT);
     });
 
     it('getOptionalLaunchAttributes should delegate to the Common utility', async () => {
         requestStub.resolves(attributes);
-        const result = await launcher.getOptionalLaunchAttributes(launchAttrRequest);
+        const result = await outgoing.getOptionalLaunchAttributes(launchAttrRequest);
 
         expect(result).equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetOptionalLaunchAttributesRequest.type, launchAttrRequest,
-            defaultTimeout, ErrorMessages.GETOPTIONALLAUNCHATTRS_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETOPTIONALLAUNCHATTRIBUTES_TIMEOUT);
     });
 
     it('getLaunchCommand should delegate to the Common utility', async () => {
         requestStub.resolves(cliArgs);
-        const result = await launcher.getLaunchCommand(launchParameters);
+        const result = await outgoing.getLaunchCommand(launchParameters);
 
         expect(result).equals(cliArgs);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetLaunchCommandRequest.type, launchParameters,
-            defaultTimeout, ErrorMessages.GETLAUNCHCOMMAND_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETLAUNCHCOMMAND_TIMEOUT);
     });
 
     it('serverStartingByClient should delegate to the Common utility', async () => {
         requestStub.resolves(status);
-        const result = await launcher.serverStartingByClient(startingAttrs);
+        const result = await outgoing.serverStartingByClient(startingAttrs);
 
         expect(result).equals(status);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.ServerStartingByClientRequest.type, startingAttrs,
-            defaultTimeout, ErrorMessages.SERVERSTARTINGBYCLIENT_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.SERVERSTARTINGBYCLIENT_TIMEOUT);
     });
 
     it('serverStartedByClient should delegate to the Common utility', async () => {
         requestStub.resolves(status);
-        const result = await launcher.serverStartedByClient(launchParameters);
+        const result = await outgoing.serverStartedByClient(launchParameters);
 
         expect(result).equals(status);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.ServerStartedByClientRequest.type, launchParameters,
-            defaultTimeout, ErrorMessages.SERVERSTARTEDBYCLIENT_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.SERVERSTARTEDBYCLIENT_TIMEOUT);
     });
 
     it('startServerAsync should delegate to the Common utility', async () => {
         requestStub.resolves(serverStart);
-        const result = await launcher.startServerAsync(launchParameters);
+        const result = await outgoing.startServerAsync(launchParameters);
 
         expect(result).equals(serverStart);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.StartServerAsyncRequest.type, launchParameters,
-            defaultTimeout, ErrorMessages.STARTSERVER_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.STARTSERVERASYNC_TIMEOUT);
     });
 
     it('stopServerAsync should delegate to the Common utility', async () => {
         requestStub.resolves(status);
-        const result = await launcher.stopServerAsync(stopParameters);
+        const result = await outgoing.stopServerAsync(stopParameters);
 
         expect(result).equals(status);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.StopServerAsyncRequest.type, stopParameters,
-            defaultTimeout, ErrorMessages.STOPSERVER_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.STOPSERVERASYNC_TIMEOUT);
     });
 
     describe('Synchronous Requests', () => {
@@ -192,7 +193,7 @@ describe('Server Launcher Utility', () => {
                 emitter.emit('serverStateChanged', stateChange);
             }, 1);
 
-            const result = await launcher.startServerSync(launchParameters);
+            const result = await outgoingSync.startServerSync(launchParameters);
 
             expect(result).equals(stateChange);
             expect(connection.sendRequest).calledOnce;
@@ -213,7 +214,7 @@ describe('Server Launcher Utility', () => {
                 emitter.emit('serverStateChanged', stateChange);
             }, 1);
 
-            await launcher.startServerSync(launchParameters);
+            await outgoingSync.startServerSync(launchParameters);
 
             expect(regSpy).calledOnce;
             expect(regSpy).calledWith('serverStateChanged');
@@ -235,7 +236,7 @@ describe('Server Launcher Utility', () => {
             }, 1);
 
             try {
-                await launcher.startServerSync(launchParameters, 1);
+                await outgoingSync.startServerSync(launchParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
                 expect(unregSpy).not.called;
@@ -244,10 +245,10 @@ describe('Server Launcher Utility', () => {
 
         it('startServerSync should error on timeout', async () => {
             try {
-                await launcher.startServerSync(launchParameters, 1);
+                await outgoingSync.startServerSync(launchParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
-                expect(err.message).equals(ErrorMessages.STARTSERVER_TIMEOUT);
+                expect(err.message).equals(ErrorMessages.STARTSERVERASYNC_TIMEOUT);
             }
         });
 
@@ -263,7 +264,7 @@ describe('Server Launcher Utility', () => {
                 emitter.emit('serverStateChanged', stateChange);
             }, 1);
 
-            const result = await launcher.stopServerSync(stopParameters);
+            const result = await outgoingSync.stopServerSync(stopParameters);
 
             expect(result).equals(stateChange);
             expect(connection.sendRequest).calledOnce;
@@ -284,7 +285,7 @@ describe('Server Launcher Utility', () => {
                 emitter.emit('serverStateChanged', stateChange);
             }, 1);
 
-            await launcher.stopServerSync(stopParameters);
+            await outgoingSync.stopServerSync(stopParameters);
 
             expect(regSpy).calledOnce;
             expect(regSpy).calledWith('serverStateChanged');
@@ -306,7 +307,7 @@ describe('Server Launcher Utility', () => {
             }, 1);
 
             try {
-                await launcher.stopServerSync(stopParameters, 1);
+                await outgoingSync.stopServerSync(stopParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
                 expect(unregSpy).not.called;
@@ -315,10 +316,10 @@ describe('Server Launcher Utility', () => {
 
         it('startServerSync should error on timeout', async () => {
             try {
-                await launcher.stopServerSync(stopParameters, 1);
+                await outgoingSync.stopServerSync(stopParameters, 1);
                 expect.fail('No error thrown');
             } catch (err) {
-                expect(err.message).equals(ErrorMessages.STOPSERVER_TIMEOUT);
+                expect(err.message).equals(ErrorMessages.STOPSERVERASYNC_TIMEOUT);
             }
         });
     });

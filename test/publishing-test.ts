@@ -2,11 +2,11 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Messages } from '../src/protocol/messages';
-import { Protocol } from '../src/protocol/protocol';
-import { Common, ErrorMessages } from '../src/util/common';
 import 'mocha';
-import { Publishing } from '../src/util/publishing';
+import { Messages } from '../src/protocol/generated/messages';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Common } from '../src/util/common';
+import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -14,7 +14,7 @@ chai.use(sinonChai);
 describe('Publishing', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
-    let publishing: Publishing;
+    let outgoing: Outgoing;
 
     let requestStub: sinon.SinonStub;
 
@@ -90,8 +90,7 @@ describe('Publishing', () => {
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().returns(null);
-
-        publishing = new Publishing(connection);
+        outgoing = new Outgoing(connection);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
 
@@ -103,44 +102,44 @@ describe('Publishing', () => {
         const deployableStates: Protocol.DeployableState[] = [deployableState];
         requestStub.resolves(deployableStates);
 
-        const result: Protocol.DeployableState[] = await publishing.getDeployables(serverHandle);
+        const result: Protocol.DeployableState[] = await outgoing.getDeployables(serverHandle);
 
         expect(result).deep.equals(deployableStates);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetDeployablesRequest.type, serverHandle,
-            Common.LONG_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
     });
 
     it('addDeployable should send AddDeployableRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await publishing.addDeployable(modifyDeployableRequest);
+        const result: Protocol.Status = await outgoing.addDeployable(modifyDeployableRequest);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.AddDeployableRequest.type, modifyDeployableRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
     });
 
     it('removeDeployable should send RemoveDeployableRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await publishing.removeDeployable(modifyDeployableRequest);
+        const result: Protocol.Status = await outgoing.removeDeployable(modifyDeployableRequest);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     });
 
     it('publish should send PublishServerRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await publishing.publish(publishServerRequest);
+        const result: Protocol.Status = await outgoing.publish(publishServerRequest);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.PublishRequest.type, publishServerRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.PUBLISH_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.PUBLISH_TIMEOUT);
     });
 });

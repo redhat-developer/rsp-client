@@ -2,10 +2,10 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { Messages } from '../src/protocol/messages';
-import { Protocol } from '../src/protocol/protocol';
-import { Common, ErrorMessages } from '../src/util/common';
-import { DownloadRuntimes } from '../src/util/downloadRuntimes';
+import { Messages } from '../src/protocol/generated/messages';
+import { Protocol } from '../src/protocol/generated/protocol';
+import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
+import { Common } from '../src/util/common';
 import 'mocha';
 
 const expect = chai.expect;
@@ -15,7 +15,7 @@ describe('Download Runtimes', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
     let requestStub: sinon.SinonStub;
-    let downloadRuntimes: DownloadRuntimes;
+    let outgoing: Outgoing;
 
     const provideInputStatus: Protocol.Status = {
         code: 0,
@@ -117,8 +117,7 @@ describe('Download Runtimes', () => {
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().yields();
-
-        downloadRuntimes = new DownloadRuntimes(connection);
+        outgoing = new Outgoing(connection);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
 
@@ -129,22 +128,22 @@ describe('Download Runtimes', () => {
     it('listDownloadableRuntimes should send ListDownloadableRuntimesRequest', async () => {
         requestStub.resolves(downloadableRuntimes);
 
-        const result: Protocol.ListDownloadRuntimeResponse = await downloadRuntimes.listDownloadableRuntimes();
+        const result: Protocol.ListDownloadRuntimeResponse = await outgoing.listDownloadableRuntimes();
 
         expect(result).deep.equals(downloadableRuntimes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
-            Common.LONG_TIMEOUT, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
     });
 
     it('downloadRuntime should send DownloadRuntimeRequest', async () => {
         requestStub.resolves(downloadWf14WorkflowItem);
 
-        const result: Protocol.WorkflowResponse = await downloadRuntimes.downloadRuntime(downloadWfl14Request);
+        const result: Protocol.WorkflowResponse = await outgoing.downloadRuntime(downloadWfl14Request);
 
         expect(result).deep.equals(downloadWf14WorkflowItem);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.DownloadRuntimeRequest.type, downloadWfl14Request,
-            Common.LONG_TIMEOUT, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
     });
 });
