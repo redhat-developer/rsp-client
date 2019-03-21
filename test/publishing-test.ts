@@ -107,7 +107,7 @@ describe('Publishing', () => {
         expect(result).deep.equals(deployableStates);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetDeployablesRequest.type, serverHandle,
-            Common.LONG_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
     });
 
     it('addDeployable should send AddDeployableRequest', async () => {
@@ -118,7 +118,7 @@ describe('Publishing', () => {
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.AddDeployableRequest.type, modifyDeployableRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
     });
 
     it('removeDeployable should send RemoveDeployableRequest', async () => {
@@ -129,7 +129,7 @@ describe('Publishing', () => {
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     });
 
     it('publish should send PublishServerRequest', async () => {
@@ -140,6 +140,6 @@ describe('Publishing', () => {
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.PublishRequest.type, publishServerRequest,
-            Common.LONG_TIMEOUT, ErrorMessages.PUBLISH_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.PUBLISH_TIMEOUT);
     });
 });

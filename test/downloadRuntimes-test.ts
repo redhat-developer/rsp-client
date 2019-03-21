@@ -133,7 +133,7 @@ describe('Download Runtimes', () => {
         expect(result).deep.equals(downloadableRuntimes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.ListDownloadableRuntimesRequest.type, null,
-            Common.LONG_TIMEOUT, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
     });
 
     it('downloadRuntime should send DownloadRuntimeRequest', async () => {
@@ -144,6 +144,6 @@ describe('Download Runtimes', () => {
         expect(result).deep.equals(downloadWf14WorkflowItem);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.DownloadRuntimeRequest.type, downloadWfl14Request,
-            Common.LONG_TIMEOUT, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
     });
 });

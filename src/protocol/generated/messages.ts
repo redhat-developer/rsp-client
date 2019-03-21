@@ -308,7 +308,6 @@ export namespace Messages {
      */
     export namespace Client {
         /**
-
          * Prompt the user for some feature
          */
         export namespace PromptStringRequest {
@@ -377,6 +376,7 @@ export namespace Messages {
          *   `2` representing started
          *   `3` representing stopping
          *   `4` representing stopped
+         *
          */
         export namespace ServerStateChangedNotification {
             export const type = new NotificationType<Protocol.ServerState, void>('client/serverStateChanged');

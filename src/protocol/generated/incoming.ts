@@ -28,47 +28,36 @@ export class Incoming {
         this.connection.onNotification(Messages.Client.DiscoveryPathAddedNotification.type, param => {
             this.emitter.emit('discoveryPathAdded', param);
         });
-
         this.connection.onNotification(Messages.Client.DiscoveryPathRemovedNotification.type, param => {
             this.emitter.emit('discoveryPathRemoved', param);
         });
-
         this.connection.onNotification(Messages.Client.ServerAddedNotification.type, param => {
             this.emitter.emit('serverAdded', param);
         });
-
         this.connection.onNotification(Messages.Client.ServerRemovedNotification.type, param => {
             this.emitter.emit('serverRemoved', param);
         });
-
         this.connection.onNotification(Messages.Client.ServerAttributesChangedNotification.type, param => {
             this.emitter.emit('serverAttributesChanged', param);
         });
-
         this.connection.onNotification(Messages.Client.ServerStateChangedNotification.type, param => {
             this.emitter.emit('serverStateChanged', param);
         });
-
         this.connection.onNotification(Messages.Client.ServerProcessCreatedNotification.type, param => {
             this.emitter.emit('serverProcessCreated', param);
         });
-
         this.connection.onNotification(Messages.Client.ServerProcessTerminatedNotification.type, param => {
             this.emitter.emit('serverProcessTerminated', param);
         });
-
         this.connection.onNotification(Messages.Client.ServerProcessOutputAppendedNotification.type, param => {
             this.emitter.emit('serverProcessOutputAppended', param);
         });
-
         this.connection.onNotification(Messages.Client.JobAddedNotification.type, param => {
             this.emitter.emit('jobAdded', param);
         });
-
         this.connection.onNotification(Messages.Client.JobRemovedNotification.type, param => {
             this.emitter.emit('jobRemoved', param);
         });
-
         this.connection.onNotification(Messages.Client.JobChangedNotification.type, param => {
             this.emitter.emit('jobChanged', param);
         });

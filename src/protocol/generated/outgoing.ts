@@ -21,7 +21,7 @@ export class Outgoing {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RegisterClientCapabilitiesRequest.type,
             param, timeout, ErrorMessages.REGISTERCLIENTCAPABILITIES_TIMEOUT);
     }
-    shutdown(): void {
+    shutdown(timeout: number = Common.DEFAULT_TIMEOUT): void {
         return Common.sendSimpleNotification(this.connection, Messages.Server.ShutdownNotification.type, null);
     }
     getDiscoveryPaths(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.DiscoveryPath>> {
@@ -100,27 +100,27 @@ export class Outgoing {
         return Common.sendSimpleRequest(this.connection, Messages.Server.StopServerAsyncRequest.type,
             param, timeout, ErrorMessages.STOPSERVERASYNC_TIMEOUT);
     }
-    getDeployables(param: Protocol.ServerHandle, timeout: number = Common.LONG_TIMEOUT): Promise<Array<Protocol.DeployableState>> {
+    getDeployables(param: Protocol.ServerHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.DeployableState>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetDeployablesRequest.type,
             param, timeout, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
     }
-    addDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.Status> {
+    addDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.AddDeployableRequest.type,
             param, timeout, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
     }
-    removeDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.Status> {
+    removeDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDeployableRequest.type,
             param, timeout, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     }
-    publish(param: Protocol.PublishServerRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.Status> {
+    publish(param: Protocol.PublishServerRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.PublishRequest.type,
             param, timeout, ErrorMessages.PUBLISH_TIMEOUT);
     }
-    listDownloadableRuntimes(timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.ListDownloadRuntimeResponse> {
+    listDownloadableRuntimes(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.ListDownloadRuntimeResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.ListDownloadableRuntimesRequest.type,
             null, timeout, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
     }
-    downloadRuntime(param: Protocol.DownloadSingleRuntimeRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.WorkflowResponse> {
+    downloadRuntime(param: Protocol.DownloadSingleRuntimeRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.WorkflowResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.DownloadRuntimeRequest.type,
             param, timeout, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
     }
