@@ -8,6 +8,7 @@ export class Common {
 
     public static readonly DEFAULT_TIMEOUT: number =  2000;
     public static readonly LONG_TIMEOUT: number =  20000;
+    public static readonly VERY_LONG_TIMEOUT: number = 60000;
 
     /**
      * Template method for sending requests and receiving the response

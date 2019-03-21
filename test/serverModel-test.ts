@@ -18,7 +18,6 @@ describe('Sever Model Utility', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
     let emitter: EventEmitter;
-    const defaultTimeout = 2000;
 
     let requestStub: sinon.SinonStub;
     let syncStub: sinon.SinonStub;
@@ -109,8 +108,8 @@ describe('Sever Model Utility', () => {
         connection.onNotification = sandbox.stub().returns(null);
 
         emitter = new EventEmitter();
-        serverCreation = new ServerCreation(connection,emitter);
-        outgoing = new Outgoing(connection, emitter);
+        serverCreation = new ServerCreation(connection, emitter);
+        outgoing = new Outgoing(connection);
         outgoingSync = new OutgoingSynchronous(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
         syncStub = sandbox.stub(Common, 'sendRequestSync');
@@ -136,9 +135,9 @@ describe('Sever Model Utility', () => {
         expect(result).equals(createStatus);
         expect(requestStub).calledTwice;
         expect(requestStub).calledWithExactly(connection, Messages.Server.FindServerBeansRequest.type, discoveryPath,
-            defaultTimeout / 2, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
+            Common.DEFAULT_TIMEOUT / 2, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
         expect(requestStub).calledWithExactly(connection, Messages.Server.CreateServerRequest.type, attributes,
-            defaultTimeout, ErrorMessages.CREATESERVER_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.CREATESERVER_TIMEOUT);
     });
 
     it('createSeverFromBeanAsync should delegate to the Common utility', async () => {
@@ -156,7 +155,7 @@ describe('Sever Model Utility', () => {
         expect(result).equals(createStatus);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.CreateServerRequest.type, attributes,
-            defaultTimeout, ErrorMessages.CREATESERVER_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.CREATESERVER_TIMEOUT);
     });
 
     it('deleteServerSync should delegate to the Common utility', async () => {
@@ -167,7 +166,7 @@ describe('Sever Model Utility', () => {
         expect(result).equals(serverHandle);
         expect(syncStub).calledOnce;
         expect(syncStub).calledWith(connection, Messages.Server.DeleteServerRequest.type, serverHandle,
-            emitter, 'serverRemoved', sinon.match.func, defaultTimeout, ErrorMessages.DELETESERVER_TIMEOUT);
+            emitter, 'serverRemoved', sinon.match.func, Common.DEFAULT_TIMEOUT, ErrorMessages.DELETESERVER_TIMEOUT);
     });
 
     it('deleteServerAsync should delegate to the Common utility', async () => {
@@ -188,7 +187,7 @@ describe('Sever Model Utility', () => {
         expect(result).deep.equals([serverHandle]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerHandlesRequest.type, null,
-            defaultTimeout, ErrorMessages.GETSERVERHANDLES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETSERVERHANDLES_TIMEOUT);
     });
 
     it('getServerState should send GetServerStateRequest', async () => {
@@ -199,7 +198,7 @@ describe('Sever Model Utility', () => {
         expect(result).deep.equals(serverState);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerStateRequest.type, serverHandle,
-            defaultTimeout, ErrorMessages.GETSERVERSTATE_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETSERVERSTATE_TIMEOUT);
     });
 
     it('getServerTypes should delegate to the Common utility', async () => {
@@ -210,7 +209,7 @@ describe('Sever Model Utility', () => {
         expect(result).deep.equals([serverType]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetServerTypesRequest.type, null,
-            defaultTimeout, ErrorMessages.GETSERVERTYPES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETSERVERTYPES_TIMEOUT);
     });
 
     it('getServerTypeRequiredAttributes should delegate to the Common utility', async () => {
@@ -221,7 +220,7 @@ describe('Sever Model Utility', () => {
         expect(result).deep.equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetRequiredAttributesRequest.type, serverType,
-            defaultTimeout, ErrorMessages.GETREQUIREDATTRIBUTES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETREQUIREDATTRIBUTES_TIMEOUT);
     });
 
     it('getServerTypeOptionalAttributes should delegate to the Common utility', async () => {
@@ -232,7 +231,7 @@ describe('Sever Model Utility', () => {
         expect(result).deep.equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetOptionalAttributesRequest.type, serverType,
-            defaultTimeout, ErrorMessages.GETOPTIONALATTRIBUTES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETOPTIONALATTRIBUTES_TIMEOUT);
     });
 
     describe('Synchronous Server Creation', () => {

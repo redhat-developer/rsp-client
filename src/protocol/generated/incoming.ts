@@ -72,12 +72,9 @@ export class Incoming {
         this.connection.onNotification(Messages.Client.JobChangedNotification.type, param => {
             this.emitter.emit('jobChanged', param);
         });
+    }
 
-}
-
-
-    onPromptString(listener: (arg: Protocol.StringPrompt) => Promise<string>): void
-    {
+    onPromptString(listener: (arg: Protocol.StringPrompt) => Promise<string>): void {
         this.connection.onRequest(Messages.Client.PromptStringRequest.type, listener);
     }
     onDiscoveryPathAdded(listener: (arg: Protocol.DiscoveryPath) => void): void {

@@ -15,7 +15,6 @@ chai.use(sinonChai);
 describe('Common', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
-    const defaultTimeout = 2000;
     const payload: Protocol.DiscoveryPath = { filepath: 'path' };
 
     beforeEach(() => {
@@ -48,7 +47,7 @@ describe('Common', () => {
         });
 
         it('should send the correct message with the correct payload', async () => {
-            const result = await Common.sendSimpleRequest(connection, messageType, payload, defaultTimeout, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
+            const result = await Common.sendSimpleRequest(connection, messageType, payload, Common.DEFAULT_TIMEOUT, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
 
             expect(connection.sendRequest).calledOnce;
             expect(connection.sendRequest).calledWith(messageType, payload);
@@ -93,7 +92,7 @@ describe('Common', () => {
             }, 1);
 
             const result = await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
-                listener, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
+                listener, Common.DEFAULT_TIMEOUT, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
 
             expect(connection.sendRequest).calledOnce;
             expect(connection.sendRequest).calledWith(messageType, payload);
@@ -108,7 +107,7 @@ describe('Common', () => {
             }, 1);
 
             await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
-                listener, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
+                listener, Common.DEFAULT_TIMEOUT, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
 
             expect(subscribeSpy).calledOnce;
             expect(subscribeSpy).calledWith(eventId);
@@ -132,7 +131,7 @@ describe('Common', () => {
             }, 3);
 
             const result = await Common.sendRequestSync(connection, messageType, payload, emitter, eventId,
-                handler, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
+                handler, Common.DEFAULT_TIMEOUT, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
 
             expect(result).equals(payload);
         });

@@ -19,7 +19,6 @@ describe('Server Launcher Utility', () => {
     let outgoing: Outgoing;
     let outgoingSync: OutgoingSynchronous;
     let emitter: EventEmitter;
-    const defaultTimeout = 2000;
 
     let requestStub: sinon.SinonStub;
 
@@ -88,7 +87,7 @@ describe('Server Launcher Utility', () => {
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().returns(null);
         emitter = new EventEmitter();
-        outgoing = new Outgoing(connection, emitter);
+        outgoing = new Outgoing(connection);
         outgoingSync = new OutgoingSynchronous(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
@@ -104,7 +103,7 @@ describe('Server Launcher Utility', () => {
         expect(result).deep.equals([launchMode]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetLaunchModesRequest.type, serverType,
-            defaultTimeout, ErrorMessages.GETLAUNCHMODES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETLAUNCHMODES_TIMEOUT);
     });
 
     it('getRequiredLaunchAttributes should delegate to the Common utility', async () => {
@@ -114,7 +113,7 @@ describe('Server Launcher Utility', () => {
         expect(result).equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetRequiredLaunchAttributesRequest.type, launchAttrRequest,
-            defaultTimeout, ErrorMessages.GETREQUIREDLAUNCHATTRIBUTES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETREQUIREDLAUNCHATTRIBUTES_TIMEOUT);
     });
 
     it('getOptionalLaunchAttributes should delegate to the Common utility', async () => {
@@ -124,7 +123,7 @@ describe('Server Launcher Utility', () => {
         expect(result).equals(attributes);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetOptionalLaunchAttributesRequest.type, launchAttrRequest,
-            defaultTimeout, ErrorMessages.GETOPTIONALLAUNCHATTRIBUTES_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETOPTIONALLAUNCHATTRIBUTES_TIMEOUT);
     });
 
     it('getLaunchCommand should delegate to the Common utility', async () => {
@@ -134,7 +133,7 @@ describe('Server Launcher Utility', () => {
         expect(result).equals(cliArgs);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetLaunchCommandRequest.type, launchParameters,
-            defaultTimeout, ErrorMessages.GETLAUNCHCOMMAND_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETLAUNCHCOMMAND_TIMEOUT);
     });
 
     it('serverStartingByClient should delegate to the Common utility', async () => {
@@ -144,7 +143,7 @@ describe('Server Launcher Utility', () => {
         expect(result).equals(status);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.ServerStartingByClientRequest.type, startingAttrs,
-            defaultTimeout, ErrorMessages.SERVERSTARTINGBYCLIENT_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.SERVERSTARTINGBYCLIENT_TIMEOUT);
     });
 
     it('serverStartedByClient should delegate to the Common utility', async () => {
@@ -154,7 +153,7 @@ describe('Server Launcher Utility', () => {
         expect(result).equals(status);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.ServerStartedByClientRequest.type, launchParameters,
-            defaultTimeout, ErrorMessages.SERVERSTARTEDBYCLIENT_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.SERVERSTARTEDBYCLIENT_TIMEOUT);
     });
 
     it('startServerAsync should delegate to the Common utility', async () => {
@@ -164,7 +163,7 @@ describe('Server Launcher Utility', () => {
         expect(result).equals(serverStart);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.StartServerAsyncRequest.type, launchParameters,
-            defaultTimeout, ErrorMessages.STARTSERVERASYNC_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.STARTSERVERASYNC_TIMEOUT);
     });
 
     it('stopServerAsync should delegate to the Common utility', async () => {
@@ -174,7 +173,7 @@ describe('Server Launcher Utility', () => {
         expect(result).equals(status);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.StopServerAsyncRequest.type, stopParameters,
-            defaultTimeout, ErrorMessages.STOPSERVERASYNC_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.STOPSERVERASYNC_TIMEOUT);
     });
 
     describe('Synchronous Requests', () => {

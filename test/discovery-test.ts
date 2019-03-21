@@ -19,7 +19,6 @@ describe('Discovery Utility', () => {
     let outgoing: Outgoing;
     let outgoingSync: OutgoingSynchronous;
     let emitter: EventEmitter;
-    const defaultTimeout = 2000;
 
     let requestStub: sinon.SinonStub;
     let syncStub: sinon.SinonStub;
@@ -46,7 +45,7 @@ describe('Discovery Utility', () => {
         connection.onNotification = sandbox.stub().yields();
 
         emitter = new EventEmitter();
-        outgoing = new Outgoing(connection, emitter);
+        outgoing = new Outgoing(connection);
         outgoingSync = new OutgoingSynchronous(connection, emitter);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
         syncStub = sandbox.stub(Common, 'sendRequestSync');
@@ -63,7 +62,7 @@ describe('Discovery Utility', () => {
         expect(result).deep.equals([discoveryPath]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.FindServerBeansRequest.type,
-            discoveryPath, defaultTimeout, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
+            discoveryPath, Common.DEFAULT_TIMEOUT, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
     });
 
     it('addDiscoveryPathAsync should delegate to the Common utility', async () => {
@@ -82,7 +81,7 @@ describe('Discovery Utility', () => {
         expect(result).equals(discoveryPath);
         expect(syncStub).calledOnce;
         expect(syncStub).calledWith(connection, Messages.Server.AddDiscoveryPathRequest.type, discoveryPath,
-            emitter, 'discoveryPathAdded', sinon.match.func, defaultTimeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
+            emitter, 'discoveryPathAdded', sinon.match.func, Common.DEFAULT_TIMEOUT, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
     });
 
     it('removePathAsync should accept DiscoveryPath', async () => {
@@ -101,7 +100,7 @@ describe('Discovery Utility', () => {
         expect(result).equals(discoveryPath);
         expect(syncStub).calledOnce;
         expect(syncStub).calledWith(connection, Messages.Server.RemoveDiscoveryPathRequest.type, discoveryPath,
-            emitter, 'discoveryPathRemoved', sinon.match.func, defaultTimeout, ErrorMessages.REMOVEDISCOVERYPATH_TIMEOUT);
+            emitter, 'discoveryPathRemoved', sinon.match.func, Common.DEFAULT_TIMEOUT, ErrorMessages.REMOVEDISCOVERYPATH_TIMEOUT);
     });
 
     it('getDiscoveryPaths should delegate to Common utility', async () => {
@@ -111,6 +110,6 @@ describe('Discovery Utility', () => {
         expect(result).deep.equals([discoveryPath]);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWith(connection, Messages.Server.GetDiscoveryPathsRequest.type, null,
-            defaultTimeout, ErrorMessages.GETDISCOVERYPATHS_TIMEOUT);
+            Common.DEFAULT_TIMEOUT, ErrorMessages.GETDISCOVERYPATHS_TIMEOUT);
     });
 });

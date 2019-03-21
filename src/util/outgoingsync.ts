@@ -6,9 +6,8 @@ import { MessageConnection } from 'vscode-jsonrpc';
 import { EventEmitter } from 'events';
 import { ServerState } from '../protocol/generated/serverState';
 
-
 /**
- * Server Outgoing async. 
+ * Server Outgoing async.
  * As of now this file is NOT auto-generated
  */
 export class OutgoingSynchronous {
@@ -23,8 +22,8 @@ export class OutgoingSynchronous {
      */
     constructor(connection: MessageConnection, emitter: EventEmitter) {
         this.connection = connection;
+        this.emitter = emitter;
     }
-
 
     /**
      * Synchronously adds discovery path to RSP by sending a notification and then waiting for
@@ -32,7 +31,7 @@ export class OutgoingSynchronous {
      * @param path path to the desired directory
      * @param timeout timeout in milliseconds
      */
-    addDiscoveryPathSync(path: string, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
+    addDiscoveryPathSync(path: string, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.DiscoveryPath> {
         const discoveryPath = { filepath: path };
         const listener = (param: Protocol.DiscoveryPath) => {
             return param.filepath === discoveryPath.filepath;
@@ -47,7 +46,7 @@ export class OutgoingSynchronous {
      * @param path path to the desired directory or a DiscoveryPath object containing the given filepath
      * @param timeout timeout in milliseconds
      */
-    removeDiscoveryPathSync(path: string | Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.DiscoveryPath> {
+    removeDiscoveryPathSync(path: string | Protocol.DiscoveryPath, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.DiscoveryPath> {
         let discoveryPath: Protocol.DiscoveryPath;
         if (typeof(path) === 'string') {
             discoveryPath = { filepath: path };
@@ -68,7 +67,7 @@ export class OutgoingSynchronous {
      * @param launchParameters parameters to start the server with, see {@link Protocol.LaunchParameters}
      * @param timeout timeout in milliseconds
      */
-    startServerSync(launchParameters: Protocol.LaunchParameters, timeout: number = 60000): Promise<Protocol.ServerState> {
+    startServerSync(launchParameters: Protocol.LaunchParameters, timeout: number = Common.VERY_LONG_TIMEOUT): Promise<Protocol.ServerState> {
         return new Promise<Protocol.ServerState>((resolve, reject) => {
             const timer = setTimeout(() => {
                 return reject(new Error(ErrorMessages.STARTSERVERASYNC_TIMEOUT));
@@ -95,7 +94,7 @@ export class OutgoingSynchronous {
      * @param stopParameters server stopping parameters, set force to 'true' to force shutdown, see {@link Protocol.StopServerAttributes}
      * @param timeout timeout in milliseconds
      */
-    stopServerSync(stopParameters: Protocol.StopServerAttributes, timeout: number = 60000): Promise<Protocol.ServerState> {
+    stopServerSync(stopParameters: Protocol.StopServerAttributes, timeout: number = Common.VERY_LONG_TIMEOUT): Promise<Protocol.ServerState> {
         return new Promise<Protocol.ServerState>((resolve, reject) => {
             const timer = setTimeout(() => {
                 return reject(new Error(ErrorMessages.STOPSERVERASYNC_TIMEOUT));

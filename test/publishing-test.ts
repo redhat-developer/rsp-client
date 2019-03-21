@@ -3,7 +3,6 @@ import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
 import 'mocha';
-import { EventEmitter } from 'events';
 import { Messages } from '../src/protocol/generated/messages';
 import { Protocol } from '../src/protocol/generated/protocol';
 import { Common } from '../src/util/common';
@@ -16,8 +15,6 @@ describe('Publishing', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
     let outgoing: Outgoing;
-    let emitter: EventEmitter;
-
 
     let requestStub: sinon.SinonStub;
 
@@ -93,8 +90,7 @@ describe('Publishing', () => {
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().returns(null);
-        emitter = new EventEmitter();
-        outgoing = new Outgoing(connection, emitter);
+        outgoing = new Outgoing(connection);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
 

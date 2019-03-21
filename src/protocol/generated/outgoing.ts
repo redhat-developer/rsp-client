@@ -2,7 +2,6 @@ import { Protocol } from './protocol';
 import { Messages } from './messages';
 import { Common } from '../../util/common';
 import { MessageConnection } from 'vscode-jsonrpc';
-import { EventEmitter } from 'events';
 
 /**
  * Server Outgoing
@@ -14,123 +13,122 @@ export class Outgoing {
      /**
      * Constructs a new discovery handler
      * @param connection message connection to the RSP
-     * @param emitter event emitter to handle notification events
      */
-    constructor(connection: MessageConnection, emitter: EventEmitter) {
+    constructor(connection: MessageConnection) {
         this.connection = connection;
     }
-    registerClientCapabilities(param: Protocol.ClientCapabilitiesRequest, timeout: number = 2000): Promise<Protocol.ServerCapabilitiesResponse> {
+    registerClientCapabilities(param: Protocol.ClientCapabilitiesRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.ServerCapabilitiesResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RegisterClientCapabilitiesRequest.type,
             param, timeout, ErrorMessages.REGISTERCLIENTCAPABILITIES_TIMEOUT);
     }
-    shutdown(timeout: number = 2000): void {
+    shutdown(): void {
         return Common.sendSimpleNotification(this.connection, Messages.Server.ShutdownNotification.type, null);
     }
-    getDiscoveryPaths(timeout: number = 2000): Promise<Array<Protocol.DiscoveryPath>> {
+    getDiscoveryPaths(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.DiscoveryPath>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetDiscoveryPathsRequest.type,
             null, timeout, ErrorMessages.GETDISCOVERYPATHS_TIMEOUT);
     }
-    findServerBeans(param: Protocol.DiscoveryPath, timeout: number = 2000): Promise<Array<Protocol.ServerBean>> {
+    findServerBeans(param: Protocol.DiscoveryPath, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.ServerBean>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.FindServerBeansRequest.type,
             param, timeout, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
     }
-    addDiscoveryPath(param: Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.Status> {
+    addDiscoveryPath(param: Protocol.DiscoveryPath, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.AddDiscoveryPathRequest.type,
             param, timeout, ErrorMessages.ADDDISCOVERYPATH_TIMEOUT);
     }
-    removeDiscoveryPath(param: Protocol.DiscoveryPath, timeout: number = 2000): Promise<Protocol.Status> {
+    removeDiscoveryPath(param: Protocol.DiscoveryPath, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDiscoveryPathRequest.type,
             param, timeout, ErrorMessages.REMOVEDISCOVERYPATH_TIMEOUT);
     }
-    getServerHandles(timeout: number = 2000): Promise<Array<Protocol.ServerHandle>> {
+    getServerHandles(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.ServerHandle>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerHandlesRequest.type,
             null, timeout, ErrorMessages.GETSERVERHANDLES_TIMEOUT);
     }
-    getServerTypes(timeout: number = 2000): Promise<Array<Protocol.ServerType>> {
+    getServerTypes(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.ServerType>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerTypesRequest.type,
             null, timeout, ErrorMessages.GETSERVERTYPES_TIMEOUT);
     }
-    deleteServer(param: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.Status> {
+    deleteServer(param: Protocol.ServerHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.DeleteServerRequest.type,
             param, timeout, ErrorMessages.DELETESERVER_TIMEOUT);
     }
-    getRequiredAttributes(param: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.Attributes> {
+    getRequiredAttributes(param: Protocol.ServerType, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetRequiredAttributesRequest.type,
             param, timeout, ErrorMessages.GETREQUIREDATTRIBUTES_TIMEOUT);
     }
-    getOptionalAttributes(param: Protocol.ServerType, timeout: number = 2000): Promise<Protocol.Attributes> {
+    getOptionalAttributes(param: Protocol.ServerType, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalAttributesRequest.type,
             param, timeout, ErrorMessages.GETOPTIONALATTRIBUTES_TIMEOUT);
     }
-    createServer(param: Protocol.ServerAttributes, timeout: number = 2000): Promise<Protocol.CreateServerResponse> {
+    createServer(param: Protocol.ServerAttributes, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.CreateServerResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.CreateServerRequest.type,
             param, timeout, ErrorMessages.CREATESERVER_TIMEOUT);
     }
-    getLaunchModes(param: Protocol.ServerType, timeout: number = 2000): Promise<Array<Protocol.ServerLaunchMode>> {
+    getLaunchModes(param: Protocol.ServerType, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.ServerLaunchMode>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetLaunchModesRequest.type,
             param, timeout, ErrorMessages.GETLAUNCHMODES_TIMEOUT);
     }
-    getRequiredLaunchAttributes(param: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
+    getRequiredLaunchAttributes(param: Protocol.LaunchAttributesRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetRequiredLaunchAttributesRequest.type,
             param, timeout, ErrorMessages.GETREQUIREDLAUNCHATTRIBUTES_TIMEOUT);
     }
-    getOptionalLaunchAttributes(param: Protocol.LaunchAttributesRequest, timeout: number = 2000): Promise<Protocol.Attributes> {
+    getOptionalLaunchAttributes(param: Protocol.LaunchAttributesRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetOptionalLaunchAttributesRequest.type,
             param, timeout, ErrorMessages.GETOPTIONALLAUNCHATTRIBUTES_TIMEOUT);
     }
-    getLaunchCommand(param: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.CommandLineDetails> {
+    getLaunchCommand(param: Protocol.LaunchParameters, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.CommandLineDetails> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetLaunchCommandRequest.type,
             param, timeout, ErrorMessages.GETLAUNCHCOMMAND_TIMEOUT);
     }
-    serverStartingByClient(param: Protocol.ServerStartingAttributes, timeout: number = 2000): Promise<Protocol.Status> {
+    serverStartingByClient(param: Protocol.ServerStartingAttributes, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.ServerStartingByClientRequest.type,
             param, timeout, ErrorMessages.SERVERSTARTINGBYCLIENT_TIMEOUT);
     }
-    serverStartedByClient(param: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.Status> {
+    serverStartedByClient(param: Protocol.LaunchParameters, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.ServerStartedByClientRequest.type,
             param, timeout, ErrorMessages.SERVERSTARTEDBYCLIENT_TIMEOUT);
     }
-    getServerState(param: Protocol.ServerHandle, timeout: number = 2000): Promise<Protocol.ServerState> {
+    getServerState(param: Protocol.ServerHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.ServerState> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetServerStateRequest.type,
             param, timeout, ErrorMessages.GETSERVERSTATE_TIMEOUT);
     }
-    startServerAsync(param: Protocol.LaunchParameters, timeout: number = 2000): Promise<Protocol.StartServerResponse> {
+    startServerAsync(param: Protocol.LaunchParameters, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.StartServerResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.StartServerAsyncRequest.type,
             param, timeout, ErrorMessages.STARTSERVERASYNC_TIMEOUT);
     }
-    stopServerAsync(param: Protocol.StopServerAttributes, timeout: number = 2000): Promise<Protocol.Status> {
+    stopServerAsync(param: Protocol.StopServerAttributes, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.StopServerAsyncRequest.type,
             param, timeout, ErrorMessages.STOPSERVERASYNC_TIMEOUT);
     }
-    getDeployables(param: Protocol.ServerHandle, timeout: number = 2000): Promise<Array<Protocol.DeployableState>> {
+    getDeployables(param: Protocol.ServerHandle, timeout: number = Common.LONG_TIMEOUT): Promise<Array<Protocol.DeployableState>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetDeployablesRequest.type,
             param, timeout, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
     }
-    addDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = 2000): Promise<Protocol.Status> {
+    addDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.AddDeployableRequest.type,
             param, timeout, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
     }
-    removeDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = 2000): Promise<Protocol.Status> {
+    removeDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDeployableRequest.type,
             param, timeout, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     }
-    publish(param: Protocol.PublishServerRequest, timeout: number = 2000): Promise<Protocol.Status> {
+    publish(param: Protocol.PublishServerRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.PublishRequest.type,
             param, timeout, ErrorMessages.PUBLISH_TIMEOUT);
     }
-    listDownloadableRuntimes(timeout: number = 2000): Promise<Protocol.ListDownloadRuntimeResponse> {
+    listDownloadableRuntimes(timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.ListDownloadRuntimeResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.ListDownloadableRuntimesRequest.type,
             null, timeout, ErrorMessages.LISTDOWNLOADABLERUNTIMES_TIMEOUT);
     }
-    downloadRuntime(param: Protocol.DownloadSingleRuntimeRequest, timeout: number = 2000): Promise<Protocol.WorkflowResponse> {
+    downloadRuntime(param: Protocol.DownloadSingleRuntimeRequest, timeout: number = Common.LONG_TIMEOUT): Promise<Protocol.WorkflowResponse> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.DownloadRuntimeRequest.type,
             param, timeout, ErrorMessages.DOWNLOADRUNTIME_TIMEOUT);
     }
-    getJobs(timeout: number = 2000): Promise<Array<Protocol.JobProgress>> {
+    getJobs(timeout: number = Common.DEFAULT_TIMEOUT): Promise<Array<Protocol.JobProgress>> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetJobsRequest.type,
             null, timeout, ErrorMessages.GETJOBS_TIMEOUT);
     }
-    cancelJob(param: Protocol.JobHandle, timeout: number = 2000): Promise<Protocol.Status> {
+    cancelJob(param: Protocol.JobHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.CancelJobRequest.type,
             param, timeout, ErrorMessages.CANCELJOB_TIMEOUT);
     }

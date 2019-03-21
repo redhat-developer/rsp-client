@@ -7,7 +7,7 @@ import { EventEmitter } from 'events';
 import { Incoming } from './protocol/generated/incoming';
 import { Outgoing } from './protocol/generated/outgoing';
 import { OutgoingSynchronous } from './util/outgoingsync';
-
+import { Common } from './util/common';
 
 /**
  * Runtime Server Protocol client implementation using JSON RPC
@@ -41,7 +41,7 @@ export class RSPClient {
      *
      * @param timeout operation timeout in milliseconds, default 2000 ms
      */
-    connect(timeout: number = 2000): Promise<void> {
+    connect(timeout: number = Common.DEFAULT_TIMEOUT): Promise<void> {
         return new Promise((resolve, reject) => {
             const timer = setTimeout(() => {
                 return reject(new Error(`Failed to establish connection to ${this.host}:${this.port} within time`));
@@ -62,7 +62,7 @@ export class RSPClient {
                 this.serverUtil = new ServerCreation(this.connection, this.emitter);
 
                 this.incoming = new Incoming(this.connection, this.emitter);
-                this.outgoing = new Outgoing(this.connection, this.emitter);
+                this.outgoing = new Outgoing(this.connection);
                 this.outgoingSync = new OutgoingSynchronous(this.connection, this.emitter);
                 clearTimeout(timer);
                 resolve();

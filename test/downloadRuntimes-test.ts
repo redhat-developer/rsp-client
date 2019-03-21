@@ -2,7 +2,6 @@ import * as chai from 'chai';
 import * as sinon from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import * as rpc from 'vscode-jsonrpc';
-import { EventEmitter } from 'events';
 import { Messages } from '../src/protocol/generated/messages';
 import { Protocol } from '../src/protocol/generated/protocol';
 import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
@@ -16,7 +15,6 @@ describe('Download Runtimes', () => {
     let sandbox: sinon.SinonSandbox;
     let connection: sinon.SinonStubbedInstance<rpc.MessageConnection>;
     let requestStub: sinon.SinonStub;
-    let emitter: EventEmitter;
     let outgoing: Outgoing;
 
     const provideInputStatus: Protocol.Status = {
@@ -119,8 +117,7 @@ describe('Download Runtimes', () => {
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
         connection.onNotification = sandbox.stub().yields();
-        emitter = new EventEmitter();
-        outgoing = new Outgoing(connection, emitter);
+        outgoing = new Outgoing(connection);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
 
