@@ -112,7 +112,7 @@ export namespace Messages {
          * The `server/getOptionalAttributes` request is sent by the client to list the
          * optional attributes that can be stored on a server object of this type. This
          * may include things like customizing ports, or custom methods of interacting
-         * with various functionality specific to the server type.This request may return
+         * with various functionality specific to the server type. This request may return
          * null in case of error.
          */
         export namespace GetOptionalAttributesRequest {
@@ -125,7 +125,7 @@ export namespace Messages {
          * have impossible, unexpected, or invalid values, or any error occurs
          * while attempting to create the server adapter as requested.
          *
-         * In the event of failure, the returend `Status` object will
+         * In the event of failure, the returned `Status` object will
          * detail the cause of error.
          */
         export namespace CreateServerRequest {
