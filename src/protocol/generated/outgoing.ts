@@ -104,6 +104,10 @@ export class Outgoing {
         return Common.sendSimpleRequest(this.connection, Messages.Server.GetDeployablesRequest.type,
             param, timeout, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
     }
+    listDeploymentOptions(param: Protocol.ServerHandle, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Attributes> {
+        return Common.sendSimpleRequest(this.connection, Messages.Server.ListDeploymentOptionsRequest.type,
+            param, timeout, ErrorMessages.LISTDEPLOYMENTOPTIONS_TIMEOUT);
+    }
     addDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.AddDeployableRequest.type,
             param, timeout, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
@@ -159,6 +163,7 @@ export namespace ErrorMessages {
     export const STARTSERVERASYNC_TIMEOUT = 'Failed to start server async in time';
     export const STOPSERVERASYNC_TIMEOUT = 'Failed to stop server async in time';
     export const GETDEPLOYABLES_TIMEOUT = 'Failed to get deployables in time';
+    export const LISTDEPLOYMENTOPTIONS_TIMEOUT = 'Failed to list deployment options in time';
     export const ADDDEPLOYABLE_TIMEOUT = 'Failed to add deployable in time';
     export const REMOVEDEPLOYABLE_TIMEOUT = 'Failed to remove deployable in time';
     export const PUBLISH_TIMEOUT = 'Failed to publish in time';
