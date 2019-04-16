@@ -58,6 +58,10 @@ describe('Publishing', () => {
         path: '/path/to/deployable'
     };
 
+    const deployableReferenceWithOptions: Protocol.DeployableReferenceWithOptions = {
+        reference: deployableReference
+    };
+
     const deployableState: Protocol.DeployableState = {
         server: serverHandle,
         reference: deployableReference,
@@ -67,7 +71,7 @@ describe('Publishing', () => {
 
     const modifyDeployableRequest: Protocol.ModifyDeployableRequest = {
         server: serverHandle,
-        deployable: deployableReference
+        deployable: deployableReferenceWithOptions
     };
 
     enum PublishKind {
