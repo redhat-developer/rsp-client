@@ -3,7 +3,7 @@
  */
 export namespace Protocol {
     /* tslint:disable */
-    // Generated using typescript-generator version 2.2.413 on 2019-03-28 09:53:57.
+    // Generated using typescript-generator version 2.2.413 on 2019-04-16 13:12:01.
     
     export interface Attribute {
         type: string;
@@ -35,6 +35,11 @@ export namespace Protocol {
     export interface DeployableReference {
         label: string;
         path: string;
+    }
+    
+    export interface DeployableReferenceWithOptions {
+        reference: DeployableReference;
+        options?: { [index: string]: any };
     }
     
     export interface DeployableState {
@@ -98,7 +103,7 @@ export namespace Protocol {
     
     export interface ModifyDeployableRequest {
         server: ServerHandle;
-        deployable: DeployableReference;
+        deployable: DeployableReferenceWithOptions;
     }
     
     export interface PublishServerRequest {

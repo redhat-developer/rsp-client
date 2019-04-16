@@ -240,6 +240,18 @@ export namespace Messages {
             export const type = new RequestType<Protocol.ServerHandle, Array<Protocol.DeployableState>, void, void>('server/getDeployables');
         }
         /**
+         * The `server/listDeploymentOptions` request is sent by the client to list the
+         * possible attributes that may be used when adding a new deployment. 
+         * This can be any set of custom server-defined settings, or standard options, 
+         * for example, an output name for an archive, whether to zip folders, etc. 
+         * This request may return null in case of error.
+         * 
+         * @param serverHandle
+         */
+        export namespace ListDeploymentOptionsRequest {
+            export const type = new RequestType<Protocol.ServerHandle, Protocol.Attributes, void, void>('server/listDeploymentOptions');
+        }
+        /**
          * The `server/addDeployable` request is sent by the client to the server
          * to add a deployable reference to a server's list of deployable items
          * so that it can be published thereafter.
