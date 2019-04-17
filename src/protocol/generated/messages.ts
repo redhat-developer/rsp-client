@@ -261,7 +261,7 @@ export namespace Messages {
          * @return
          */
         export namespace AddDeployableRequest {
-            export const type = new RequestType<Protocol.ModifyDeployableRequest, Protocol.Status, void, void>('server/addDeployable');
+            export const type = new RequestType<Protocol.ServerDeployableReference, Protocol.Status, void, void>('server/addDeployable');
         }
         /**
          * The `server/removeDeployable` request is sent by the client to the server
@@ -273,7 +273,7 @@ export namespace Messages {
          * @return
          */
         export namespace RemoveDeployableRequest {
-            export const type = new RequestType<Protocol.ModifyDeployableRequest, Protocol.Status, void, void>('server/removeDeployable');
+            export const type = new RequestType<Protocol.ServerDeployableReference, Protocol.Status, void, void>('server/removeDeployable');
         }
         /**
          * The `server/publish` request is sent by the client to the server
