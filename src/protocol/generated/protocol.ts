@@ -3,7 +3,7 @@
  */
 export namespace Protocol {
     /* tslint:disable */
-    // Generated using typescript-generator version 2.2.413 on 2019-04-16 13:12:01.
+    // Generated using typescript-generator version 2.2.413 on 2019-04-17 13:38:07.
     
     export interface Attribute {
         type: string;
@@ -35,10 +35,6 @@ export namespace Protocol {
     export interface DeployableReference {
         label: string;
         path: string;
-    }
-    
-    export interface DeployableReferenceWithOptions {
-        reference: DeployableReference;
         options?: { [index: string]: any };
     }
     
@@ -101,11 +97,6 @@ export namespace Protocol {
         runtimes: DownloadRuntimeDescription[];
     }
     
-    export interface ModifyDeployableRequest {
-        server: ServerHandle;
-        deployable: DeployableReferenceWithOptions;
-    }
-    
     export interface PublishServerRequest {
         server: ServerHandle;
         kind: number;
@@ -130,6 +121,11 @@ export namespace Protocol {
     export interface ServerCapabilitiesResponse {
         serverCapabilities: { [index: string]: string };
         clientRegistrationStatus: Status;
+    }
+    
+    export interface ServerDeployableReference {
+        server: ServerHandle;
+        deployableReference: DeployableReference;
     }
     
     export interface ServerHandle {

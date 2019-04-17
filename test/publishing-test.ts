@@ -58,10 +58,6 @@ describe('Publishing', () => {
         path: '/path/to/deployable'
     };
 
-    const deployableReferenceWithOptions: Protocol.DeployableReferenceWithOptions = {
-        reference: deployableReference
-    };
-
     const deployableState: Protocol.DeployableState = {
         server: serverHandle,
         reference: deployableReference,
@@ -69,9 +65,9 @@ describe('Publishing', () => {
         publishState: PublishState.Add
     };
 
-    const modifyDeployableRequest: Protocol.ModifyDeployableRequest = {
+    const serverDeployableRef: Protocol.ServerDeployableReference = {
         server: serverHandle,
-        deployable: deployableReferenceWithOptions
+        deployableReference: deployableReference
     };
 
     enum PublishKind {
@@ -117,22 +113,22 @@ describe('Publishing', () => {
     it('addDeployable should send AddDeployableRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await outgoing.addDeployable(modifyDeployableRequest);
+        const result: Protocol.Status = await outgoing.addDeployable(serverDeployableRef);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.AddDeployableRequest.type, modifyDeployableRequest,
+        expect(requestStub).calledWithExactly(connection, Messages.Server.AddDeployableRequest.type, serverDeployableRef,
             Common.DEFAULT_TIMEOUT, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
     });
 
     it('removeDeployable should send RemoveDeployableRequest', async () => {
         requestStub.resolves(okStatus);
 
-        const result: Protocol.Status = await outgoing.removeDeployable(modifyDeployableRequest);
+        const result: Protocol.Status = await outgoing.removeDeployable(serverDeployableRef);
 
         expect(result).deep.equals(okStatus);
         expect(requestStub).calledOnce;
-        expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, modifyDeployableRequest,
+        expect(requestStub).calledWithExactly(connection, Messages.Server.RemoveDeployableRequest.type, serverDeployableRef,
             Common.DEFAULT_TIMEOUT, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     });
 

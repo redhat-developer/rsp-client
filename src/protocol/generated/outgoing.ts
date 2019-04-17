@@ -108,11 +108,11 @@ export class Outgoing {
         return Common.sendSimpleRequest(this.connection, Messages.Server.ListDeploymentOptionsRequest.type,
             param, timeout, ErrorMessages.LISTDEPLOYMENTOPTIONS_TIMEOUT);
     }
-    addDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
+    addDeployable(param: Protocol.ServerDeployableReference, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.AddDeployableRequest.type,
             param, timeout, ErrorMessages.ADDDEPLOYABLE_TIMEOUT);
     }
-    removeDeployable(param: Protocol.ModifyDeployableRequest, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
+    removeDeployable(param: Protocol.ServerDeployableReference, timeout: number = Common.DEFAULT_TIMEOUT): Promise<Protocol.Status> {
         return Common.sendSimpleRequest(this.connection, Messages.Server.RemoveDeployableRequest.type,
             param, timeout, ErrorMessages.REMOVEDEPLOYABLE_TIMEOUT);
     }
