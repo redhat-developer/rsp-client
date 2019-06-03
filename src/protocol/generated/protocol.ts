@@ -3,7 +3,7 @@
  */
 export namespace Protocol {
     /* tslint:disable */
-    // Generated using typescript-generator version 2.2.413 on 2019-04-17 13:38:07.
+    // Generated using typescript-generator version 2.2.413 on 2019-06-03 16:01:47.
     
     export interface Attribute {
         type: string;

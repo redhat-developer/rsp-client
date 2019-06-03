@@ -180,20 +180,5 @@ describe('RSP Client', () => {
             expect(listeners).deep.equals([listener]);
             expect(listenerStub).calledOnceWith('foo');
         });
-
-        it('removeListener should remove a listener from an event', () => {
-            const listener = () => 'foo';
-            const removeStub = sandbox.stub(EventEmitter.prototype, 'removeListener');
-
-            client.removeListener('foo', listener);
-            expect(removeStub).calledOnceWith('foo', listener);
-        });
-
-        it('removeAllListeners should remove all listeners from an event', () => {
-            const removeStub = sandbox.stub(EventEmitter.prototype, 'removeAllListeners');
-
-            client.removeAllListeners('foo');
-            expect(removeStub).calledOnceWith('foo');
-        });
     });
 });

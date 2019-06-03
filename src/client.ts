@@ -125,22 +125,4 @@ export class RSPClient {
         return this.emitter.listeners(eventName);
     }
 
-    /**
-     * Removes a listener from an event
-     *
-     * @param eventName name of the event the listener is bound to
-     * @param listener the listener to remove
-     */
-    removeListener(eventName: string, listener: (...args: any[]) => void): void {
-        this.emitter.removeListener(eventName, listener);
-    }
-
-    /**
-     * Removes all listeners from an event
-     *
-     * @param eventName name of the event to remove listeners from
-     */
-    removeAllListeners(eventName: string): void {
-        this.emitter.removeAllListeners(eventName);
-    }
 }
