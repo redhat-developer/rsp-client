@@ -9,7 +9,7 @@ import { Messages } from '../src/protocol/generated/messages';
 import { Protocol } from '../src/protocol/generated/protocol';
 import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
 import { ServerCreation } from '../src/util/serverCreation';
-import { OutgoingSynchronous } from '../src/main';
+import { OutgoingSynchronous, ServerState } from '../src/main';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -95,6 +95,7 @@ describe('Sever Model Utility', () => {
         server: serverHandle,
         state: RunState.Started,
         publishState: PublishState.Add,
+        runMode: ServerState.RUN_MODE_RUN,
         deployableStates: [ deployableState ]
     };
 

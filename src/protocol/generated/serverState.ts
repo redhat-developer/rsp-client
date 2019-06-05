@@ -85,7 +85,18 @@ export namespace ServerState {
     export const PUBLISH_CLEAN = 3;
 
     /**
-	 * Publish kind constant (value 4) indicating an automatic publish request.
-	 */
+     * Publish kind constant (value 4) indicating an automatic publish request.
+     */
     export const PUBLISH_AUTO = 4;
+	
+    /**
+     * Run mode when running (normally).
+     */
+    export const RUN_MODE_RUN = 'run';
+
+    /**
+     * Run mode when debugging.
+     */
+    export const RUN_MODE_DEBUG = 'debug';
+
 }
