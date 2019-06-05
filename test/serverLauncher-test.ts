@@ -9,6 +9,7 @@ import { Protocol } from '../src/protocol/generated/protocol';
 import { Common } from '../src/util/common';
 import { Outgoing, ErrorMessages } from '../src/protocol/generated/outgoing';
 import { OutgoingSynchronous } from '../src/util/outgoingsync';
+import { ServerState } from '../src/main';
 
 const expect = chai.expect;
 chai.use(sinonChai);
@@ -186,6 +187,7 @@ describe('Server Launcher Utility', () => {
                 server: serverHandle,
                 state: 2,
                 publishState: 0,
+                runMode: ServerState.RUN_MODE_RUN,
                 deployableStates: []
             };
 
@@ -205,6 +207,7 @@ describe('Server Launcher Utility', () => {
                 server: serverHandle,
                 state: 2,
                 publishState: 0,
+                runMode: ServerState.RUN_MODE_RUN,
                 deployableStates: []
             };
             const regSpy = sandbox.spy(emitter, 'prependListener');
@@ -227,6 +230,7 @@ describe('Server Launcher Utility', () => {
                 server: serverHandle,
                 state: 1,
                 publishState: 0,
+                runMode: ServerState.RUN_MODE_RUN,
                 deployableStates: []
             };
             const unregSpy = sandbox.spy(emitter, 'removeListener');
@@ -257,6 +261,7 @@ describe('Server Launcher Utility', () => {
                 server: serverHandle,
                 state: 4,
                 publishState: 0,
+                runMode: ServerState.RUN_MODE_RUN,
                 deployableStates: []
             };
 
@@ -276,6 +281,7 @@ describe('Server Launcher Utility', () => {
                 server: serverHandle,
                 state: 4,
                 publishState: 0,
+                runMode: ServerState.RUN_MODE_RUN,
                 deployableStates: []
             };
             const regSpy = sandbox.spy(emitter, 'prependListener');
@@ -298,6 +304,7 @@ describe('Server Launcher Utility', () => {
                 server: serverHandle,
                 state: 2,
                 publishState: 0,
+                runMode: ServerState.RUN_MODE_RUN,
                 deployableStates: []
             };
             const unregSpy = sandbox.spy(emitter, 'removeListener');
