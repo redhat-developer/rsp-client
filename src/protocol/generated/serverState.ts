@@ -88,7 +88,7 @@ export namespace ServerState {
      * Publish kind constant (value 4) indicating an automatic publish request.
      */
     export const PUBLISH_AUTO = 4;
-	
+
     /**
      * Run mode when running (normally).
      */
