@@ -102,9 +102,9 @@ describe('Publishing', () => {
         const deployableStates: Protocol.DeployableState[] = [deployableState];
         requestStub.resolves(deployableStates);
 
-        const result: Protocol.DeployableState[] = await outgoing.getDeployables(serverHandle);
+        const result: Protocol.ListDeployablesResponse = await outgoing.getDeployables(serverHandle);
 
-        expect(result).deep.equals(deployableStates);
+        expect(result.states).deep.equals(deployableStates);
         expect(requestStub).calledOnce;
         expect(requestStub).calledWithExactly(connection, Messages.Server.GetDeployablesRequest.type, serverHandle,
             Common.DEFAULT_TIMEOUT, ErrorMessages.GETDEPLOYABLES_TIMEOUT);
