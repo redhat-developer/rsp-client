@@ -100,7 +100,11 @@ describe('Publishing', () => {
 
     it('getDeployables should send GetDeployablesRequest', async () => {
         const deployableStates: Protocol.DeployableState[] = [deployableState];
-        requestStub.resolves(deployableStates);
+        const resp: Protocol.ListDeployablesResponse = {
+            states: deployableStates,
+            status: okStatus
+        };
+        requestStub.resolves(resp);
 
         const result: Protocol.ListDeployablesResponse = await outgoing.getDeployables(serverHandle);
 
