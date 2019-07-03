@@ -84,27 +84,36 @@ describe('Download Runtimes', () => {
                 label: 'Please approve the following license:',
                 content: `                   GNU LESSER GENERAL PUBLIC LICENSE
                 Version 3, 29 June 2007`,
-                responseSecret: false,
-                responseType: 'none',
-                validResponses: []
+                properties: {},
+                prompt: {
+                    responseSecret: false,
+                    responseType: 'none',
+                    validResponses: []
+                }
             },
             {
                 id: 'workflow.license.url',
                 itemType: '',
                 label: 'License URL: ',
                 content: 'http://www.gnu.org/copyleft/lesser.txt',
-                responseSecret: false,
-                responseType: 'none',
-                validResponses: []
+                properties: {},
+                prompt: {
+                    responseSecret: false,
+                    responseType: 'none',
+                    validResponses: []
+                }
             },
             {
                 id: 'workflow.license.sign',
                 itemType: '',
                 label: 'Do you agree to the license?',
                 content: '',
-                responseSecret: false,
-                responseType: 'bool',
-                validResponses: []
+                properties: {},
+                prompt: {
+                    responseSecret: false,
+                    responseType: 'bool',
+                    validResponses: []
+                }
             }
         ]
     };
