@@ -3,7 +3,7 @@
  */
 export namespace Protocol {
     /* tslint:disable */
-    // Generated using typescript-generator version 2.2.413 on 2019-10-04 13:44:23.
+    // Generated using typescript-generator version 2.2.413 on 2019-11-12 09:41:50.
     
     export interface Attribute {
         type: string;
@@ -116,6 +116,13 @@ export namespace Protocol {
     export interface ListServerActionResponse {
         workflows: ServerActionWorkflow[];
         status: Status;
+    }
+    
+    export interface MessageBoxNotification {
+        code: number;
+        severity: number;
+        message: string;
+        properties: { [index: string]: any };
     }
     
     export interface PublishServerRequest {
