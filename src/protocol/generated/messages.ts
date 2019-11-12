@@ -308,6 +308,17 @@ export namespace Messages {
             export const type = new RequestType<Protocol.PublishServerRequest, Protocol.Status, void, void>('server/publish');
         }
         /**
+         * The `server/publishAsync` request is sent by the client to the server
+         * to instruct the server adapter to publish any changes to the backing runtime
+         * in an asynchronous fashion, ie, guaranteed to respond quickly.
+         *
+         * @param request
+         * @return
+         */
+        export namespace PublishAsyncRequest {
+            export const type = new RequestType<Protocol.PublishServerRequest, Protocol.Status, void, void>('server/publishAsync');
+        }
+        /**
          * Get a list of all downloadable runtimes
          * @return
          */
@@ -360,6 +371,13 @@ export namespace Messages {
          */
         export namespace PromptStringRequest {
             export const type = new RequestType<Protocol.StringPrompt, string, void, void>('client/promptString');
+        }
+        /**
+         * The `client/messageBox` notification is sent by the server to all
+         * clients or specific clients to inform the users of anything that may be of interest.
+         */
+        export namespace MessageBoxNotification {
+            export const type = new NotificationType<Protocol.MessageBoxNotification, void>('client/messageBox');
         }
         /**
          * The `client/discoveryPathAdded` notification is sent by the server to all
