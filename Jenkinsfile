@@ -22,14 +22,29 @@ node('rhel8') {
 
     stage('Package') {
         sh "npm pack"
+        def packageJson = readJSON file: 'package.json'
         def packs = findFiles(glob: '**.tgz')
-        sh "mv ./${packs[0].name} ./rsp-client-latest.tgz"
+        def packName = "rsp-client-${packageJson.version}-${env.BUILD_NUMBER}.tgz"
+        sh "mv ${packs[0].name} ${packName}"
+        sh "ln -s ${packName} rsp-client-latest.tgz"
     }
 
     if (params.UPLOAD_LOCATION) {
         stage('Snapshot') {
             def filesToPush = findFiles(glob: '**.tgz')
-            sh "rsync -Pzrlt --rsh=ssh --protocol=28 ${filesToPush[0].path} ${UPLOAD_LOCATION}/snapshots/vscode-middleware-tools/rsp-client/"
+            for (i = 0; i < filesToPush.length; i++) {
+                sh "rsync -Pzrlt --rsh=ssh --protocol=28 ${filesToPush[i].path} ${UPLOAD_LOCATION}/snapshots/vscode-middleware-tools/rsp-client/"
+            }
+        }
+    }
+
+    if (publish.equals('true')) {
+        stage('Publish to NPM') {
+            withCredentials([[$class: 'StringBinding', credentialsId: 'npm-token', variable: 'TOKEN']]) {
+                sh "echo registry=https://registry.npmjs.com > .npmrc"
+                sh "echo //registry.npmjs.com/:_authToken=${TOKEN} >> .npmrc"
+                sh "npm publish"
+            }
         }
     }
 }
