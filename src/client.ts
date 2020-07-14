@@ -48,6 +48,9 @@ export class RSPClient {
             }, timeout);
 
             this.socket = net.connect(this.port, this.host);
+            this.socket.on('close', () => {
+                this.emitter.emit('connectionClosed');
+            });
             this.socket.on('connect', () => {
                 this.connection = rpc.createMessageConnection(
                     new rpc.StreamMessageReader(this.socket),
@@ -69,6 +72,15 @@ export class RSPClient {
             });
         });
     }
+
+    onConnectionClosed(listener: (arg: RSPClient) => void): void {
+        this.emitter.on('connectionClosed', listener);
+    }
+
+    removeOnConnectionClosed(listener: (arg: RSPClient) => void): void {
+        this.emitter.removeListener('connectionClosed', listener);
+    }
+
 
     /**
      * Terminates an existing connection
