@@ -115,7 +115,8 @@ describe('Download Runtimes', () => {
                     validResponses: []
                 }
             }
-        ]
+        ],
+        invalidFields: []
     };
 
     beforeEach(() => {
