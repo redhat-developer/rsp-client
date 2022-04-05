@@ -33,7 +33,7 @@ node('rhel8') {
         stage('Snapshot') {
             def filesToPush = findFiles(glob: '**.tgz')
             for (i = 0; i < filesToPush.length; i++) {
-                sh "rsync -Pzrlt --rsh=ssh --protocol=28 ${filesToPush[i].path} ${UPLOAD_LOCATION}/snapshots/vscode-middleware-tools/rsp-client/"
+                sh "sftp -C ${UPLOAD_LOCATION}/snapshots/vscode-middleware-tools/rsp-client/ <<< \$'put -p ${filesToPush[i].path}'"
             }
         }
     }
