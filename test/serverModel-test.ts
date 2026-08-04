@@ -106,7 +106,7 @@ describe('Sever Model Utility', () => {
         const writer = sandbox.createStubInstance<rpc.StreamMessageWriter>(rpc.StreamMessageWriter);
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
-        connection.onNotification = sandbox.stub().returns(null);
+        connection.onNotification = sandbox.stub().returns(null) as any;
 
         emitter = new EventEmitter();
         serverCreation = new ServerCreation(connection, emitter);
@@ -243,7 +243,7 @@ describe('Sever Model Utility', () => {
                 stub = sandbox.stub();
                 stub.onFirstCall().resolves([serverBean]);
                 stub.onSecondCall().resolves(okStatus);
-                connection.sendRequest = stub;
+                connection.sendRequest = stub as any;
             });
 
             it('createServerFromPath should send the correct messages', async () => {
@@ -319,7 +319,7 @@ describe('Sever Model Utility', () => {
             beforeEach(() => {
                 stub = sandbox.stub();
                 stub.resolves(okStatus);
-                connection.sendRequest = stub;
+                connection.sendRequest = stub as any;
             });
 
             it('createServerFromBean should send the correct messages', async () => {

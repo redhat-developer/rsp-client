@@ -22,7 +22,7 @@ describe('RSP Client', () => {
     let writerStub: sinon.SinonStub;
     let fakeSocket: net.Socket;
 
-    const fakeConnection: rpc.MessageConnection = {
+    const fakeConnection = {
         dispose: () => {},
         listen: () => {},
         sendNotification: () => {},
@@ -35,7 +35,7 @@ describe('RSP Client', () => {
         onUnhandledNotification: sinon.stub(),
         sendRequest: sinon.stub(),
         trace: sinon.stub()
-    };
+    } as unknown as rpc.MessageConnection;
 
     beforeEach(() => {
         client = new RSPClient(host, port);

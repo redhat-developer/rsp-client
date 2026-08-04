@@ -2,7 +2,7 @@
  * Json objects sent between the server and the client
  */
 export namespace Protocol {
-    /* tslint:disable */
+    /* eslint-disable */
     // Generated using typescript-generator version 2.2.413 on 2021-09-28 16:58:30.
     
     export interface DownloadRuntimeDescription {

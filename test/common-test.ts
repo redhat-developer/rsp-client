@@ -43,7 +43,7 @@ describe('Common', () => {
         };
 
         beforeEach(() => {
-            connection.sendRequest = sandbox.stub().resolves(bean);
+            connection.sendRequest = sandbox.stub().resolves(bean) as any;
         });
 
         it('should send the correct message with the correct payload', async () => {
@@ -62,7 +62,7 @@ describe('Common', () => {
                         return temp(messageType, payload);
                     }, 20);
                 });
-            });
+            }) as any;
 
             try {
                 await Common.sendSimpleRequest(connection, messageType, payload, 1, ErrorMessages.FINDSERVERBEANS_TIMEOUT);
@@ -83,7 +83,7 @@ describe('Common', () => {
 
         beforeEach(() => {
             emitter = new EventEmitter();
-            connection.sendRequest = sandbox.stub().resolves('response');
+            connection.sendRequest = sandbox.stub().resolves('response') as any;
         });
 
         it('should send the correct message with the correct payload', async () => {
@@ -154,7 +154,7 @@ describe('Common', () => {
         const messageType = Messages.Server.ShutdownNotification.type;
 
         beforeEach(() => {
-            connection.sendNotification = sandbox.stub().returns(null);
+            connection.sendNotification = sandbox.stub().returns(null) as any;
         });
 
         it('should send the correct message with the correct payload', () => {

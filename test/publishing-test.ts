@@ -89,7 +89,7 @@ describe('Publishing', () => {
         const writer = sandbox.createStubInstance<rpc.StreamMessageWriter>(rpc.StreamMessageWriter);
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
-        connection.onNotification = sandbox.stub().returns(null);
+        connection.onNotification = sandbox.stub().returns(null) as any;
         outgoing = new Outgoing(connection);
         requestStub = sandbox.stub(Common, 'sendSimpleRequest');
     });
