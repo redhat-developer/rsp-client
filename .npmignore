@@ -2,7 +2,7 @@ lib/**/*.map
 src/
 test/
 tsconfig.json
-tslint.json
+eslint.config.mjs
 .vscode/
 lib/test/
 *.tgz

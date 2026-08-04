@@ -42,7 +42,7 @@ describe('Discovery Utility', () => {
         const writer = sandbox.createStubInstance<rpc.StreamMessageWriter>(rpc.StreamMessageWriter);
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
-        connection.onNotification = sandbox.stub().yields();
+        connection.onNotification = sandbox.stub().yields() as any;
 
         emitter = new EventEmitter();
         outgoing = new Outgoing(connection);

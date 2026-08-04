@@ -22,7 +22,7 @@ describe('Capabilities Utility', () => {
         const writer = sandbox.createStubInstance<rpc.StreamMessageWriter>(rpc.StreamMessageWriter);
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
-        connection.onNotification = sandbox.stub().returns(null);
+        connection.onNotification = sandbox.stub().returns(null) as any;
 
         capabilitiesStub = sandbox.stub(Incoming.prototype);
         capabilitiesStub.onPromptString.callsArgWith(0, {code: 100, prompt: 'Enter your name'});
@@ -33,7 +33,7 @@ describe('Capabilities Utility', () => {
     });
 
     it('onStringPrompt listener should be called', async () => {
-        const listener = (p: Protocol.StringPrompt): Promise<String> => {
+        const listener = (p: Protocol.StringPrompt): Promise<string> => {
             return Promise.resolve('Joe Doe');
 
         };

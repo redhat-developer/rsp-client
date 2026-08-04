@@ -8,7 +8,9 @@
     "strict": true,
     "strictPropertyInitialization": false,
     "sourceMap": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "useUnknownInCatchVariables": false,
+    "skipLibCheck": true
   },
   "include": [
     "src",

@@ -86,7 +86,7 @@ describe('Server Launcher Utility', () => {
         const writer = sandbox.createStubInstance<rpc.StreamMessageWriter>(rpc.StreamMessageWriter);
 
         connection = sandbox.stub(rpc.createMessageConnection(reader, writer));
-        connection.onNotification = sandbox.stub().returns(null);
+        connection.onNotification = sandbox.stub().returns(null) as any;
         emitter = new EventEmitter();
         outgoing = new Outgoing(connection);
         outgoingSync = new OutgoingSynchronous(connection, emitter);
@@ -179,7 +179,7 @@ describe('Server Launcher Utility', () => {
 
     describe('Synchronous Requests', () => {
         beforeEach(() => {
-            connection.sendRequest = sandbox.stub().resolves(status);
+            connection.sendRequest = sandbox.stub().resolves(status) as any;
         });
 
         it('startServerSync should send the correct message', async () => {
